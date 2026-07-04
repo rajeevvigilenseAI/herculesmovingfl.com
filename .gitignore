@@ -1,0 +1,27 @@
+# Environment & credentials
+.env
+*.env
+
+# PHP form handler (contains email config - keep out of public repo)
+formmail.php
+
+# Server error logs
+error_log
+error_log-*
+*.gz
+
+# Old PHP files (compromised/legacy)
+specialty-movers.php
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Hosting artifacts
+.ftpquota
+favicon.ico
