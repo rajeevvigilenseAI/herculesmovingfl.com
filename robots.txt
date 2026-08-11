@@ -27,4 +27,4 @@ Allow: /
 User-agent: Amazonbot
 Allow: /
 
-Sitemap: https://www.herculesmovingfl.com/sitemap.xml
+Sitemap: https://herculesmovingfl.com/sitemap.xml
