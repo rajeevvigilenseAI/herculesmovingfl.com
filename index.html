@@ -14,15 +14,15 @@
 	<meta  property="og:title" content="Local Movers Ft. Lauderdale, Miami and West Palm Beach | Hercules Local Movers" />
 	<meta property="og:description" content="No weight minimums. No size minimums. No hidden fees. Serving residential and commercial movers in Ft. Lauderdale, Miami and West Palm Beach." />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://herculesmovingfl.com/" />
-	<meta property="og:image" content="https://herculesmovingfl.com/images/hercules-banner.png" />
+	<meta property="og:url" content="https://www.herculesmovingfl.com/index.html" />
+	<meta property="og:image" content="https://www.herculesmovingfl.com/images/hercules-banner.png" />
 	<meta property="og:image:width" content="1024" />
 	<meta property="og:image:height" content="683" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="Local Movers Ft. Lauderdale, Miami and West Palm Beach | Hercules Local Movers" />
 	<meta name="twitter:description" content="No weight minimums. No size minimums. No hidden fees. Serving residential and commercial movers in Ft. Lauderdale, Miami and West Palm Beach." />
-	<meta name="twitter:image" content="https://herculesmovingfl.com/images/hercules-banner.png" />
-	<link rel="canonical" href="https://herculesmovingfl.com/" />
+	<meta name="twitter:image" content="https://www.herculesmovingfl.com/images/hercules-banner.png" />
+	<link rel="canonical" href="https://www.herculesmovingfl.com/" />
 
     <!-- JSON-LD Structured Data for AI and Search Engines -->
     <script type="application/ld+json">
@@ -30,9 +30,9 @@
       "@context": "https://schema.org",
       "@type": "MovingCompany",
       "name": "Hercules Local Movers",
-      "url": "https://herculesmovingfl.com/",
-      "logo": "https://herculesmovingfl.com/images/Hercules%20Moving%20(1).png",
-      "image": "https://herculesmovingfl.com/images/Hercules%20Moving%20(1).png",
+      "url": "https://www.herculesmovingfl.com",
+      "logo": "https://www.herculesmovingfl.com/images/Hercules%20Moving%20(1).png",
+      "image": "https://www.herculesmovingfl.com/images/Hercules%20Moving%20(1).png",
       "description": "Professional local moving company serving Ft. Lauderdale, Miami and West Palm Beach. No weight minimums, no size minimums, no hidden fees. Over 30 years of experience.",
       "telephone": "+1-754-354-2008",
       "address": {
@@ -85,6 +85,8 @@
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="main.css"/>
+    <link rel="stylesheet" type="text/css" href="book-move.css"/>
+    <link rel="stylesheet" type="text/css" href="home-quote.css"/>
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/favicon.png">
 
@@ -130,7 +132,7 @@
             <a href="tel:+1-754-354-2008"><i class="fas fa-phone"></i> 1 (754) 354-2008</a>
           </div>
           <div class="col-sm-4 center">
-            <a href="/contact.html"><i class="fas fa-envelope"></i> Email Us</a>
+            <a href="contact.html"><i class="fas fa-envelope"></i> Email Us</a>
           </div>
           <div class="col-sm-4">
             <a href="#"><i class="far fa-clock"></i> Mon - Sat 8:00 AM - 10:00 PM</a>
@@ -151,17 +153,18 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>                        
                           </button>
-                          <a class="navbar-brand logo" href="/"><img src="images/Hercules%20Moving%20(1).png" alt="logo" /></a>
+                          <a class="navbar-brand logo" href="index.html"><img src="images/Hercules%20Moving%20(1).png" alt="logo" /></a>
                         </div>
 
                         <div class="collapse navbar-collapse" id="myNavbar">
                           <ul class="nav navbar-nav navbar-right">
-                            <li class="active"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                            <li><a href="/residential-movers.html">Residential Moves</a></li>
-                            <li><a href="/commercial-movers.html">Commercial Moves</a></li>
-                            <li><a href="/specialty-movers.html">Specialty Moves</a></li>
-                            <li><a href="/blog.html">Blog</a></li>
-                            <li><a href="/contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                            <li class="active"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                            <li><a href="residential-movers.html">Residential Moves</a></li>
+                            <li><a href="commercial-movers.html">Commercial Moves</a></li>
+                            <li><a href="specialty-movers.html">Specialty Moves</a></li>
+                            <li><a href="book-move.html">Get Estimate</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
                           </ul>
                         </div>
                       </div>
@@ -173,8 +176,8 @@
   </header>
 
 
-            <div class="banner">
-                
+            <div class="banner hero-has-form">
+
                 <div id="myCarousel" class="carousel slide" data-ride="carousel">
                       <!-- Indicators -->
                       <ol class="carousel-indicators">
@@ -214,8 +217,103 @@
                        <span class="sr-only">Next</span>
                       </a>
                 </div>
+
+                <div class="hero-quote-overlay">
+                    <div class="hero-quote-card">
+                        <span class="hq-badge"><i class="fas fa-bolt"></i> Free &amp; Instant</span>
+
+                        <!-- Step 1: quote -->
+                        <form id="hq-step-quote" class="hq-step active" novalidate>
+                            <h3><i class="fas fa-calculator"></i> Get Your Moving Estimate</h3>
+                            <p class="hq-sub">A city, ZIP, or full address all work. Reserve your move in one visit, right here.</p>
+                            <div class="hq-row">
+                                <div class="hq-pair">
+                                    <div class="hq-field"><label for="hqOriginCity">Moving From</label><input id="hqOriginCity" name="origin-address" value="Miami" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
+                                    <div class="hq-field small"><label for="hqOriginState">State</label><input id="hqOriginState" name="origin-state" maxlength="2" value="FL" placeholder="FL" autocomplete="address-level1"></div>
+                                </div>
+                                <div class="hq-pair">
+                                    <div class="hq-field"><label for="hqDestCity">Moving To</label><input id="hqDestCity" name="destination-address" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
+                                    <div class="hq-field small"><label for="hqDestState">State</label><input id="hqDestState" name="destination-state" maxlength="2" value="FL" placeholder="FL" autocomplete="address-level1"></div>
+                                </div>
+                            </div>
+                            <div class="hq-row">
+                                <div class="hq-field">
+                                    <label for="hqHomeSize">How Much Are You Moving?</label>
+                                    <select id="hqHomeSize">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="hq-field">
+                                    <label for="hqDistanceBand">Distance</label>
+                                    <select id="hqDistanceBand"></select>
+                                </div>
+                            </div>
+                            <p class="hq-error" id="hq-error-quote"></p>
+                            <button type="submit" class="hq-submit"><i class="fas fa-truck-moving"></i> Get My Free Estimate</button>
+                            <p class="hq-note"><i class="fas fa-shield-alt"></i> Florida-origin moves. Destination anywhere in the U.S.</p>
+                        </form>
+
+                        <!-- Step 2: estimate + date/window -->
+                        <div id="hq-step-schedule" class="hq-step">
+                            <h3><i class="fas fa-check-circle"></i> Your Estimate</h3>
+                            <p class="hq-result-route" id="hq-result-route"></p>
+                            <div class="hq-result-stats">
+                                <div><span>Estimated Time</span><strong id="hq-result-hours"></strong></div>
+                                <div><span>Estimated Price</span><strong id="hq-result-price"></strong></div>
+                            </div>
+                            <p class="hq-surcharge-note" id="hq-cap-note" hidden>This estimate includes the first 8 hours. Additional time is billed hourly. Contact us for a full long-distance quote.</p>
+                            <div class="hq-row hq-row-schedule">
+                                <div class="hq-field"><label for="hqMoveDate2">Preferred Move Date</label><input id="hqMoveDate2" type="date"></div>
+                                <div class="hq-field">
+                                    <label class="hq-label-block">Preferred Arrival Time</label>
+                                    <div class="hq-window-grid" id="hq-window-grid"></div>
+                                </div>
+                            </div>
+                            <p class="hq-error" id="hq-error-schedule"></p>
+                            <button type="button" class="hq-submit" id="hq-to-contact"><i class="fas fa-calendar-check"></i> Continue</button>
+                            <button type="button" class="hq-link" id="hq-back-quote">Edit locations</button>
+                        </div>
+
+                        <!-- Step 3: contact + confirm -->
+                        <div id="hq-step-contact" class="hq-step">
+                            <h3><i class="fas fa-user"></i> Almost Done</h3>
+                            <p class="hq-sub">Enter your details to confirm this appointment.</p>
+                            <div class="hq-row">
+                                <div class="hq-field"><label for="hqFirstName">First Name</label><input id="hqFirstName" autocomplete="given-name"></div>
+                                <div class="hq-field"><label for="hqLastName">Last Name</label><input id="hqLastName" autocomplete="family-name"></div>
+                            </div>
+                            <div class="hq-row">
+                                <div class="hq-field"><label for="hqPhone">Mobile Phone</label><input id="hqPhone" type="tel" autocomplete="tel" placeholder="(754) 354-2008"></div>
+                                <div class="hq-field"><label for="hqEmail">Email</label><input id="hqEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
+                            </div>
+                            <input id="hqWebsite" class="reverse" tabindex="-1" autocomplete="off">
+                            <p class="hq-error" id="hq-error-contact"></p>
+                            <button type="button" class="hq-submit" id="hq-confirm"><i class="fas fa-check"></i> Confirm Appointment</button>
+                            <p class="hq-legal">By confirming, you agree to the <button type="button" class="terms-link" data-open-terms>Terms and Conditions</button>.</p>
+                            <button type="button" class="hq-link" id="hq-back-schedule">Back</button>
+                        </div>
+
+                        <!-- Step 4: confirmation -->
+                        <div id="hq-step-done" class="hq-step">
+                            <div class="hq-confirm">
+                                <h3><i class="fas fa-check-circle"></i> Your Move Is Reserved!</h3>
+                                <p class="hq-confirm-ref" id="hq-confirm-ref"></p>
+                                <div class="hq-result-stats">
+                                    <div><span>Move Date</span><strong id="hq-confirm-date"></strong></div>
+                                    <div><span>Arrival Window</span><strong id="hq-confirm-window"></strong></div>
+                                </div>
+                                <div class="hq-result-stats">
+                                    <div><span>Estimated Time</span><strong id="hq-confirm-hours"></strong></div>
+                                    <div><span>Estimated Price</span><strong id="hq-confirm-price"></strong></div>
+                                </div>
+                                <p class="hq-confirm-note" id="hq-confirm-review" hidden>Because of the details you shared, our team will personally review your move before it's finalized.</p>
+                                <p class="hq-confirm-note" id="hq-confirm-email">A confirmation email is on its way. Need to make a change or cancel? Just reply to that email.</p>
+                                <p class="hq-confirm-note" id="hq-confirm-callback" hidden>We've emailed you a copy of these details, and our team will call you shortly to confirm. To change or cancel, reply to that email or call <a href="tel:+17543542008">1 (754) 354-2008</a>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
 
             <div class="row contrast intro">
                 <div class="col-wrap">
@@ -282,7 +380,7 @@
                             
                             <p>&nbsp;</p>
                                
-                            <p><a class="button" href="/specialty-movers.html">Learn More</a></p>
+                            <p><a class="button" href="specialty-movers.html">Learn More</a></p>
                             </div>
 
                             <div class="col-sm-8"></div>
@@ -342,7 +440,10 @@
                             provider.</p>
                         </div>
                         
-                        <div class="col-sm-12"><p>And so much more!</p></div>
+                        <div class="col-sm-12">
+                            <p>And so much more!</p>
+                            <p class="home-cta"><a class="button" href="book-move.html">Get Instant Estimate</a></p>
+                        </div>
                     </div>
                 </div>
 
@@ -355,12 +456,14 @@
                    
                    <ul class="links">
                    
-                   <li><a href="/">Home</a></li>
-                   <li><a href="/residential-movers.html">Residential Moves</a></li>
-                   <li><a href="/commercial-movers.html">Commercial Moves</a></li>
-                   <li><a href="/specialty-movers.html">Specialty Moves</a></li>
-                   <li><a href="/blog.html">Blog</a></li>
-                   <li><a href="/contact.html">Contact Us</a></li>
+                   <li><a href="index.html">Home</a></li>
+                   <li><a href="residential-movers.html">Residential Moves</a></li>
+                   <li><a href="commercial-movers.html">Commercial Moves</a></li>
+                   <li><a href="specialty-movers.html">Specialty Moves</a></li>
+                   <li><a href="book-move.html">Get Estimate</a></li>
+                   <li><a href="blog.html">Blog</a></li>
+                   <li><a href="contact.html">Contact Us</a></li>
+                   <li><a href="terms.html">Terms and Conditions</a></li>
 
                    </ul>
                    </div>
@@ -394,7 +497,7 @@
 
     
                    <div class="col-sm-3 footer-right">
-                   <p class="subtext4"><a href="/"><img class="logo1 img-responsive" src="images/Hercules%20Moving%20(1).png" alt="logo" /></a>
+                   <p class="subtext4"><a href="index.html"><img class="logo1 img-responsive" src="images/Hercules%20Moving%20(1).png" alt="logo" /></a>
                                 <span itemprop="name">Hercules Local Movers</span>
                                 <span itemprop="offer" style="display: none;">Local Moving Services</span><br />
                                 <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
@@ -415,6 +518,24 @@
             </div><!--End Footer-->
    </div>
  </div>
+
+<div class="terms-modal" id="terms-modal" hidden>
+  <div class="terms-dialog" role="dialog" aria-labelledby="terms-title" aria-modal="true">
+    <button type="button" class="terms-close" id="terms-close" aria-label="Close">&times;</button>
+    <h2 id="terms-title">Terms and Conditions</h2>
+    <p class="terms-full-link"><a href="terms.html" target="_blank" rel="noopener">Open full Terms page</a></p>
+    <div class="terms-body" id="terms-body"></div>
+  </div>
+</div>
+
+
+<script src="js/booking/config.js"></script>
+<script src="js/booking/quote-core.js"></script>
+<script src="js/booking/fallback.js"></script>
+<script src="js/booking/api.js"></script>
+<script src="js/booking/terms-content.js"></script>
+<script src="js/booking/maps-loader.js"></script>
+<script src="js/booking/home-widget.js"></script>
 <!-- Google Analytics: Replace GA_MEASUREMENT_ID with your GA4 property ID -->
 <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
 <script>
