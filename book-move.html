@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Instant Moving Estimate &amp; Booking | Hercules Movers Florida</title>
+    <meta name="description" content="Get an instant moving estimate and reserve your moving date online with Hercules Movers. Professional moving services throughout South Florida and Florida." />
+    <meta property="og:title" content="Instant Moving Estimate &amp; Booking | Hercules Movers Florida" />
+    <meta property="og:description" content="Get an instant moving estimate and reserve your moving date online with Hercules Movers." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://herculesmovingfl.com/book-move.html" />
+    <meta property="og:image" content="https://www.herculesmovingfl.com/images/hercules-banner.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://herculesmovingfl.com/book-move.html" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ReserveAction",
+      "name": "Get an instant moving estimate",
+      "target": "https://herculesmovingfl.com/book-move.html",
+      "provider": {
+        "@type": "MovingCompany",
+        "name": "Hercules Local Movers",
+        "telephone": "+1-754-354-2008",
+        "areaServed": "Florida"
+      }
+    }
+    </script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,400,500,600,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="book-move.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="classie.js"></script>
+    <script>
+        function init() {
+            window.addEventListener('scroll', function () {
+                var distanceY = window.pageYOffset || document.documentElement.scrollTop;
+                var header = document.querySelector("header");
+                if (distanceY > 250) { classie.add(header, "smaller"); }
+                else if (classie.has(header, "smaller")) { classie.remove(header, "smaller"); }
+            });
+        }
+        window.onload = init();
+    </script>
+</head>
+<body>
+<div class="main">
+ <div class="container-fluid">
+  <header>
+      <div class="mast-wrap">
+       <div class="row topmast">
+          <div class="col-sm-4"><a href="tel:+1-754-354-2008"><i class="fas fa-phone"></i> 1 (754) 354-2008</a></div>
+          <div class="col-sm-4 center"><a href="contact.html"><i class="fas fa-envelope"></i> Email Us</a></div>
+          <div class="col-sm-4"><a href="#"><i class="far fa-clock"></i> Mon - Sat 8:00 AM - 10:00 PM</a></div>
+       </div>
+      </div>
+    <div class="mast">
+                    <nav class="navbar navbar-default">
+                      <div class="container-fluid">
+                        <div class="navbar-header">
+                          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                          </button>
+                          <a class="navbar-brand logo" href="index.html"><img src="images/Hercules%20Moving%20(1).png" alt="Hercules Local Movers logo"></a>
+                        </div>
+                        <div class="collapse navbar-collapse" id="myNavbar">
+                          <ul class="nav navbar-nav navbar-right">
+                            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                            <li><a href="residential-movers.html">Residential Moves</a></li>
+                            <li><a href="commercial-movers.html">Commercial Moves</a></li>
+                            <li><a href="specialty-movers.html">Specialty Moves</a></li>
+                            <li class="active"><a href="book-move.html">Get Estimate</a></li>
+                            <li><a href="blog.html">Blog</a></li>
+                            <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </nav>
+    </div>
+  </header>
+
+  <div class="book-page">
+    <div class="book-wrap">
+      <h1>Instant Moving Estimate</h1>
+      <p class="book-lead">See your price first, then reserve a moving date online.</p>
+      <div class="book-progress">
+        <span data-progress="Move" class="active">Move</span>
+        <span data-progress="Home">Home</span>
+        <span data-progress="Estimate">Estimate</span>
+        <span data-progress="Schedule">Schedule</span>
+        <span data-progress="Contact">Contact</span>
+        <span data-progress="Confirm">Confirm</span>
+      </div>
+
+      <section class="book-step active" id="step-from">
+        <h2>Moving From</h2>
+        <div class="book-field"><label for="originStreet">Street address</label><input id="originStreet" name="origin-street-address" autocomplete="street-address"></div>
+        <div class="book-field"><label for="originUnit">Apartment / unit (optional)</label><input id="originUnit" name="origin-address-line2" autocomplete="address-line2"></div>
+        <div class="book-field"><label for="originCity">City</label><input id="originCity" name="origin-city" autocomplete="address-level2"></div>
+        <div class="book-row">
+          <div class="book-field state"><label for="originState">State</label><input id="originState" name="origin-state" maxlength="2" placeholder="FL" autocomplete="address-level1"></div>
+          <div class="book-field zip"><label for="originZip">ZIP</label><input id="originZip" name="origin-zip" inputmode="numeric" autocomplete="postal-code"></div>
+        </div>
+        <p class="book-error"></p>
+        <div class="book-actions"><button type="button" class="book-btn" data-next>Continue</button></div>
+      </section>
+
+      <section class="book-step" id="step-to">
+        <h2>Moving To</h2>
+        <div class="book-field"><label for="destinationStreet">Street address</label><input id="destinationStreet" name="destination-street-address" autocomplete="street-address"></div>
+        <div class="book-field"><label for="destinationUnit">Apartment / unit (optional)</label><input id="destinationUnit" name="destination-address-line2" autocomplete="address-line2"></div>
+        <div class="book-field"><label for="destinationCity">City</label><input id="destinationCity" name="destination-city" autocomplete="address-level2"></div>
+        <div class="book-row">
+          <div class="book-field state"><label for="destinationState">State</label><input id="destinationState" name="destination-state" maxlength="2" placeholder="NY" autocomplete="address-level1"></div>
+          <div class="book-field zip"><label for="destinationZip">ZIP</label><input id="destinationZip" name="destination-zip" inputmode="numeric" autocomplete="postal-code"></div>
+        </div>
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" data-next>Continue</button>
+        </div>
+      </section>
+
+      <section class="book-step" id="step-home">
+        <h2>How Much Are You Moving?</h2>
+        <div class="choice-grid">
+          <label><input type="radio" name="homeSize" value="5"> Just a Few Items</label>
+          <label><input type="radio" name="homeSize" value="0"> Studio</label>
+          <label><input type="radio" name="homeSize" value="1"> 1 Bedroom</label>
+          <label><input type="radio" name="homeSize" value="2"> 2 Bedrooms</label>
+          <label><input type="radio" name="homeSize" value="3"> 3 Bedrooms</label>
+          <label><input type="radio" name="homeSize" value="4"> 4+ Bedrooms</label>
+        </div>
+        <div class="book-field">
+          <label for="distanceBand">Distance (optional)</label>
+          <select id="distanceBand">
+            <option value="">Calculate for me</option>
+          </select>
+          <p class="book-hint">Leave this on “Calculate for me” unless you already know roughly how far the move is.</p>
+        </div>
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" data-next>Continue</button>
+        </div>
+      </section>
+
+      <section class="book-step" id="step-date">
+        <h2>Move Date</h2>
+        <p>Pick the day that works for you. This calendar does not check crew availability.</p>
+        <div class="book-calendar" id="book-calendar">
+          <div class="cal-header">
+            <button type="button" class="cal-nav" id="cal-prev" aria-label="Previous month">&lsaquo;</button>
+            <div id="cal-month-label"></div>
+            <button type="button" class="cal-nav" id="cal-next" aria-label="Next month">&rsaquo;</button>
+          </div>
+          <div class="cal-weekdays">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <input type="hidden" id="moveDate">
+        <p class="cal-selected" id="cal-selected-label">No date selected</p>
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" data-next>See My Estimate</button>
+        </div>
+      </section>
+
+      <section class="book-step" id="step-estimate">
+        <div class="estimate-card">
+          <h3>YOUR MOVING ESTIMATE</h3>
+          <div class="estimate-route">
+            <div id="est-from"></div>
+            <div>↓</div>
+            <div id="est-to"></div>
+          </div>
+          <div class="estimate-stats">
+            <div>Distance<strong id="est-miles"></strong></div>
+            <div>Estimated Time<strong id="est-hours"></strong></div>
+            <div>Estimated Price<strong id="est-price"></strong></div>
+          </div>
+          <ul class="estimate-includes">
+            <li>✓ Professional movers</li>
+            <li>✓ Moving truck</li>
+            <li>✓ Mileage</li>
+            <li>✓ Protective moving blankets</li>
+            <li>✓ Bed disassembly and reassembly</li>
+            <li>✓ Licensed and insured</li>
+          </ul>
+          <p id="est-cap-note" class="estimate-surcharge" hidden>This estimate covers the first 8 hours. If your move goes longer, extra time is billed hourly. Contact us for a full long-distance quote.</p>
+          <p class="estimate-disclaimer">This is an estimate based on the information provided. Final charges may vary if the actual inventory, services required, access conditions, packing requirements, waiting time, or move details differ.</p>
+        </div>
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" data-next>Choose Arrival Window</button>
+        </div>
+      </section>
+
+      <section class="book-step" id="step-window">
+        <h2>Preferred Arrival Time</h2>
+        <p>Choose the arrival window that works best. All times are available to request.</p>
+        <div class="window-grid" id="window-options"></div>
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" data-next>Continue</button>
+        </div>
+      </section>
+
+      <section class="book-step" id="step-contact">
+        <h2>Your Contact Information</h2>
+        <div class="book-row">
+          <div class="book-field"><label for="firstName">First name</label><input id="firstName" autocomplete="given-name"></div>
+          <div class="book-field"><label for="lastName">Last name</label><input id="lastName" autocomplete="family-name"></div>
+        </div>
+        <div class="book-field"><label for="phone">Mobile phone</label><input id="phone" type="tel" autocomplete="tel"></div>
+        <div class="book-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email"></div>
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" data-next>Continue</button>
+        </div>
+      </section>
+
+      <section class="book-step" id="step-details">
+        <h2>Move Details</h2>
+        <p>These details help our crew prepare. They do not change your current estimate.</p>
+        <div class="book-field">
+          <label for="originPropertyType">Origin property type</label>
+          <select id="originPropertyType">
+            <option value="">Select</option>
+            <option value="house">House</option>
+            <option value="apartment">Apartment</option>
+            <option value="condo">Condo</option>
+            <option value="storage">Storage</option>
+            <option value="office">Office</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="book-field">
+          <label for="originAccess">Origin access</label>
+          <select id="originAccess">
+            <option value="">Select</option>
+            <option value="ground_floor">Ground floor</option>
+            <option value="elevator">Elevator</option>
+            <option value="stairs">Stairs</option>
+          </select>
+        </div>
+        <div class="book-field">
+          <label for="destinationPropertyType">Destination property type</label>
+          <select id="destinationPropertyType">
+            <option value="">Select</option>
+            <option value="house">House</option>
+            <option value="apartment">Apartment</option>
+            <option value="condo">Condo</option>
+            <option value="storage">Storage</option>
+            <option value="office">Office</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="book-field">
+          <label for="destinationAccess">Destination access</label>
+          <select id="destinationAccess">
+            <option value="">Select</option>
+            <option value="ground_floor">Ground floor</option>
+            <option value="elevator">Elevator</option>
+            <option value="stairs">Stairs</option>
+          </select>
+        </div>
+        <p>Anything we should know about your move?</p>
+        <div class="check-grid">
+          <label><input type="checkbox" name="specialty" value="piano"> Piano</label>
+          <label><input type="checkbox" name="specialty" value="safe"> Safe</label>
+          <label><input type="checkbox" name="specialty" value="pool_table"> Pool table</label>
+          <label><input type="checkbox" name="specialty" value="oversized_furniture"> Oversized furniture</label>
+          <label><input type="checkbox" name="specialty" value="tv_over_75"> TV over 75 inches</label>
+          <label><input type="checkbox" name="specialty" value="packing_needed"> Packing needed</label>
+          <label><input type="checkbox" name="specialty" value="storage_stop"> Storage stop</label>
+          <label><input type="checkbox" name="specialty" value="additional_stop"> Additional stop</label>
+          <label><input type="checkbox" name="specialty" value="other_specialty"> Other specialty item</label>
+        </div>
+        <div class="book-field"><label for="notes">Additional notes</label><textarea id="notes"></textarea></div>
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" data-next>Review Reservation</button>
+        </div>
+      </section>
+
+      <section class="book-step" id="step-review">
+        <div class="review-block" id="review-summary"></div>
+        <label class="agree-row">
+          <input type="checkbox" id="confirmAccurate">
+          I confirm that the information provided about my move is accurate and understand that this is an estimate based on the information provided.
+        </label>
+        <input id="website" class="reverse" tabindex="-1" autocomplete="off">
+        <p class="book-error"></p>
+        <div class="book-actions">
+          <button type="button" class="book-btn secondary" data-back>Back</button>
+          <button type="button" class="book-btn" id="book-reserve">Reserve My Move</button>
+        </div>
+        <p class="book-hint">By reserving, you agree to the <button type="button" class="terms-link" data-open-terms>Terms and Conditions</button>.</p>
+      </section>
+
+      <section class="book-step" id="step-confirm">
+        <div class="confirm-box">
+          <h2>Your Move Is Reserved</h2>
+          <p>Reference</p>
+          <div class="confirm-ref" id="conf-ref"></div>
+          <p><strong>Move Date:</strong> <span id="conf-date"></span></p>
+          <p><strong>Arrival Window:</strong> <span id="conf-window"></span></p>
+          <p><strong>Estimated Time:</strong> <span id="conf-hours"></span></p>
+          <p><strong>Estimated Price:</strong> <span id="conf-price"></span></p>
+          <p id="conf-email-note">A confirmation email is on its way. Reply to it for any changes or to cancel.</p>
+          <p id="conf-callback-note" style="display:none;">We've emailed you a copy of these details, and our team will call you shortly to confirm. To change or cancel, reply to that email or call 1 (754) 354-2008.</p>
+          <p id="conf-review-note" style="display:none;">We may contact you to confirm details for specialty items or additional services.</p>
+          <div class="book-actions">
+            <a class="book-btn" href="tel:+17543542008" style="text-align:center;line-height:50px;text-decoration:none;">Call Hercules Movers</a>
+            <a class="book-btn secondary" href="index.html" style="text-align:center;line-height:50px;text-decoration:none;">Back to Home</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+            <div class="row footer" id="footer">
+                <div class="inner">
+                   <div class="col-sm-3 footer-left">
+                   <h6 class="q-links">QUICK LINKS</h6>
+                   <ul class="links">
+                   <li><a href="index.html">Home</a></li>
+                   <li><a href="book-move.html">Get Estimate</a></li>
+                   <li><a href="residential-movers.html">Residential Moves</a></li>
+                   <li><a href="commercial-movers.html">Commercial Moves</a></li>
+                   <li><a href="specialty-movers.html">Specialty Moves</a></li>
+                   <li><a href="blog.html">Blog</a></li>
+                   <li><a href="contact.html">Contact Us</a></li>
+                   <li><a href="terms.html">Terms and Conditions</a></li>
+                   </ul>
+                   </div>
+                   <div class="col-sm-6">
+                   <h6 class="q-links">GET IN TOUCH</h6>
+                    <form id="inquiry" action="#" method="post" name="ContactForm">
+                       <div class="inline">
+                           <input type="text" name="First Name" placeholder="First Name">
+                           <input type="text" name="Last Name" placeholder="Last Name">
+                       </div>
+                       <div class="inline">
+                           <input type="email" name="Email" placeholder="Email Address">
+                           <input type="text" name="Phone" placeholder="Phone Number">
+                       </div>
+                       <div class="inline">
+                           <textarea name="Comments" placeholder="How Can We Help?"></textarea>
+                       </div>
+                       <input class="go2" type="submit" name="submit" value="SEND">
+                   </form>
+                   </div>
+                   <div class="col-sm-3 footer-right">
+                   <p class="subtext4"><a href="index.html"><img class="logo1 img-responsive" src="images/Hercules%20Moving%20(1).png" alt="logo"></a>
+                                Hercules Local Movers<br>
+                                465 Brickell Ave.<br>Miami, FL 33131<br>
+                                <a href="tel:+1-754-354-2008">1 (754) 354-2008</a>
+                  </p>
+                   </div>
+                </div>
+                    <div class="col-sm-12">
+                      <p class="disclaim">Hercules Local Movers serving residential and commercial movers in Ft. Lauderdale, Miami, West Palm Beach and surrounding areas.</p>
+                    </div>
+            </div>
+ </div>
+</div>
+  <div class="terms-modal" id="terms-modal" hidden>
+    <div class="terms-dialog" role="dialog" aria-labelledby="terms-title" aria-modal="true">
+      <button type="button" class="terms-close" id="terms-close" aria-label="Close">&times;</button>
+      <h2 id="terms-title">Terms and Conditions</h2>
+      <p class="terms-full-link"><a href="terms.html" target="_blank" rel="noopener">Open full Terms page</a></p>
+      <div class="terms-body" id="terms-body"></div>
+    </div>
+  </div>
+<script src="js/booking/config.js"></script>
+<script src="js/booking/quote-core.js"></script>
+<script src="js/booking/fallback.js"></script>
+<script src="js/booking/terms-content.js"></script>
+<script src="js/booking/api.js"></script>
+<script src="js/booking/maps-loader.js"></script>
+<script src="js/booking/wizard.js"></script>
+</body>
+</html>

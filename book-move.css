@@ -1,0 +1,586 @@
+.book-page {
+    margin-top: 160px;
+    padding: 0 15px 60px 15px;
+}
+
+/* Google Places suggestion dropdown must render above the fixed header
+   and the terms modal. */
+.pac-container {
+    z-index: 99999 !important;
+}
+
+/* The plain input is kept in the DOM (hidden) purely to hold the resolved
+   value once the Google Places widget takes over; only the widget is shown. */
+.book-field-fallback {
+    display: none !important;
+}
+
+gmp-place-autocomplete.book-place-autocomplete {
+    display: block;
+    width: 100%;
+    height: 48px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    color-scheme: light;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 17px;
+}
+
+gmp-place-autocomplete.book-place-autocomplete:focus-within {
+    border-color: #ff7700;
+}
+
+.book-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.book-wrap h1 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 36px;
+    color: #ff7700;
+    text-align: center;
+    margin: 0 0 8px 0;
+}
+
+.book-lead {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 18px;
+    color: #606060;
+    text-align: center;
+    margin: 0 0 24px 0;
+}
+
+.book-progress {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 24px;
+}
+
+.book-progress span {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 13px;
+    color: #909090;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #f7f7f7;
+}
+
+.book-progress span.active {
+    background: #ff7700;
+    color: #fff;
+}
+
+.book-progress span.done {
+    background: #ffe4cc;
+    color: #c45e00;
+}
+
+.book-step {
+    display: none;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 24px 22px 28px 22px;
+}
+
+.book-step.active {
+    display: block;
+}
+
+.book-step h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 26px;
+    color: #2f4f4f;
+    margin: 0 0 16px 0;
+}
+
+.book-field {
+    margin-bottom: 14px;
+}
+
+.book-field label {
+    display: block;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    color: #2f4f4f;
+    margin-bottom: 6px;
+}
+
+.book-field input,
+.book-field select,
+.book-field textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 17px;
+}
+
+.book-field textarea {
+    min-height: 96px;
+}
+
+.book-row {
+    display: flex;
+    gap: 12px;
+}
+
+.book-row .book-field {
+    flex: 1;
+}
+
+.book-row .zip {
+    flex: 0 0 120px;
+}
+
+.book-row .state {
+    flex: 0 0 90px;
+}
+
+.choice-grid + .book-field {
+    margin-top: 18px;
+}
+
+.book-hint {
+    margin: 6px 0 0 0;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 14px;
+    color: #808080;
+}
+
+.choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.choice-grid label,
+.window-grid label,
+.check-grid label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    color: #2f4f4f;
+    cursor: pointer;
+}
+
+.choice-grid input,
+.window-grid input,
+.check-grid input {
+    width: auto;
+    min-height: 0;
+}
+
+.window-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.check-grid {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.book-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.book-btn {
+    flex: 1;
+    min-height: 50px;
+    border: none;
+    border-radius: 6px;
+    background: #ff7700;
+    color: #fff;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.book-btn.secondary {
+    background: #fff;
+    color: #ff7700;
+    border: 1px solid #ff7700;
+}
+
+.book-error {
+    display: none;
+    color: #b00020;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    margin: 8px 0 0 0;
+}
+
+.book-error.show {
+    display: block;
+}
+
+.estimate-card {
+    background: #fff8f2;
+    border: 2px solid #ff7700;
+    border-radius: 8px;
+    padding: 22px 20px;
+    text-align: center;
+}
+
+.estimate-card h3 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 22px;
+    color: #ff7700;
+    margin: 0 0 12px 0;
+}
+
+.estimate-route {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 20px;
+    color: #2f4f4f;
+    margin-bottom: 16px;
+}
+
+.estimate-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+}
+
+.estimate-stats strong {
+    display: block;
+    font-size: 26px;
+    color: #ff7700;
+}
+
+.estimate-includes {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+    text-align: left;
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: #606060;
+}
+
+.estimate-includes li {
+    margin: 6px 0;
+}
+
+.estimate-disclaimer {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 14px;
+    color: #888;
+    text-align: left;
+}
+
+.review-block p {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 17px;
+    color: #606060;
+    margin: 6px 0;
+}
+
+.review-block h3 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: #ff7700;
+    font-size: 20px;
+}
+
+.confirm-box {
+    text-align: center;
+}
+
+.confirm-box h2 {
+    color: #ff7700;
+    font-size: 32px;
+}
+
+.confirm-ref {
+    font-size: 28px;
+    color: #2f4f4f;
+    font-family: 'Open Sans Condensed', sans-serif;
+    margin: 10px 0 20px 0;
+}
+
+.home-cta {
+    text-align: center;
+    margin: 30px 0 10px 0;
+}
+
+.home-cta a.button {
+    display: inline-block;
+    background: #ff7700;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 18px;
+}
+
+.estimate-surcharge {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 15px;
+    color: #8a4b00;
+    background: #fff3e6;
+    border: 1px solid #ffd0a3;
+    border-radius: 6px;
+    padding: 10px 12px;
+    text-align: left;
+    margin: 0 0 12px 0;
+}
+
+.agree-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 14px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    color: #2f4f4f;
+}
+
+.agree-row input {
+    margin-top: 4px;
+}
+
+.terms-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #ff7700;
+    text-decoration: underline;
+    cursor: pointer;
+    font: inherit;
+}
+
+.book-calendar {
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+    background: #fff;
+}
+
+.cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 20px;
+    color: #2f4f4f;
+}
+
+.cal-nav {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e6e6e6;
+    background: #fff;
+    border-radius: 6px;
+    color: #ff7700;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cal-weekdays,
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.cal-weekdays span {
+    text-align: center;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 13px;
+    color: #909090;
+    padding: 4px 0;
+}
+
+.cal-grid button {
+    min-height: 42px;
+    border: none;
+    background: #f7f7f7;
+    border-radius: 6px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    color: #2f4f4f;
+    cursor: pointer;
+}
+
+.cal-grid button.other {
+    color: #c8c8c8;
+    background: transparent;
+}
+
+.cal-grid button.past,
+.cal-grid button:disabled {
+    color: #c8c8c8;
+    background: #fafafa;
+    cursor: not-allowed;
+}
+
+.cal-grid button.today {
+    box-shadow: inset 0 0 0 1px #ff7700;
+}
+
+.cal-grid button.selected {
+    background: #ff7700;
+    color: #fff;
+}
+
+.cal-selected {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    color: #2f4f4f;
+    margin: 0 0 8px 0;
+}
+
+.terms-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.terms-modal[hidden] {
+    display: none;
+}
+
+.terms-dialog {
+    position: relative;
+    background: #fff;
+    max-width: 640px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: auto;
+    border-radius: 8px;
+    padding: 28px 24px 24px 24px;
+}
+
+.terms-dialog h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: #ff7700;
+    margin: 0 0 12px 0;
+}
+
+.terms-dialog h3 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: #2f4f4f;
+    font-size: 18px;
+    margin: 16px 0 6px 0;
+}
+
+.terms-body {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    color: #606060;
+}
+
+.terms-placeholder {
+    margin-top: 18px;
+    font-style: italic;
+    color: #888;
+}
+
+.terms-full-link {
+    margin: 0 0 12px 0;
+}
+
+.terms-full-link a {
+    color: #ff7700;
+}
+
+.terms-intro {
+    margin-top: 0;
+}
+
+.terms-page {
+    margin-top: 160px;
+    padding: 0 15px 60px 15px;
+}
+
+.terms-article {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 28px 24px;
+}
+
+.terms-article h1 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: #ff7700;
+    margin: 0 0 16px 0;
+}
+
+.terms-body .estimate-surcharge {
+    margin: 0 0 16px 0;
+}
+
+.terms-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    border: none;
+    background: none;
+    font-size: 28px;
+    line-height: 1;
+    color: #888;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .book-page {
+        margin-top: 130px;
+    }
+
+    .book-wrap h1 {
+        font-size: 28px;
+    }
+
+    .book-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .book-row .zip,
+    .book-row .state {
+        flex: 1;
+    }
+
+    .choice-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .estimate-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .book-actions {
+        flex-direction: column-reverse;
+    }
+}

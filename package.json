@@ -1,0 +1,8 @@
+{
+  "name": "herculesmovingfl.com",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/pricing.test.js tests/serviceArea.test.js tests/scheduling.test.js tests/distance.test.js"
+  }
+}

@@ -1,0 +1,7 @@
+project_id = "herculesmovingfl"
+
+[functions.estimate]
+verify_jwt = false
+
+[functions.book]
+verify_jwt = false

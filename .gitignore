@@ -1,6 +1,11 @@
 # Environment & credentials
 .env
 *.env
+.env.local
+
+# Supabase local artifacts
+supabase/.temp
+supabase/.branches
 
 # PHP form handler (contains email config - keep out of public repo)
 formmail.php

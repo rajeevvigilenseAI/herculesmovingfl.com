@@ -1,0 +1,575 @@
+/* Hero overlay estimate + booking widget. Sits on top of the homepage banner
+   on wide screens; the carousel headline shifts left to make room on the
+   right. The entire reservation (estimate, date/window, contact,
+   confirmation) completes inline here, with no navigation to another page.
+
+   The banner is a fixed 553px tall, so every step is laid out wide and low:
+   paired fields share a row and the card stays under that height. Anything
+   taller would spill over the section below it. */
+
+.hero-has-form {
+    overflow: visible;
+}
+
+#myCarousel .carousel-inner .item {
+    width: 30%;
+    margin: 13% 0 13% 3.5%;
+    border-radius: 10px;
+}
+
+/* The right carousel arrow is painted at z-index 1000, so on wide screens it
+   lands on top of the card. The slides rotate on their own, so the arrows go
+   away wherever the card overlays them. */
+@media (min-width: 1025px) {
+    .hero-has-form .carousel-control {
+        display: none;
+    }
+}
+
+.hero-quote-overlay {
+    position: absolute;
+    top: 50%;
+    right: 3%;
+    transform: translateY(-50%);
+    width: 760px;
+    z-index: 30;
+    animation: hqFadeIn 0.6s ease-out 0.15s both;
+}
+
+.hero-quote-card {
+    position: relative;
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px 28px 18px 28px;
+    box-shadow: 0 22px 54px rgba(0, 0, 0, 0.36), 0 0 0 4px rgba(255, 119, 0, 0.26);
+    min-height: 455px;
+    max-height: 530px;
+    overflow-y: auto;
+}
+
+/* In normal flow rather than pinned above the card: an absolutely positioned
+   badge with a negative offset gets clipped by the card's own scroll area. */
+.hq-badge {
+    display: inline-block;
+    background: #ff7700;
+    color: #fff;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 4px 13px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(255, 119, 0, 0.35);
+}
+
+.hq-badge i {
+    margin-right: 5px;
+}
+
+/* Google Places suggestion dropdown must render above the overlay card
+   and the fixed site header. */
+.pac-container {
+    z-index: 99999 !important;
+}
+
+/* The plain input is kept in the DOM (hidden) purely to hold the resolved
+   value once the Google Places widget takes over; only the widget is shown. */
+.hq-field-fallback {
+    display: none !important;
+}
+
+gmp-place-autocomplete.hq-place-autocomplete {
+    display: block;
+    width: 100%;
+    height: 46px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background-color: #fafafa;
+    color-scheme: light;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+gmp-place-autocomplete.hq-place-autocomplete:focus-within {
+    border-color: #ff7700;
+    background-color: #fff;
+}
+
+.hq-step {
+    display: none;
+}
+
+.hq-step.active {
+    display: block;
+}
+
+.hq-step h3 {
+    margin: 6px 0 4px 0;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    color: #2f4f4f;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.hq-step h3 i {
+    color: #ff7700;
+    margin-right: 9px;
+}
+
+.hq-sub {
+    margin: 0 0 14px 0;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    color: #808080;
+}
+
+.hq-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.hq-field {
+    flex: 1;
+    min-width: 0;
+}
+
+/* A city field and its two-letter state field read as one control, so they
+   share a column and two of these columns fill one row. */
+.hq-pair {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+    min-width: 0;
+}
+
+.hq-field.small {
+    flex: 0 0 74px;
+}
+
+.hq-field label,
+.hq-label-block {
+    display: block;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2f4f4f;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hq-field > input,
+.hq-field > select {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background: #fafafa;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 16px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.hq-field > input:focus,
+.hq-field > select:focus {
+    outline: none;
+    border-color: #ff7700;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.15);
+}
+
+.hq-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 54px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #ff8a24, #ff7700);
+    color: #fff;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 6px;
+    box-shadow: 0 7px 15px rgba(255, 119, 0, 0.32);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.hq-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(255, 119, 0, 0.45);
+}
+
+.hq-submit:active {
+    transform: translateY(0);
+}
+
+.hq-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.hq-link {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    border: none;
+    background: none;
+    color: #909090;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: center;
+}
+
+.hq-error {
+    display: none;
+    color: #b00020;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    margin: 6px 0 0 0;
+}
+
+.hq-error.show {
+    display: block;
+}
+
+.hq-note {
+    margin: 12px 0 0 0;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.hq-note i {
+    color: #ff7700;
+    margin-right: 3px;
+}
+
+.hq-legal {
+    margin: 8px 0 0 0;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 12px;
+    color: #7b7b7b;
+    text-align: center;
+}
+
+/* Estimate + confirmation stats */
+.hq-result-route {
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2f4f4f;
+    margin: 0 0 10px 0;
+}
+
+.hq-result-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.hq-result-stats > div {
+    flex: 1;
+    background: #fff8f2;
+    border: 1px solid #ffd9ad;
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+}
+
+.hq-result-stats span {
+    display: block;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 12px;
+    color: #a06a2e;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 3px;
+}
+
+.hq-result-stats strong {
+    display: block;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1.1;
+    color: #ff7700;
+}
+
+.hq-surcharge-note {
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    color: #8a4b00;
+    background: #fff3e6;
+    border: 1px solid #ffd0a3;
+    border-radius: 6px;
+    padding: 7px 10px;
+    margin: 0 0 10px 0;
+}
+
+.hq-window-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.hq-window-grid label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    margin: 0;
+    padding: 6px 8px;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    white-space: nowrap;
+    color: #2f4f4f;
+    cursor: pointer;
+}
+
+/* Radios sit inside a .hq-field now, so undo the text-input styling. */
+.hq-window-grid input {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.hq-window-grid label.checked {
+    border-color: #ff7700;
+    background: #fff8f2;
+    font-weight: 600;
+}
+
+.hq-agree-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin: 2px 0 10px 0;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    color: #2f4f4f;
+}
+
+.hq-agree-row input {
+    margin-top: 3px;
+}
+
+.hq-confirm {
+    text-align: center;
+}
+
+.hq-confirm h3 {
+    text-align: center;
+    color: #ff7700;
+}
+
+.hq-confirm-ref {
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 21px;
+    color: #2f4f4f;
+    margin: 2px 0 12px 0;
+}
+
+.hq-confirm-note {
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    color: #888;
+    line-height: 1.45;
+    margin: 8px 0 0 0;
+}
+
+@keyframes hqFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+@media (min-width: 1500px) {
+    .hero-quote-overlay {
+        width: 800px;
+    }
+}
+
+@media (min-width: 1300px) and (max-width: 1499px) {
+    .hero-quote-overlay {
+        width: 720px;
+    }
+
+    #myCarousel .carousel-inner .item {
+        width: 32%;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1299px) {
+    .hero-quote-overlay {
+        width: 580px;
+    }
+
+    #myCarousel .carousel-inner .item {
+        width: 34%;
+        margin: 13% 0 13% 3%;
+    }
+
+    .hero-quote-card {
+        padding: 18px 22px 16px 22px;
+        min-height: 420px;
+        max-height: 540px;
+    }
+
+    .hq-step h3 {
+        font-size: 25px;
+    }
+
+    .hq-result-stats strong {
+        font-size: 22px;
+    }
+
+    .hq-surcharge-note {
+        font-size: 12px;
+        padding: 6px 9px;
+    }
+
+    .hq-window-grid label {
+        min-height: 38px;
+        font-size: 13px;
+    }
+
+    .hq-submit {
+        min-height: 48px;
+        font-size: 18px;
+    }
+
+    .hq-row {
+        margin-bottom: 10px;
+    }
+
+    .hq-field > input,
+    .hq-field > select,
+    gmp-place-autocomplete.hq-place-autocomplete {
+        min-height: 42px;
+        height: 42px;
+    }
+
+    .hq-result-stats > div {
+        padding: 8px 10px;
+    }
+
+    /* Too narrow for a date field and a 2-up window grid side by side. */
+    .hq-row.hq-row-schedule {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .hq-row.hq-row-schedule > .hq-field {
+        margin-bottom: 10px;
+    }
+}
+
+/* Tablet and mobile: banner height is too short to overlay a full form,
+   so the form drops into normal flow directly under the hero text. */
+@media (max-width: 1024px) {
+    .banner.hero-has-form,
+    .residential-banner,
+    .commercial-banner,
+    .specialty-banner {
+        height: auto !important;
+        padding: 24px 0 28px 0 !important;
+        background-size: cover !important;
+        background-position: center center !important;
+        background-attachment: scroll !important;
+    }
+
+    #myCarousel .carousel-inner .item {
+        width: 92% !important;
+        margin: 6% auto 4% auto !important;
+        border-radius: 10px !important;
+    }
+
+    .hero-quote-overlay {
+        position: static;
+        top: auto;
+        right: auto;
+        transform: none;
+        width: 94%;
+        max-width: 560px;
+        margin: 0 auto;
+        animation: none;
+    }
+
+    .hero-quote-card {
+        padding: 22px 24px 20px 24px;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .hq-row.hq-row-schedule {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .hq-row.hq-row-schedule > .hq-field {
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-quote-overlay {
+        width: 94%;
+    }
+
+    .hq-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .hq-row > .hq-field,
+    .hq-row > .hq-pair {
+        margin-bottom: 12px;
+    }
+
+    .hq-field.small {
+        flex: 0 0 78px;
+    }
+
+    .hq-step h3 {
+        font-size: 25px;
+    }
+
+    .hq-result-stats {
+        flex-direction: column;
+    }
+
+    .hq-window-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

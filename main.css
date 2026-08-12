@@ -289,22 +289,34 @@ hr {
     }
 
 .navbar-right {
-    width: 75%;
-    margin: 2% auto auto auto;
+    width: auto;
+    max-width: 80%;
+    margin: 2% 1% auto auto;
     }
     
 .navbar-right li {
-    width: 19%;
+    width: auto;
     text-align: center;
     }    
 
-.navbar-nav li:hover, .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
-    background: none;
-    border-top: 1px solid #ff7700;
+/* The orange indicator lives on the link with a transparent border already in
+   place, so hovering never shifts the row by a pixel. */
+.navbar-default .navbar-nav>li>a {
+    padding: 10px 14px 50px 14px;
+    border-top: 3px solid transparent;
+    color: #2f4f4f;
+    background-color: transparent;
+    transition: color 0.15s ease, border-top-color 0.15s ease, background-color 0.15s ease;
     }
 
-.navbar-nav>li>a {
-    padding-bottom: 50px;
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+    color: #ff7700;
+    background-color: #fff6ee;
+    border-top-color: #ff7700;
+    }
+
+.navbar-nav>li:hover {
+    background: none;
     }
     
 .dropdown-mega {
@@ -893,6 +905,18 @@ p.stars {
 .services p {
     width: 95%;
     margin: 3% auto;
+    }
+
+.services .home-cta a.button {
+    display: inline-block;
+    background-color: #ff7700;
+    color: #fff;
+    margin-top: 8px;
+    padding: .5em 2.5em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 6px;
+    font-size: 22px;
     }    
 
 .specialty-services {
@@ -1125,10 +1149,10 @@ ul.links li a {
         background: #f7f7f7;
     }
 
-    .navbar-nav>li>a {
+    .navbar-default .navbar-nav>li>a {
         width: 100%;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding: 10px 14px;
+        border-top: none;
     }
 
     .collapse.in{
@@ -1596,7 +1620,7 @@ ul.policies {
         overflow-x: hidden!important;
         }
 
-    /* Stack Bootstrap columns on tablet/phone — overrides fixed desktop widths */
+    /* Stack Bootstrap columns on tablet/phone, overriding fixed desktop widths */
     .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-12,
     .col-wrap .col-sm-3, .services .col-sm-3, .intro .col-sm-3, .intro .col-sm-4 {
         float: none!important;
@@ -2124,7 +2148,7 @@ ul.policies {
         margin-top: 0!important;
     }
     
-    .navbar-nav li:hover, .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+    .navbar-nav li:hover, .navbar-default .navbar-nav>li>a, .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
         border: none;
     }
     
