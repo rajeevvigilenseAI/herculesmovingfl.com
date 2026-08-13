@@ -20,7 +20,7 @@
 /* The right carousel arrow is painted at z-index 1000, so on wide screens it
    lands on top of the card. The slides rotate on their own, so the arrows go
    away wherever the card overlays them. */
-@media (min-width: 1025px) {
+@media (min-width: 1200px) {
     .hero-has-form .carousel-control {
         display: none;
     }
@@ -438,7 +438,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     }
 }
 
-@media (min-width: 1025px) and (max-width: 1299px) {
+@media (min-width: 1200px) and (max-width: 1299px) {
     .hero-quote-overlay {
         width: 580px;
     }
@@ -504,8 +504,10 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 }
 
 /* Tablet and mobile: banner height is too short to overlay a full form,
-   so the form drops into normal flow directly under the hero text. */
-@media (max-width: 1024px) {
+   so the form drops into normal flow directly under the hero text. The cutoff
+   matches the header's, so a landscape tablet gets the same treatment as a
+   portrait one. */
+@media (max-width: 1199px) {
     .banner.hero-has-form {
         display: flex;
         flex-direction: column;
@@ -544,24 +546,13 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
         background-attachment: scroll !important;
     }
 
+    /* The hero image starts at the very top of the page, and this padding is
+       what keeps the card's badge and heading clear of the floating logo and
+       menu button, which end about 58px down. */
     .banner.hero-has-form {
-        margin-top: 56px !important;
-        padding-top: 76px !important;
-    }
-
-    /* Shrink navbar logo ~30% for mobile screens */
-    header .navbar-brand,
-    header .navbar-brand img,
-    header .navbar-header img,
-    header .logo {
-        max-width: 70px !important;
-        max-height: 36px !important;
-        width: auto !important;
-        height: auto !important;
-        object-fit: contain !important;
-        overflow: hidden !important;
-        margin-top: 4px !important;
-        margin-bottom: 4px !important;
+        margin-top: 0 !important;
+        padding-top: 81px !important;
+        overflow: visible !important;
     }
 
     #myCarousel .carousel-inner .item {
@@ -607,6 +598,10 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 }
 
 @media (max-width: 480px) {
+    .banner.hero-has-form {
+        padding-top: 77px !important;
+    }
+
     .hero-quote-overlay {
         width: 94%;
     }

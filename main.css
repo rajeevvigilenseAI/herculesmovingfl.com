@@ -2636,5 +2636,244 @@ ul.policies {
     .article-cta {
         padding: 16px;
         }
+
+/* Phone and tablet header: two floating corner controls.
+
+   The orange contact strip plus the full width white nav bar are a fixed
+   145px of chrome, and every section below carried a matching top margin to
+   clear it, which left the first screenful mostly empty on a phone. Below
+   1200px the header keeps only the logo and the menu button, floating in
+   opposite corners over the page, so content can start at the very top.
+
+   The cutoff is 1199px rather than 1024px so that a tablet held in landscape
+   gets the same header as the same tablet held upright. */
+@media (max-width: 1199px) {
+    header,
+    header.smaller {
+        height: auto !important;
+        min-height: 0 !important;
+        background: none !important;
+        box-shadow: none !important;
+        z-index: 10050 !important;
+        /* Only the two corner controls may catch taps; the rest of this strip
+           sits over page content and must stay transparent to touches. */
+        pointer-events: none !important;
     }
+
+    /* The orange contact strip stays on every screen size, pinned to the top,
+       compressed to a single line so it costs as little height as possible. */
+    .mast-wrap {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        pointer-events: auto !important;
+        z-index: 10060 !important;
+    }
+
+    .topmast,
+    header.smaller .topmast {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 5px 8px !important;
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+    }
+
+    .topmast .col-sm-4 {
+        width: auto !important;
+        float: none !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 12px !important;
+        white-space: nowrap !important;
+    }
+
+    .mast,
+    header.smaller .mast {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .mast .navbar,
+    .mast .navbar-default {
+        min-height: 0 !important;
+        height: auto !important;
+        margin: 0 !important;
+        border: none !important;
+        background: none !important;
+        box-shadow: none !important;
+    }
+
+    .mast .navbar > .container-fluid {
+        padding: 0 !important;
+    }
+
+    .navbar-header {
+        float: none !important;
+        width: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+    }
+
+    header .navbar-brand,
+    header .navbar-brand.logo,
+    header .logo {
+        position: fixed !important;
+        top: 34px !important;
+        left: 10px !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 3px 7px !important;
+        background: rgba(255, 255, 255, 0.94) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+        pointer-events: auto !important;
+        transform: none !important;
+    }
+
+    header .navbar-brand img,
+    header .navbar-header img,
+    header.smaller .navbar-header img {
+        display: block !important;
+        width: 59px !important;
+        max-width: 59px !important;
+        max-height: 26px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        object-fit: contain !important;
+        transform: none !important;
+    }
+
+    /* Bootstrap shows the links inline and hides the toggle above 768px, so
+       the collapse behaviour has to be asserted for the whole range. */
+    .navbar-collapse.collapse {
+        display: none !important;
+    }
+
+    .navbar-collapse.collapse.in {
+        display: block !important;
+    }
+
+    .navbar-toggle {
+        display: block !important;
+        position: fixed !important;
+        top: 34px !important;
+        right: 10px !important;
+        float: none !important;
+        margin: 0 !important;
+        padding: 7px 9px !important;
+        background: rgba(255, 255, 255, 0.94) !important;
+        border: 1px solid #ff7700 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+        pointer-events: auto !important;
+    }
+
+    /* The links drop out of the menu button as a panel, rather than expanding
+       the header back into a full width bar. */
+    .navbar-collapse,
+    .navbar-default .navbar-collapse {
+        position: fixed !important;
+        top: 74px !important;
+        right: 10px !important;
+        left: auto !important;
+        width: 250px !important;
+        max-width: calc(100vw - 20px) !important;
+        max-height: calc(100vh - 96px) !important;
+        overflow-y: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28) !important;
+        pointer-events: auto !important;
+    }
+
+    .navbar-nav > li:last-child {
+        border-bottom: none !important;
+    }
+
+    /* Only the contact strip and the two corner controls need clearing now,
+       not a 145px header. */
+    .banner,
+    .residential-banner,
+    .commercial-banner,
+    .specialty-banner,
+    .blog-banner {
+        margin-top: 0 !important;
+    }
+
+    .residential-banner,
+    .commercial-banner,
+    .specialty-banner {
+        padding-top: 74px !important;
+    }
+
+    .blog-banner {
+        padding-top: 84px !important;
+    }
+
+    .article-wrap,
+    .book-page,
+    .terms-page {
+        margin-top: 80px !important;
+    }
+}
+
+/* On the narrowest screens the logo needs a shorter pill, otherwise the
+   wordmark spills past it. */
+@media (max-width: 480px) {
+    /* Two columns of contact detail is all that fits on one line here. */
+    .topmast .col-sm-4.center {
+        display: none !important;
+    }
+
+    .topmast,
+    header.smaller .topmast {
+        padding: 4px 8px !important;
+        font-size: 11px !important;
+    }
+
+    .topmast .col-sm-4 {
+        font-size: 11px !important;
+    }
+
+    header .navbar-brand,
+    header .navbar-brand.logo,
+    header .logo {
+        top: 28px !important;
+        /* Trimmed to the wordmark: any padding here reads as bar height. */
+        padding: 1px 6px !important;
+    }
+
+    header .navbar-brand img,
+    header .navbar-header img,
+    header.smaller .navbar-header img {
+        width: 86px !important;
+        max-width: 86px !important;
+        max-height: 30px !important;
+    }
+
+    .navbar-toggle {
+        top: 28px !important;
+        padding: 6px 8px !important;
+    }
+
+    .navbar-collapse,
+    .navbar-default .navbar-collapse {
+        top: 66px !important;
+        max-height: calc(100vh - 86px) !important;
+    }
+}
+
 
