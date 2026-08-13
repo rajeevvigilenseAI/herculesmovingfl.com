@@ -7,6 +7,7 @@ window.HerculesBooking = window.HerculesBooking || {};
  */
 window.HerculesBooking.ensureMaps = function (key) {
   if (!key) return;
+  if (window.matchMedia && window.matchMedia("(max-width: 1024px)").matches) return;
   if (window.google && window.google.maps && window.google.maps.importLibrary) return;
   /* eslint-disable */
   (g => {
