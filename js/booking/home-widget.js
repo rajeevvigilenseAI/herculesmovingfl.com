@@ -30,6 +30,12 @@
     if (cfg.googleMapsBrowserKey) {
       loadPlaces(cfg.googleMapsBrowserKey);
     }
+    if (isMobileView()) {
+      setTimeout(function () {
+        var overlay = document.querySelector(".hero-quote-overlay");
+        if (overlay) overlay.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 250);
+    }
 
     var pending = {
       origin: null,
@@ -340,6 +346,10 @@
       if (target) target.classList.add("active");
       var card = document.querySelector(".hero-quote-card");
       if (card) card.scrollTop = 0;
+      if (isMobileView()) {
+        var overlay = document.querySelector(".hero-quote-overlay");
+        if (overlay) overlay.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
 
     function bindTermsModal() {
@@ -378,12 +388,34 @@
       google.maps
         .importLibrary("places")
         .then(function (lib) {
+          if (isMobileView() && lib.Autocomplete) {
+            attachLegacyAutocomplete(lib.Autocomplete, "hqOriginCity", "hqOriginState");
+            attachLegacyAutocomplete(lib.Autocomplete, "hqDestCity", "hqDestState");
+            return;
+          }
           attachPlaces(lib.PlaceAutocompleteElement, "hqOriginCity", "hqOriginState");
           attachPlaces(lib.PlaceAutocompleteElement, "hqDestCity", "hqDestState");
         })
         .catch(function (err) {
           console.error("Google Places failed to load", err);
         });
+    }
+
+    function attachLegacyAutocomplete(Autocomplete, inputId, stateInputId) {
+      var input = document.getElementById(inputId);
+      if (!input || input.dataset.placesBound) return;
+      input.dataset.placesBound = "1";
+
+      var ac = new Autocomplete(input, {
+        componentRestrictions: { country: ["us"] },
+        fields: ["address_components", "formatted_address"]
+      });
+      ac.addListener("place_changed", function () {
+        var place = ac.getPlace();
+        if (!place || !place.address_components) return;
+        applyLegacyPlace(place, input, stateInputId);
+      });
+      input.addEventListener("input", syncDistanceBand);
     }
 
     function attachPlaces(PlaceAutocompleteElement, inputId, stateInputId) {
@@ -445,6 +477,29 @@
         .catch(function (err) {
           console.error("Unable to read selected place", err);
         });
+    }
+
+    function applyLegacyPlace(place, input, stateInputId) {
+      var components = place.address_components || [];
+      var city = "";
+      var state = "";
+      var hasStreet = false;
+      components.forEach(function (c) {
+        var types = c.types || [];
+        if (types.indexOf("locality") >= 0) city = c.long_name;
+        if (!city && types.indexOf("sublocality") >= 0) city = c.long_name;
+        if (!city && types.indexOf("postal_town") >= 0) city = c.long_name;
+        if (types.indexOf("administrative_area_level_1") >= 0) state = c.short_name;
+        if (types.indexOf("street_number") >= 0 || types.indexOf("route") >= 0) hasStreet = true;
+      });
+      input.value = hasStreet
+        ? place.formatted_address || city || input.value
+        : city || place.formatted_address || input.value;
+      if (state) {
+        var stateInput = document.getElementById(stateInputId);
+        if (stateInput) stateInput.value = state;
+      }
+      syncDistanceBand();
     }
   });
 
@@ -579,5 +634,9 @@
       var r = (Math.random() * 16) | 0;
       return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
     });
+  }
+
+  function isMobileView() {
+    return window.matchMedia && window.matchMedia("(max-width: 1024px)").matches;
   }
 })();

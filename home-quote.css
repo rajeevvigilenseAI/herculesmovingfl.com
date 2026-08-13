@@ -524,12 +524,21 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
         max-width: 560px;
         margin: 0 auto;
         animation: none;
+        scroll-margin-top: 12px;
     }
 
     .hero-quote-card {
         padding: 22px 24px 20px 24px;
+        min-height: 520px;
         max-height: none;
         overflow-y: visible;
+    }
+
+    .pac-container {
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+        max-width: calc(100vw - 20px) !important;
     }
 
     .hq-row.hq-row-schedule {
@@ -545,6 +554,11 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 @media (max-width: 480px) {
     .hero-quote-overlay {
         width: 94%;
+    }
+
+    .hero-quote-card {
+        min-height: 70vh;
+        padding: 18px 16px 16px 16px;
     }
 
     .hq-row {

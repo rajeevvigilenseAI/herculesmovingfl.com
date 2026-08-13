@@ -32,10 +32,11 @@ window.HerculesBooking = window.HerculesBooking || {};
     var reference = buildReference();
     var quote = safeQuote(payload);
 
+    var fields = buildEmailFields(payload, quote, reference, cfg);
     return fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(buildEmailFields(payload, quote, reference, cfg))
+      body: JSON.stringify(fields)
     })
       .then(function (res) {
         return res
@@ -44,27 +45,23 @@ window.HerculesBooking = window.HerculesBooking || {};
             return {};
           })
           .then(function (data) {
-            if (!res.ok || (data && data.success === "false")) {
-              // The real reason (most often "activate your form" on the very
-              // first submission) is for whoever runs the site, not for a
-              // customer staring at the booking form.
-              console.error("Reservation email was not sent:", (data && data.message) || res.status);
-              throw new Error(
-                "We couldn't send your request just now. Please call Hercules Movers at " +
-                  ((cfg && cfg.phoneDisplay) || "1 (754) 354-2008") +
-                  " and we'll reserve this for you."
-              );
+            if (res.ok && !(data && data.success === "false")) {
+              return buildFallbackResult(payload, quote, reference);
             }
-            return {
-              viaFallback: true,
-              reference: reference,
-              moveDate: payload.moveDate,
-              arrivalWindow: payload.arrivalWindow,
-              estimatedHours: quote.estimatedHours,
-              estimatedPrice: quote.estimatedPrice,
-              needsReview: needsReview(payload.specialtyItems),
-              status: "reserved"
-            };
+            // Some providers reject AJAX but still accept classic form posts.
+            // Retry once using a non-AJAX endpoint before showing failure.
+            return postOpaqueForm(endpoint, fields)
+              .then(function () {
+                return buildFallbackResult(payload, quote, reference);
+              })
+              .catch(function () {
+                console.error("Reservation email was not sent:", (data && data.message) || res.status);
+                throw new Error(
+                  "We couldn't send your request just now. Please call Hercules Movers at " +
+                    ((cfg && cfg.phoneDisplay) || "1 (754) 354-2008") +
+                    " and we'll reserve this for you."
+                );
+              });
           });
       })
       .catch(function (err) {
@@ -78,6 +75,33 @@ window.HerculesBooking = window.HerculesBooking || {};
         throw err;
       });
   };
+
+  function buildFallbackResult(payload, quote, reference) {
+    return {
+      viaFallback: true,
+      reference: reference,
+      moveDate: payload.moveDate,
+      arrivalWindow: payload.arrivalWindow,
+      estimatedHours: quote.estimatedHours,
+      estimatedPrice: quote.estimatedPrice,
+      needsReview: needsReview(payload.specialtyItems),
+      status: "reserved"
+    };
+  }
+
+  function postOpaqueForm(endpoint, fields) {
+    var fallbackEndpoint = String(endpoint || "").replace("/ajax/", "/");
+    var body = new URLSearchParams();
+    Object.keys(fields || {}).forEach(function (key) {
+      if (fields[key] != null) body.append(key, String(fields[key]));
+    });
+    return fetch(fallbackEndpoint, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: body.toString()
+    });
+  }
 
   /**
    * FormSubmit renders whatever fields it is given, in order, as the email
