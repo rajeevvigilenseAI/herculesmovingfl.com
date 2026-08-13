@@ -388,9 +388,14 @@
       google.maps
         .importLibrary("places")
         .then(function (lib) {
-          if (isMobileView() && lib.Autocomplete) {
-            attachLegacyAutocomplete(lib.Autocomplete, "hqOriginCity", "hqOriginState");
-            attachLegacyAutocomplete(lib.Autocomplete, "hqDestCity", "hqDestState");
+          if (isMobileView()) {
+            // iOS privacy/content settings can block parts of the Places widget.
+            // Prefer legacy autocomplete on phones; if unavailable, keep plain
+            // text inputs so booking still works without Google suggestions.
+            if (lib.Autocomplete) {
+              attachLegacyAutocomplete(lib.Autocomplete, "hqOriginCity", "hqOriginState");
+              attachLegacyAutocomplete(lib.Autocomplete, "hqDestCity", "hqDestState");
+            }
             return;
           }
           attachPlaces(lib.PlaceAutocompleteElement, "hqOriginCity", "hqOriginState");

@@ -498,6 +498,20 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 /* Tablet and mobile: banner height is too short to overlay a full form,
    so the form drops into normal flow directly under the hero text. */
 @media (max-width: 1024px) {
+    .hero-has-form > .container {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .hero-has-form .hero-quote-overlay {
+        order: 1;
+    }
+
+    .hero-has-form #myCarousel {
+        order: 2;
+    }
+
     .banner.hero-has-form,
     .residential-banner,
     .commercial-banner,
@@ -511,7 +525,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 
     #myCarousel .carousel-inner .item {
         width: 92% !important;
-        margin: 6% auto 4% auto !important;
+        margin: 2% auto 2% auto !important;
         border-radius: 10px !important;
     }
 
@@ -522,7 +536,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
         transform: none;
         width: 94%;
         max-width: 560px;
-        margin: 0 auto;
+        margin: 0 auto 4px auto;
         animation: none;
         scroll-margin-top: 12px;
     }
