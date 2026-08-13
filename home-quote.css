@@ -530,10 +530,24 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     .commercial-banner,
     .specialty-banner {
         height: auto !important;
-        padding: 24px 0 28px 0 !important;
+        padding: 8px 0 20px 0 !important;
         background-size: cover !important;
         background-position: center center !important;
         background-attachment: scroll !important;
+    }
+
+    .banner.hero-has-form {
+        margin-top: 60px !important;
+    }
+
+    /* Prevent the navbar logo from overflowing on mobile */
+    .navbar-brand img,
+    .navbar-header img,
+    .logo {
+        max-width: 120px !important;
+        height: auto !important;
+        object-fit: contain;
+        overflow: hidden;
     }
 
     #myCarousel .carousel-inner .item {
@@ -551,7 +565,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
         max-width: 560px;
         margin: 0 auto 4px auto;
         animation: none;
-        scroll-margin-top: 12px;
+        scroll-margin-top: 70px;
     }
 
     .hero-quote-card {

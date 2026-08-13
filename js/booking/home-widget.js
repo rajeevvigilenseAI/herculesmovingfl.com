@@ -33,8 +33,8 @@
     if (isMobileView()) {
       setTimeout(function () {
         var overlay = document.querySelector(".hero-quote-overlay");
-        if (overlay) overlay.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 250);
+        if (overlay) overlay.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
     }
 
     var pending = {
