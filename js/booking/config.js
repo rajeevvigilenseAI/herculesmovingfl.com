@@ -16,10 +16,10 @@ window.HerculesBooking.config = {
   phoneDisplay: "1 (754) 354-2008",
   phoneTel: "+17543542008",
   arrivalWindows: [
-    "8:00 AM – 10:00 AM",
-    "10:00 AM – 12:00 PM",
-    "12:00 PM – 2:00 PM",
-    "2:00 PM – 4:00 PM"
+    "8:00 AM - 10:00 AM",
+    "10:00 AM - 12:00 PM",
+    "12:00 PM - 2:00 PM",
+    "2:00 PM - 4:00 PM"
   ],
   originRequiredState: "FL",
   originOutsideFlMessage:

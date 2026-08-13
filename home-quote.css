@@ -546,7 +546,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 
     .banner.hero-has-form {
         margin-top: 56px !important;
-        padding-top: 12px !important;
+        padding-top: 76px !important;
     }
 
     /* Shrink navbar logo ~30% for mobile screens */
@@ -584,7 +584,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 
     .hero-quote-card {
         padding: 16px 16px 14px 16px;
-        min-height: auto;
+        min-height: 480px;
         max-height: none;
         overflow-y: visible;
     }
@@ -612,7 +612,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     }
 
     .hero-quote-card {
-        min-height: auto;
+        min-height: 480px;
         padding: 14px 14px 12px 14px;
     }
 

@@ -31,10 +31,7 @@
       loadPlaces(cfg.googleMapsBrowserKey);
     }
     if (isMobileView()) {
-      setTimeout(function () {
-        var overlay = document.querySelector(".hero-quote-overlay");
-        if (overlay) overlay.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 150);
+      window.scrollTo(0, 0);
     }
 
     var pending = {
@@ -346,10 +343,6 @@
       if (target) target.classList.add("active");
       var card = document.querySelector(".hero-quote-card");
       if (card) card.scrollTop = 0;
-      if (isMobileView()) {
-        var overlay = document.querySelector(".hero-quote-overlay");
-        if (overlay) overlay.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
     }
 
     function bindTermsModal() {
@@ -571,7 +564,6 @@
     if (box) {
       box.textContent = msg;
       box.classList.add("show");
-      box.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }
 
