@@ -498,18 +498,31 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
 /* Tablet and mobile: banner height is too short to overlay a full form,
    so the form drops into normal flow directly under the hero text. */
 @media (max-width: 1024px) {
+    .banner.hero-has-form {
+        display: flex;
+        flex-direction: column;
+    }
+
     .hero-has-form > .container {
         display: flex;
         flex-direction: column;
         gap: 14px;
     }
 
+    .banner.hero-has-form .hero-quote-overlay,
     .hero-has-form .hero-quote-overlay {
         order: 1;
     }
 
+    .banner.hero-has-form #myCarousel,
     .hero-has-form #myCarousel {
         order: 2;
+    }
+
+    /* Keep mobile focused on the estimator and avoid carousel text
+       pushing content above the card. */
+    .banner.hero-has-form #myCarousel {
+        display: none;
     }
 
     .banner.hero-has-form,
