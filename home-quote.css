@@ -73,6 +73,14 @@
     z-index: 99999 !important;
 }
 
+/* Suppress the Google Maps "can't load correctly" dismissible dialog that
+   appears on some restricted browsers. The form still works without it. */
+.dismissButton,
+.gm-err-container,
+.gm-style iframe + div {
+    display: none !important;
+}
+
 /* The plain input is kept in the DOM (hidden) purely to hold the resolved
    value once the Google Places widget takes over; only the widget is shown. */
 .hq-field-fallback {
@@ -541,13 +549,18 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     }
 
     /* Prevent the navbar logo from overflowing on mobile */
-    .navbar-brand img,
-    .navbar-header img,
-    .logo {
-        max-width: 120px !important;
+    header .navbar-brand,
+    header .navbar-brand img,
+    header .navbar-header img,
+    header .logo {
+        max-width: 100px !important;
+        max-height: 50px !important;
+        width: auto !important;
         height: auto !important;
-        object-fit: contain;
-        overflow: hidden;
+        object-fit: contain !important;
+        overflow: hidden !important;
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
     }
 
     #myCarousel .carousel-inner .item {
@@ -569,8 +582,8 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     }
 
     .hero-quote-card {
-        padding: 22px 24px 20px 24px;
-        min-height: 520px;
+        padding: 16px 16px 14px 16px;
+        min-height: auto;
         max-height: none;
         overflow-y: visible;
     }
@@ -598,8 +611,8 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     }
 
     .hero-quote-card {
-        min-height: 70vh;
-        padding: 18px 16px 16px 16px;
+        min-height: auto;
+        padding: 14px 14px 12px 14px;
     }
 
     .hq-row {
@@ -617,7 +630,35 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     }
 
     .hq-step h3 {
-        font-size: 25px;
+        font-size: 20px;
+        margin: 4px 0 2px 0;
+    }
+
+    .hq-sub {
+        font-size: 13px;
+        margin: 0 0 8px 0;
+    }
+
+    .hq-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+
+    .hq-submit {
+        min-height: 46px;
+        font-size: 16px;
+    }
+
+    .hq-field label {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    .hq-field > input,
+    .hq-field > select {
+        min-height: 40px;
+        font-size: 15px;
+        padding: 8px 10px;
     }
 
     .hq-result-stats {

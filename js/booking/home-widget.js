@@ -27,7 +27,7 @@
     fillDistanceBands();
     bindDistanceSync();
 
-    if (cfg.googleMapsBrowserKey && !isMobileView()) {
+    if (cfg.googleMapsBrowserKey) {
       loadPlaces(cfg.googleMapsBrowserKey);
     }
     if (isMobileView()) {
