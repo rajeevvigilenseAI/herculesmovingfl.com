@@ -3,12 +3,6 @@
     padding: 0 15px 60px 15px;
 }
 
-/* Google Places suggestion dropdown must render above the fixed header
-   and the terms modal. */
-.pac-container {
-    z-index: 99999 !important;
-}
-
 /* The plain input is kept in the DOM (hidden) purely to hold the resolved
    value once the Google Places widget takes over; only the widget is shown. */
 .book-field-fallback {

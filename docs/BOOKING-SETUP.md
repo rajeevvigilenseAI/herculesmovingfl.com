@@ -46,6 +46,8 @@ Create the key:
 
 - **Browser key**: API restriction to Maps JavaScript API + Places API (New); HTTP referrer restricted to `https://herculesmovingfl.com/*` and `https://www.herculesmovingfl.com/*`. Put this only in `js/booking/config.js` as `googleMapsBrowserKey`.
 
+If suggestions stop appearing, open the page on the affected device and read the browser console. Google reports the specific cause there (`RefererNotAllowedMapError` for a missing referrer entry, `ApiNotActivatedMapError` for a disabled API, `BillingNotEnabledMapError` for billing). Every referrer the site is reached by needs its own entry, including a bare `herculesmovingfl.com/*` and any staging host. The estimate still works without suggestions because the fields accept typed city, ZIP, or full address text.
+
 ## 4. Public frontend config
 
 Edit `js/booking/config.js`:

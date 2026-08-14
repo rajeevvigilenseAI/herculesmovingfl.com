@@ -67,20 +67,6 @@
     margin-right: 5px;
 }
 
-/* Google Places suggestion dropdown must render above the overlay card
-   and the fixed site header. */
-.pac-container {
-    z-index: 99999 !important;
-}
-
-/* Suppress the Google Maps "can't load correctly" dismissible dialog that
-   appears on some restricted browsers. The form still works without it. */
-.dismissButton,
-.gm-err-container,
-.gm-style iframe + div {
-    display: none !important;
-}
-
 /* The plain input is kept in the DOM (hidden) purely to hold the resolved
    value once the Google Places widget takes over; only the widget is shown. */
 .hq-field-fallback {
@@ -89,6 +75,7 @@
 
 gmp-place-autocomplete.hq-place-autocomplete {
     display: block;
+    position: relative;
     width: 100%;
     height: 46px;
     border: 1px solid #dcdcdc;
@@ -97,11 +84,15 @@ gmp-place-autocomplete.hq-place-autocomplete {
     color-scheme: light;
     font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
     font-size: 16px;
+    /* The widget anchors its own suggestion list to itself, so it has to be
+       able to paint outside the field and above neighbouring rows. */
+    z-index: 5;
 }
 
 gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     border-color: #ff7700;
     background-color: #fff;
+    z-index: 60;
 }
 
 .hq-step {
@@ -580,11 +571,13 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
         overflow-y: visible;
     }
 
-    .pac-container {
-        left: 10px !important;
-        right: 10px !important;
-        width: auto !important;
-        max-width: calc(100vw - 20px) !important;
+    /* The suggestion list is anchored to the field, so nothing between the
+       field and the card may clip it. */
+    .hero-quote-overlay,
+    .hq-row,
+    .hq-pair,
+    .hq-field {
+        overflow: visible;
     }
 
     .hq-row.hq-row-schedule {
@@ -655,6 +648,13 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
         min-height: 40px;
         font-size: 15px;
         padding: 8px 10px;
+    }
+
+    gmp-place-autocomplete.hq-place-autocomplete {
+        min-height: 40px;
+        height: 40px;
+        /* 16px keeps iOS Safari from zooming the page on focus. */
+        font-size: 16px;
     }
 
     .hq-result-stats {
