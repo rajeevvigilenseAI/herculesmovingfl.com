@@ -6,7 +6,7 @@ function section(num, title, body) {
 }
 
 window.HerculesBooking.termsHtml = [
-  '<p class="terms-intro">By reserving a move with Hercules Movers, you agree to these Terms and Conditions.</p>',
+  '<p class="terms-intro">By reserving a move with Hercules Movers, you agree to these Terms and Conditions and our <a href="privacy.html">Privacy Policy</a>.</p>',
   '<div class="estimate-surcharge">A service charge applies to all moves. For moves over 50 driving miles, a fuel surcharge may be applied in addition to the online estimate. These charges are not calculated automatically and will be confirmed by Hercules Movers if they apply.</div>',
   '<p>Need to make a change or cancel your move? Reply to your confirmation email and our team will assist you.</p>',
 

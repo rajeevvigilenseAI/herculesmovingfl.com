@@ -33,6 +33,7 @@ window.HerculesBooking.config = {
     "Hercules Movers currently accepts online reservations for moves originating in Florida.",
   notifyEmail: "herculesmoversfl@gmail.com",
   termsUrl: "https://herculesmovingfl.com/terms.html",
+  privacyUrl: "https://herculesmovingfl.com/privacy.html",
   longDistanceMiles: 50,
   homeSizes: [
     { value: 0, label: "Studio" },

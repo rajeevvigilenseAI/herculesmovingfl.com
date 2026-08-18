@@ -66,7 +66,7 @@ Confirmation email is sent with Resend. Set `BOOKING_REPLY_TO` to a monitored He
 
 Every new reservation is also emailed in full to `herculesmoversfl@gmail.com` (override with `NOTIFY_EMAIL` if needed). That message includes addresses, date, arrival window, estimate, contact info, and move details.
 
-Customers must check “I agree to the Terms and Conditions” before reserving. The full 67-section contract is shown in the booking modal and on `terms.html`. The long-distance fuel/service charge caveat appears at the top of those terms.
+Customers must agree to the Terms and Conditions before reserving. The full contract is shown in the booking modal and on `terms.html`. The Privacy Policy is at `privacy.html` and covers website data, SMS/call consent, and advertising cookies. The long-distance fuel/service charge caveat appears at the top of the terms.
 
 The date step uses a visual calendar. It does not check crew or Google Calendar availability. The customer simply chooses a date and an arrival window.
 

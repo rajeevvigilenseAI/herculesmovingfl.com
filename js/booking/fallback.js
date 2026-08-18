@@ -187,7 +187,8 @@ window.HerculesBooking = window.HerculesBooking || {};
     else note += " Based on about " + Math.round(quote.distanceMiles) + " miles between your two locations.";
     var cfg = window.HerculesBooking && window.HerculesBooking.config;
     var termsUrl = (cfg && cfg.termsUrl) || "https://herculesmovingfl.com/terms.html";
-    note += " Final charges are governed by our Terms and Conditions: " + termsUrl;
+    var privacyUrl = (cfg && cfg.privacyUrl) || "https://herculesmovingfl.com/privacy.html";
+    note += " Final charges are governed by our Terms and Conditions: " + termsUrl + ". Privacy Policy: " + privacyUrl + ".";
     if (Number(quote.estimatedHours) >= 8) {
       note +=
         " This quote covers the first 8 hours. If the move runs longer, additional time is billed hourly. " +

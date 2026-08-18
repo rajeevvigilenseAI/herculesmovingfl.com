@@ -530,6 +530,23 @@ gmp-place-autocomplete.book-place-autocomplete:focus-within {
     margin: 0 0 16px 0;
 }
 
+.terms-article h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: #333;
+    font-size: 22px;
+    margin: 24px 0 10px 0;
+}
+
+.terms-article ul {
+    margin: 0 0 14px 18px;
+    padding: 0;
+}
+
+.terms-article li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
 .terms-body .estimate-surcharge {
     margin: 0 0 16px 0;
 }
