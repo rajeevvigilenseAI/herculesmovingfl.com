@@ -206,6 +206,9 @@
         .then(function (result) {
           renderConfirmation(result);
           showStep(stepDone);
+          if (window.HerculesBooking.trackConversion) {
+            window.HerculesBooking.trackConversion(result);
+          }
         })
         .catch(function (err) {
           fail("hq-error-contact", err.message);

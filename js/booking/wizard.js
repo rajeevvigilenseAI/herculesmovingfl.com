@@ -414,6 +414,9 @@
       saveState();
       showConfirmation(result);
       goTo("confirm");
+      if (window.HerculesBooking.trackConversion) {
+        window.HerculesBooking.trackConversion(result);
+      }
     }).catch(function (err) {
       fail(err.message);
     }).then(function () {

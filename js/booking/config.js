@@ -13,6 +13,13 @@ window.HerculesBooking.config = {
   // key to your site's HTTP referrers in Google Cloud Console. See
   // docs/BOOKING-SETUP.md.
   googleMapsBrowserKey: "AIzaSyDVC28Xnuve_hVObx1ycVAwZVs8I7IjDdo",
+  // Google Ads conversion tracking. The sitewide AW- tag lives in each page
+  // <head>. Put the conversion label from the event snippet here (the part
+  // after the slash in send_to, e.g. "AbCdEfGhIjKlMnOp") so a successful
+  // reservation fires the Request quote conversion. Leave blank until you
+  // have that label from Google Ads.
+  googleAdsId: "AW-18375543247",
+  googleAdsConversionLabel: "QlvXCJ_a8uMcEM-TkrpE",
   phoneDisplay: "1 (754) 354-2008",
   phoneTel: "+17543542008",
   arrivalWindows: [
@@ -34,4 +41,23 @@ window.HerculesBooking.config = {
     { value: 3, label: "3 Bedrooms" },
     { value: 4, label: "4+ Bedrooms" }
   ]
+};
+
+// Fires the Google Ads "Request quote" conversion after a successful
+// reservation. No-ops until googleAdsConversionLabel is set in config above.
+window.HerculesBooking.trackConversion = function (result) {
+  var cfg = window.HerculesBooking.config;
+  if (!cfg || !cfg.googleAdsId || !cfg.googleAdsConversionLabel) return;
+  if (typeof gtag !== "function") return;
+  var payload = {
+    send_to: cfg.googleAdsId + "/" + cfg.googleAdsConversionLabel,
+    currency: "USD"
+  };
+  if (result && result.estimatedPrice != null) {
+    payload.value = Number(result.estimatedPrice) || 0;
+  }
+  if (result && result.reference) {
+    payload.transaction_id = String(result.reference);
+  }
+  gtag("event", "conversion", payload);
 };
