@@ -7,6 +7,7 @@ function section(num, title, body) {
 
 window.HerculesBooking.termsHtml = [
   '<p class="terms-intro">By reserving a move with Hercules Movers, you agree to these Terms and Conditions and our <a href="privacy.html">Privacy Policy</a>.</p>',
+  '<p><strong>Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012.</strong> Fla. Mover Reg. No. IM150012.</p>',
   '<div class="estimate-surcharge">A service charge applies to all moves. For moves over 50 driving miles, a fuel surcharge may be applied in addition to the online estimate. These charges are not calculated automatically and will be confirmed by Hercules Movers if they apply.</div>',
   '<p>Need to make a change or cancel your move? Reply to your confirmation email and our team will assist you.</p>',
 
@@ -143,6 +144,8 @@ window.HerculesBooking.termsHtml = [
   section(66, "COMPANY RECORD RETENTION.",
     "Mover may retain the signed Contract, amendments, payment records, inventory/condition records, photographs/video, incident reports and related communications for a reasonable business-record period, including as necessary for claims, insurance, tax, regulatory and litigation purposes. Customer-facing links may expire; expiration does not destroy the Company's retained record, and Customer may request a copy subject to applicable law."),
   section(67, "CONSTRUCTION AGAINST UNLAWFUL WAIVER.",
-    "Every limitation, allocation of risk and remedy in this Contract is intended to operate only to the fullest extent permitted by Florida law. No provision is intended to waive, limit, restrict or avoid a duty that Chapter 507 makes nonwaivable. Where a clause could be read more than one way, it should be construed to preserve the lawful portion rather than create an unlawful waiver.")
+    "Every limitation, allocation of risk and remedy in this Contract is intended to operate only to the fullest extent permitted by Florida law. No provision is intended to waive, limit, restrict or avoid a duty that Chapter 507 makes nonwaivable. Where a clause could be read more than one way, it should be construed to preserve the lawful portion rather than create an unlawful waiver."),
+  section(68, "FLORIDA MOVER REGISTRATION; WRITTEN ESTIMATE AND CONTRACT.",
+    "Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012. This registration is issued under Chapter 507, Florida Statutes, is not assignable, and is valid only for the business name and locations designated to the Department. Before providing any moving services, Mover will provide Customer a written estimate and contract, which must be signed and dated by both the shipper (Customer) and the mover. An online reservation is a request to hold a date and price range; it does not replace the signed written estimate and contract required by Florida law. Moving services will not begin until that signed estimate and contract are in place.")
 ].join("\n");
 })();

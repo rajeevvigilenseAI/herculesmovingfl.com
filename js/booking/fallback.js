@@ -171,6 +171,9 @@ window.HerculesBooking = window.HerculesBooking || {};
         "You accepted the Hercules Movers Terms and Conditions on " + niceTimestamp() + ".";
     }
 
+    fields["Florida Registration"] =
+      "Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012. Fla. Mover Reg. No. IM150012. A written estimate and contract must be signed and dated by both you and Hercules Movers before any moving services are provided.";
+
     return fields;
   }
 
@@ -188,7 +191,13 @@ window.HerculesBooking = window.HerculesBooking || {};
     var cfg = window.HerculesBooking && window.HerculesBooking.config;
     var termsUrl = (cfg && cfg.termsUrl) || "https://herculesmovingfl.com/terms.html";
     var privacyUrl = (cfg && cfg.privacyUrl) || "https://herculesmovingfl.com/privacy.html";
-    note += " Final charges are governed by our Terms and Conditions: " + termsUrl + ". Privacy Policy: " + privacyUrl + ".";
+    note +=
+      " Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012." +
+      " Final charges are governed by our Terms and Conditions: " +
+      termsUrl +
+      ". Privacy Policy: " +
+      privacyUrl +
+      ".";
     if (Number(quote.estimatedHours) >= 8) {
       note +=
         " This quote covers the first 8 hours. If the move runs longer, additional time is billed hourly. " +

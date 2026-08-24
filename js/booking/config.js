@@ -34,6 +34,9 @@ window.HerculesBooking.config = {
   notifyEmail: "herculesmoversfl@gmail.com",
   termsUrl: "https://herculesmovingfl.com/terms.html",
   privacyUrl: "https://herculesmovingfl.com/privacy.html",
+  moverRegistrationNo: "IM150012",
+  moverRegistrationPhrase:
+    "Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012.",
   longDistanceMiles: 50,
   homeSizes: [
     { value: 0, label: "Studio" },
