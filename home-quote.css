@@ -67,32 +67,52 @@
     margin-right: 5px;
 }
 
-/* The plain input is kept in the DOM (hidden) purely to hold the resolved
-   value once the Google Places widget takes over; only the widget is shown. */
-.hq-field-fallback {
-    display: none !important;
+/* Address suggestions sit in normal flow directly under their input, so the
+   on-screen keyboard can't push them to the top of the screen. */
+.hb-ac-anchor {
+    position: relative;
 }
 
-gmp-place-autocomplete.hq-place-autocomplete {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 46px;
+.hb-ac-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    margin: 4px 0 0 0;
+    padding: 4px 0;
+    list-style: none;
+    max-height: 232px;
+    overflow-y: auto;
+    background: #fff;
     border: 1px solid #dcdcdc;
     border-radius: 8px;
-    background-color: #fafafa;
-    color-scheme: light;
-    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
-    font-size: 16px;
-    /* The widget anchors its own suggestion list to itself, so it has to be
-       able to paint outside the field and above neighbouring rows. */
-    z-index: 5;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+    -webkit-overflow-scrolling: touch;
 }
 
-gmp-place-autocomplete.hq-place-autocomplete:focus-within {
-    border-color: #ff7700;
-    background-color: #fff;
-    z-index: 60;
+.hb-ac-item {
+    padding: 9px 12px;
+    font-family: 'Roboto Condensed', 'Open Sans', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.3;
+    color: #2f4f4f;
+    cursor: pointer;
+}
+
+.hb-ac-item.active {
+    background: #fff4e8;
+}
+
+.hb-ac-main {
+    display: block;
+    font-weight: 600;
+}
+
+.hb-ac-secondary {
+    display: block;
+    font-size: 13px;
+    color: #7b7b7b;
 }
 
 .hq-step {
@@ -485,8 +505,7 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     }
 
     .hq-field > input,
-    .hq-field > select,
-    gmp-place-autocomplete.hq-place-autocomplete {
+    .hq-field > select {
         min-height: 42px;
         height: 42px;
     }
@@ -658,15 +677,10 @@ gmp-place-autocomplete.hq-place-autocomplete:focus-within {
     .hq-field > input,
     .hq-field > select {
         min-height: 40px;
-        font-size: 15px;
-        padding: 8px 10px;
-    }
-
-    gmp-place-autocomplete.hq-place-autocomplete {
-        min-height: 40px;
-        height: 40px;
-        /* 16px keeps iOS Safari from zooming the page on focus. */
+        /* 16px keeps iOS Safari from zooming the page on focus, which would
+           shift the whole card while the customer types. */
         font-size: 16px;
+        padding: 8px 10px;
     }
 
     .hq-result-stats {

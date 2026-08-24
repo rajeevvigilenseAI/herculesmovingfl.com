@@ -3,26 +3,52 @@
     padding: 0 15px 60px 15px;
 }
 
-/* The plain input is kept in the DOM (hidden) purely to hold the resolved
-   value once the Google Places widget takes over; only the widget is shown. */
-.book-field-fallback {
-    display: none !important;
+/* Address suggestions sit in normal flow directly under their input, so the
+   on-screen keyboard can't push them to the top of the screen. */
+.hb-ac-anchor {
+    position: relative;
 }
 
-gmp-place-autocomplete.book-place-autocomplete {
-    display: block;
-    width: 100%;
-    height: 48px;
+.hb-ac-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    margin: 4px 0 0 0;
+    padding: 4px 0;
+    list-style: none;
+    max-height: 240px;
+    overflow-y: auto;
+    background: #fff;
     border: 1px solid #ccc;
     border-radius: 6px;
-    background-color: #fff;
-    color-scheme: light;
-    font-family: 'Open Sans Condensed', sans-serif;
-    font-size: 17px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+    -webkit-overflow-scrolling: touch;
 }
 
-gmp-place-autocomplete.book-place-autocomplete:focus-within {
-    border-color: #ff7700;
+.hb-ac-item {
+    padding: 10px 12px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 17px;
+    line-height: 1.3;
+    color: #2f4f4f;
+    cursor: pointer;
+}
+
+.hb-ac-item.active {
+    background: #fff4e8;
+}
+
+.hb-ac-main {
+    display: block;
+    font-weight: 600;
+}
+
+.hb-ac-secondary {
+    display: block;
+    font-size: 14px;
+    color: #808080;
 }
 
 .book-wrap {

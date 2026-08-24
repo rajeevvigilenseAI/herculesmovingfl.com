@@ -40,7 +40,7 @@ The Edge Functions import `js/booking/quote-core.js` (via `_shared/pricing.js` a
 Only the **browser key** is needed now (for address suggestions in the wizard, not for pricing). Enable:
 
 - Maps JavaScript API
-- Places API (New): the frontend uses the current `PlaceAutocompleteElement` widget, not the legacy Places API/`Autocomplete` class
+- Places API (New): the frontend calls the Autocomplete Data API (`AutocompleteSuggestion.fetchAutocompleteSuggestions`) from `js/booking/places-autocomplete.js` and renders its own suggestion list, so neither the legacy `Autocomplete` class nor the `PlaceAutocompleteElement` widget is used
 
 Create the key:
 

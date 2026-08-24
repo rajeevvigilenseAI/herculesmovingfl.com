@@ -441,38 +441,21 @@
   function loadPlaces() {
     if (!window.HerculesBooking.ensureMaps) return;
     window.HerculesBooking.ensureMaps(cfg.googleMapsBrowserKey);
-    google.maps.importLibrary("places").then(function (lib) {
-      attachAutocomplete(lib.PlaceAutocompleteElement, "originStreet", "origin", true);
-      attachAutocomplete(lib.PlaceAutocompleteElement, "destinationStreet", "destination", false);
-    }).catch(function (err) {
-      console.error("Google Places failed to load", err);
-    });
+    attachAutocomplete("originStreet", "origin", true);
+    attachAutocomplete("destinationStreet", "destination", false);
   }
 
-  function attachAutocomplete(PlaceAutocompleteElement, inputId, which, flOnly) {
+  function attachAutocomplete(inputId, which, flOnly) {
     var input = qs("#" + inputId);
-    if (!input || input.dataset.placesBound) return;
-    input.dataset.placesBound = "1";
-
-    var widget = new PlaceAutocompleteElement({ includedRegionCodes: ["us"] });
-    widget.classList.add("book-place-autocomplete");
-    if (input.placeholder) widget.placeholder = input.placeholder;
-    input.insertAdjacentElement("afterend", widget);
-    input.classList.add("book-field-fallback");
-
-    widget.addEventListener("gmp-select", function (evt) {
-      var prediction = evt && evt.placePrediction;
-      if (!prediction) return;
-      var place = prediction.toPlace();
-      place.fetchFields({ fields: ["addressComponents", "formattedAddress"] }).then(function () {
+    if (!input || !window.HerculesBooking.attachPlacesAutocomplete) return;
+    window.HerculesBooking.attachPlacesAutocomplete(input, {
+      onSelect: function (place) {
         var parsed = parsePlace(place);
         if (flOnly && parsed.state && parsed.state !== "FL") {
           fail(cfg.originOutsideFlMessage);
         }
         setAddr(which, parsed);
-      }).catch(function (err) {
-        console.error("Unable to read selected place", err);
-      });
+      }
     });
   }
 

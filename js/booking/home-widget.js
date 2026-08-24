@@ -384,87 +384,44 @@
       });
     }
 
-    // PlaceAutocompleteElement is the only autocomplete widget available to this
-    // API key, so it is used at every screen size; the legacy
-    // google.maps.places.Autocomplete class is not served to newer keys.
     function loadPlaces(key) {
       if (!window.HerculesBooking.ensureMaps) return;
       window.HerculesBooking.ensureMaps(key);
-      google.maps
-        .importLibrary("places")
-        .then(function (lib) {
-          if (!lib || !lib.PlaceAutocompleteElement) {
-            throw new Error("PlaceAutocompleteElement is unavailable for this API key.");
-          }
-          attachPlaces(lib.PlaceAutocompleteElement, "hqOriginCity", "hqOriginState");
-          attachPlaces(lib.PlaceAutocompleteElement, "hqDestCity", "hqDestState");
-        })
-        .catch(function (err) {
-          // Typing a city or ZIP by hand still produces an estimate, so a
-          // failure here is logged rather than shown to the customer.
-          console.error("Google Places failed to load", err);
-        });
+      attachPlaces("hqOriginCity", "hqOriginState");
+      attachPlaces("hqDestCity", "hqDestState");
     }
 
-    function attachPlaces(PlaceAutocompleteElement, inputId, stateInputId) {
+    function attachPlaces(inputId, stateInputId) {
       var input = document.getElementById(inputId);
-      if (!input || input.dataset.placesBound) return;
-      input.dataset.placesBound = "1";
-
-      var widget = new PlaceAutocompleteElement({ includedRegionCodes: ["us"] });
-      widget.classList.add("hq-place-autocomplete");
-      // The widget can't be given a starting value, so a prefilled default
-      // (Miami) is shown as its placeholder, so leaving the field untouched still
-      // submits that default, which is what the placeholder now advertises.
-      if (input.value) widget.placeholder = input.value;
-      else if (input.placeholder) widget.placeholder = input.placeholder;
-
-      input.insertAdjacentElement("afterend", widget);
-      input.classList.add("hq-field-fallback");
-
-      widget.addEventListener("gmp-select", function (evt) {
-        applyPlace(evt, input, stateInputId);
-      });
-
-      // Typing without picking a suggestion still has to count: mirror the
-      // text into the hidden input so a stale default can't be submitted.
-      widget.addEventListener("input", function (evt) {
-        var inner = evt.composedPath ? evt.composedPath()[0] : null;
-        if (!inner || typeof inner.value !== "string") return;
-        input.value = inner.value;
-        syncDistanceBand();
+      if (!input || !window.HerculesBooking.attachPlacesAutocomplete) return;
+      window.HerculesBooking.attachPlacesAutocomplete(input, {
+        onSelect: function (place) {
+          applyPlace(place, input, stateInputId);
+        }
       });
     }
 
-    function applyPlace(evt, input, stateInputId) {
-      var prediction = evt && evt.placePrediction;
-      if (!prediction) return;
-      var place = prediction.toPlace();
-      place
-        .fetchFields({ fields: ["addressComponents", "formattedAddress"] })
-        .then(function () {
-          var components = place.addressComponents || [];
-          var city = "";
-          var state = "";
-          var hasStreet = false;
-          components.forEach(function (c) {
-            var types = c.types || [];
-            if (types.indexOf("locality") >= 0) city = c.longText;
-            if (!city && types.indexOf("sublocality") >= 0) city = c.longText;
-            if (!city && types.indexOf("postal_town") >= 0) city = c.longText;
-            if (types.indexOf("administrative_area_level_1") >= 0) state = c.shortText;
-            if (types.indexOf("street_number") >= 0 || types.indexOf("route") >= 0) hasStreet = true;
-          });
-          input.value = hasStreet ? place.formattedAddress || city || input.value : city || place.formattedAddress || input.value;
-          if (state) {
-            var stateInput = document.getElementById(stateInputId);
-            if (stateInput) stateInput.value = state;
-          }
-          syncDistanceBand();
-        })
-        .catch(function (err) {
-          console.error("Unable to read selected place", err);
-        });
+    function applyPlace(place, input, stateInputId) {
+      var components = place.addressComponents || [];
+      var city = "";
+      var state = "";
+      var hasStreet = false;
+      components.forEach(function (c) {
+        var types = c.types || [];
+        if (types.indexOf("locality") >= 0) city = c.longText;
+        if (!city && types.indexOf("sublocality") >= 0) city = c.longText;
+        if (!city && types.indexOf("postal_town") >= 0) city = c.longText;
+        if (types.indexOf("administrative_area_level_1") >= 0) state = c.shortText;
+        if (types.indexOf("street_number") >= 0 || types.indexOf("route") >= 0) hasStreet = true;
+      });
+      input.value = hasStreet
+        ? place.formattedAddress || city || input.value
+        : city || place.formattedAddress || input.value;
+      if (state) {
+        var stateInput = document.getElementById(stateInputId);
+        if (stateInput) stateInput.value = state;
+      }
+      syncDistanceBand();
     }
 
   });
