@@ -18,7 +18,7 @@
   /* ---------------------------------------------------------------- pricing */
 
   // Never compute price as hours * hourly rate. Price always comes from here.
-  var HOUR_PRICE = { 2: 260, 3: 390, 4: 490, 5: 649, 6: 790, 7: 890, 8: 990 };
+  var HOUR_PRICE = { 2: 290, 3: 449, 4: 599, 5: 749, 6: 890, 7: 1049, 8: 1199 };
 
   var LOCAL_MILE_LIMIT = 50;
 

@@ -7,17 +7,17 @@ import {
 } from "../supabase/functions/_shared/pricing.js";
 
 const cases = [
-  { miles: 10, size: 0, hours: 2, price: 260, name: "10 miles / studio" },
-  { miles: 20, size: 1, hours: 2, price: 260, name: "20 miles / 1 bedroom" },
-  { miles: 40, size: 2, hours: 3, price: 390, name: "40 miles / 2 bedroom" },
-  { miles: 40, size: 3, hours: 4, price: 490, name: "40 miles / 3 bedroom" },
-  { miles: 40, size: 4, hours: 4, price: 490, name: "40 miles / 4 bedroom" },
-  { miles: 51, size: 0, hours: 2, price: 260, name: "51 miles / studio" },
-  { miles: 101, size: 1, hours: 3, price: 390, name: "101 miles / 1 bedroom" },
-  { miles: 124, size: 2, hours: 4, price: 490, name: "124 miles / 2 bedroom" },
-  { miles: 125, size: 2, hours: 5, price: 649, name: "125 miles / 2 bedroom" },
-  { miles: 247, size: 2, hours: 7, price: 890, name: "247 miles / 2 bedroom" },
-  { miles: 400, size: 4, hours: 8, price: 990, name: "exceeds 8 hours cap" }
+  { miles: 10, size: 0, hours: 2, price: 290, name: "10 miles / studio" },
+  { miles: 20, size: 1, hours: 2, price: 290, name: "20 miles / 1 bedroom" },
+  { miles: 40, size: 2, hours: 3, price: 449, name: "40 miles / 2 bedroom" },
+  { miles: 40, size: 3, hours: 4, price: 599, name: "40 miles / 3 bedroom" },
+  { miles: 40, size: 4, hours: 4, price: 599, name: "40 miles / 4 bedroom" },
+  { miles: 51, size: 0, hours: 2, price: 290, name: "51 miles / studio" },
+  { miles: 101, size: 1, hours: 3, price: 449, name: "101 miles / 1 bedroom" },
+  { miles: 124, size: 2, hours: 4, price: 599, name: "124 miles / 2 bedroom" },
+  { miles: 125, size: 2, hours: 5, price: 749, name: "125 miles / 2 bedroom" },
+  { miles: 247, size: 2, hours: 7, price: 1049, name: "247 miles / 2 bedroom" },
+  { miles: 400, size: 4, hours: 8, price: 1199, name: "exceeds 8 hours cap" }
 ];
 
 for (const c of cases) {
@@ -30,15 +30,15 @@ for (const c of cases) {
 
 test("does not use hours times a flat hourly rate", () => {
   const result = calculateEstimate(40, 3);
-  assert.notEqual(result.estimatedPrice, result.estimatedHours * 130);
-  assert.equal(result.estimatedPrice, 490);
+  assert.notEqual(result.estimatedPrice, result.estimatedHours * 150);
+  assert.equal(result.estimatedPrice, 599);
 });
 
 test("a few items locally is the 2-hour minimum", () => {
   const result = calculateEstimate(20, 5);
   assert.equal(result.homeSizeLabel, "Just a Few Items");
   assert.equal(result.estimatedHours, 2);
-  assert.equal(result.estimatedPrice, 260);
+  assert.equal(result.estimatedPrice, 290);
 });
 
 test("a few items never prices above a studio", () => {

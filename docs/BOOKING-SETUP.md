@@ -97,7 +97,7 @@ Manual:
 
 ## Florida-origin / nationwide-destination note
 
-The same 8-hour / $990 lookup cap applies to every automated quote, including long interstate jobs such as Miami to New York. Those reservations are allowed. They are not automatically flagged unless the customer selects a specialty item. Review long-distance jobs manually after the confirmation email arrives.
+The same 8-hour / $1,199 lookup cap applies to every automated quote, including long interstate jobs such as Miami to New York. Those reservations are allowed. They are not automatically flagged unless the customer selects a specialty item. Review long-distance jobs manually after the confirmation email arrives.
 
 ## Distance accuracy note
 
