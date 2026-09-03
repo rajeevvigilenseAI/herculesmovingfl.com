@@ -35,6 +35,7 @@ window.HerculesBooking.config = {
   termsUrl: "https://herculesmovingfl.com/terms.html",
   privacyUrl: "https://herculesmovingfl.com/privacy.html",
   moverRegistrationNo: "IM150012",
+  usdotNumber: "8486147",
   moverRegistrationPhrase:
     "Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012.",
   longDistanceMiles: 50,
