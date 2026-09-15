@@ -318,6 +318,34 @@ hr {
 .navbar-nav>li:hover {
     background: none;
     }
+
+.navbar-default .navbar-nav > .dropdown > .dropdown-menu {
+    min-width: 210px;
+    padding: 8px 0;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .12);
+    }
+
+.navbar-default .navbar-nav .dropdown-menu > li > a {
+    padding: 8px 18px;
+    color: #2f4f4f;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    }
+
+.navbar-default .navbar-nav .dropdown-menu > li > a:hover,
+.navbar-default .navbar-nav .dropdown-menu > li > a:focus {
+    background: #fff6ee;
+    color: #ff7700;
+    }
+
+@media (min-width: 1025px) {
+    .navbar-nav > li.dropdown:hover > .dropdown-menu,
+    .navbar-nav > li.dropdown:focus-within > .dropdown-menu {
+        display: block;
+        }
+    }
     
 .dropdown-mega {
     position: static!important;
@@ -919,6 +947,140 @@ p.stars {
     font-size: 22px;
     }    
 
+.hub-banner {
+    min-height: 460px;
+    height: auto;
+    padding: 12% 0 5%;
+    }
+
+.hub-banner .item {
+    width: 58%;
+    height: auto;
+    margin: 0 0 0 40%;
+    padding: 22px 26px 20px;
+    }
+
+.hub-banner .item h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    text-transform: none;
+    }
+
+.hub-banner .item p {
+    font-size: 18px;
+    line-height: 1.4;
+    }
+
+.hub-hero-cta {
+    margin-top: 12px;
+    }
+
+.hub-hero-cta .button {
+    display: inline-block;
+    margin: 6px 10px 6px 0;
+    padding: .4em 1.4em;
+    background-color: #ff7700;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 18px;
+    }
+
+.hub-hero-cta .hub-call {
+    display: inline-block;
+    color: #2f4f4f;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    }
+
+.hub-content {
+    padding: 40px 0 20px;
+    background: #fff;
+    }
+
+.hub-content .container {
+    max-width: 1100px;
+    }
+
+.hub-crumbs {
+    margin-bottom: 18px;
+    color: #888;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 15px;
+    }
+
+.hub-crumbs a {
+    color: #ff7700;
+    }
+
+.hub-content a {
+    color: #ff7700;
+    }
+
+.hub-content h2 {
+    margin: 28px 0 14px;
+    color: #ff7700;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 28px;
+    }
+
+.hub-content p,
+.hub-content li,
+.hub-content dd {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 18px;
+    line-height: 1.55;
+    color: #606060;
+    }
+
+.hub-counties h3 {
+    margin: 8px 0 10px;
+    color: #2f4f4f;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 22px;
+    }
+
+.hub-counties {
+    margin-bottom: 10px;
+    }
+
+.hub-services,
+.hub-trust {
+    margin: 0 0 18px 18px;
+    }
+
+.hub-services a {
+    color: #ff7700;
+    }
+
+.hub-mid-cta {
+    margin: 24px 0;
+    }
+
+.hub-mid-cta .button {
+    display: inline-block;
+    padding: .5em 1.8em;
+    background-color: #ff7700;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 20px;
+    }
+
+.hub-faq dt {
+    margin-top: 16px;
+    color: #2f4f4f;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 20px;
+    }
+
+.hub-faq dd {
+    margin: 8px 0 0;
+    }
+
 .customer-reviews {
     background: #fff;
     padding: 55px 0 35px;
@@ -1223,6 +1385,22 @@ ul.links li a {
         padding: 10px 14px;
         border-top: none;
     }
+
+    .navbar-nav > li.dropdown > .dropdown-menu {
+        position: static;
+        float: none;
+        width: 100%;
+        margin: 0;
+        padding: 0 0 8px 0;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        background: #f7f7f7;
+        }
+
+    .navbar-nav > li.dropdown > .dropdown-menu > li > a {
+        padding: 8px 20px 8px 32px;
+        }
 
     .collapse.in{
         display:block !important;
@@ -1789,6 +1967,21 @@ ul.policies {
     .navbar-nav > li > a {
         padding: 14px 20px!important;
         font-size: 17px;
+        }
+
+    .navbar-nav > li.dropdown > .dropdown-menu {
+        position: static;
+        float: none;
+        width: 100%;
+        margin: 0;
+        padding: 0 0 8px;
+        border: none;
+        box-shadow: none;
+        background: #f7f7f7;
+        }
+
+    .navbar-nav > li.dropdown > .dropdown-menu > li > a {
+        padding: 8px 20px 8px 32px;
         }
 
     .navbar-right {
@@ -2872,6 +3065,22 @@ ul.policies {
         border-bottom: none !important;
     }
 
+    .navbar-nav > li.dropdown > .dropdown-menu {
+        position: static !important;
+        float: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 0 8px !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: #f7f7f7 !important;
+    }
+
+    .navbar-nav > li.dropdown > .dropdown-menu > li > a {
+        padding: 8px 20px 8px 28px !important;
+    }
+
     /* Only the contact strip and the two corner controls need clearing now,
        not a 145px header. */
     .banner,
@@ -2949,6 +3158,32 @@ ul.policies {
     body {
         padding-bottom: 56px !important;
     }
+
+    .hub-banner {
+        min-height: 0;
+        height: auto !important;
+        padding: 90px 12px 24px !important;
+        }
+
+    .hub-banner .item {
+        width: 94% !important;
+        margin: 0 auto !important;
+        height: auto !important;
+        padding: 16px 14px !important;
+        }
+
+    .hub-banner .item h1 {
+        font-size: 24px !important;
+        line-height: 1.2 !important;
+        }
+
+    .hub-banner .item p,
+    .hub-banner .item p:last-child {
+        display: block !important;
+        font-size: 15px !important;
+        line-height: 1.35 !important;
+        color: #2f4f4f !important;
+        }
 
     .customer-reviews {
         padding: 38px 0 18px;
