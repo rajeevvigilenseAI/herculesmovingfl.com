@@ -919,6 +919,75 @@ p.stars {
     font-size: 22px;
     }    
 
+.customer-reviews {
+    background: #fff;
+    padding: 55px 0 35px;
+    }
+
+.customer-reviews h2 {
+    margin: 0 0 30px;
+    color: #ff7700;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 34px;
+    text-align: center;
+    }
+
+.review-grid {
+    display: flex;
+    flex-wrap: wrap;
+    }
+
+.review-grid > [class*="col-"] {
+    display: flex;
+    margin-bottom: 30px;
+    }
+
+.review-card {
+    width: 100%;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+    font-family: 'Open Sans Condensed', sans-serif;
+    color: #606060;
+    }
+
+.review-card h3 {
+    margin: 0;
+    color: #2f4f4f;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 22px;
+    }
+
+.review-card p {
+    font-size: 17px;
+    line-height: 1.55;
+    }
+
+.review-card .review-stars {
+    margin: 8px 0 14px;
+    color: #ff7700;
+    font-size: 20px;
+    letter-spacing: 2px;
+    }
+
+.review-card .review-source {
+    margin: 16px 0 0;
+    color: #888;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    }
+
+.mobile-action-bar {
+    display: none;
+    }
+
+#estimate {
+    scroll-margin-top: 120px;
+    }
+
 .specialty-services {
     position: relative;
     width: 100%;
@@ -2873,6 +2942,69 @@ ul.policies {
     .navbar-default .navbar-collapse {
         top: 66px !important;
         max-height: calc(100vh - 86px) !important;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-bottom: 56px !important;
+    }
+
+    .customer-reviews {
+        padding: 38px 0 18px;
+    }
+
+    .customer-reviews h2 {
+        padding: 0 18px;
+        font-size: 28px;
+    }
+
+    .review-grid {
+        display: block;
+    }
+
+    .review-grid > [class*="col-"] {
+        display: block;
+        width: 100% !important;
+        margin-bottom: 18px !important;
+        padding: 0 15px !important;
+    }
+
+    .review-card {
+        padding: 20px;
+        text-align: left;
+    }
+
+    .mobile-action-bar {
+        position: fixed;
+        z-index: 10000;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        height: 56px;
+        box-shadow: 0 -3px 12px rgba(0, 0, 0, .2);
+    }
+
+    .mobile-action-bar a {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: #fff;
+        font-family: 'Roboto Condensed', sans-serif;
+        font-size: 17px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .mobile-action-bar .mobile-call {
+        background: #2f4f4f;
+    }
+
+    .mobile-action-bar .mobile-estimate {
+        background: #ff7700;
     }
 }
 

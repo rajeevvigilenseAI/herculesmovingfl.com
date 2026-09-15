@@ -77,6 +77,11 @@
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "White-Glove Moving"}}
         ]
       },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "60"
+      },
       "priceRange": "$$",
       "sameAs": ["https://www.instagram.com/hercules_local_movers_miami"]
     }
@@ -231,7 +236,7 @@
                 </div>
 
                 <div class="hero-quote-overlay">
-                    <div class="hero-quote-card">
+                    <div class="hero-quote-card" id="estimate">
                         <span class="hq-badge"><i class="fas fa-bolt"></i> Free &amp; Instant</span>
 
                         <!-- Step 1: quote -->
@@ -365,8 +370,7 @@
 
                         <div class="col-sm-6">
                             <h3>About Us</h3>
-                            <p>Hercules Local Movers is a dedicated division of Hercules Local Movers, a well-established professional moving 
-                            company serving residential and commercial movers in Ft. Lauderdale, Miami, West Palm Beach and surrounding areas. We are licensed, insured, and transparent about pricing.</p>
+                            <p>Hercules Local Movers is a professional moving company serving residential and commercial movers in Ft. Lauderdale, Miami, West Palm Beach and surrounding areas. We are licensed, insured, and transparent about pricing.</p>
 
                             <p>We are now providing professional moving services to those who need to move small loads, single items, or specialty items without 
                             the added cost associated with minimum weight requirements or load size restrictions. Not every move requires a semi trailer and movers 
@@ -401,7 +405,7 @@
                 </div>
                 <div class="row padded about">
                     <div class="container">
-                        <div class="col-sm-7">
+                        <div class="col-sm-12">
                             <h3>A LOCAL MOVER YOU CAN TRUST</h3>
                             <p>Not all moving companies are created equal and picking the wrong provider can have some pretty serious consequences. You 
                             want a moving company that is honest, trustworthy, and transparent. You want a moving company that stands behind their promises and 
@@ -412,9 +416,6 @@
                             We're not trying to pull one over on you. We know you may move again, and if we do our job right ... you'll call us when you do.</p>
                         </div>
 
-                        <div class="col-sm-5">
-                            <img class="img-responsive" src="images/bbb2.jpg" alt="BBB Accredited" />
-                        </div>
                     </div>
                 </div>
 
@@ -458,6 +459,62 @@
                         </div>
                     </div>
                 </div>
+
+            <section class="row customer-reviews" aria-labelledby="customer-reviews-heading">
+                <div class="container">
+                    <h2 id="customer-reviews-heading">What South Florida Customers Say</h2>
+                    <div class="row review-grid">
+                        <div class="col-sm-4">
+                            <article class="review-card">
+                                <h3>Daniel Daoust</h3>
+                                <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
+                                <p>“Hercules Movers provided the best moving experience I have ever had! From the booking, consultation and move management provided by Alex, to the most professional and hardest working team that executed the move, Hercules provided a 100% customer-focused experience! The team moved me from the East Coast to the West Coast of Florida, encountering multiple thunderstorms along the way, and did it all in record time. I would refer Hercules to any client looking for that bespoke moving experience, and will happily call them again!”</p>
+                                <p class="review-source">via Google</p>
+                            </article>
+                        </div>
+                        <div class="col-sm-4">
+                            <article class="review-card">
+                                <h3>Brooke Petrovic</h3>
+                                <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
+                                <p>“Unreal job. Careful, efficient, and seamless communication and scheduling. Couldn't ask for a better moving company.”</p>
+                                <p class="review-source">via Google</p>
+                            </article>
+                        </div>
+                        <div class="col-sm-4">
+                            <article class="review-card">
+                                <h3>Natasha S.</h3>
+                                <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
+                                <p>“What a great experience with Hercules Movers! From start to finish, everything went smoothly and professionally. The movers arrived right at 9:00 AM as promised and got to work immediately. They were incredibly efficient, careful, and professional throughout the entire move. The whole move took about four hours, and they worked nonstop the entire time. I'm very happy with the service and would absolutely recommend Hercules Movers to anyone looking for a reliable, hardworking, and professional moving company.”</p>
+                                <p class="review-source">via Thumbtack</p>
+                            </article>
+                        </div>
+                        <div class="col-sm-4">
+                            <article class="review-card">
+                                <h3>Diana H.</h3>
+                                <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
+                                <p>“This whole team is amazing. I was nervous and overwhelmed and they were patient and walked me through the entire process. When it came time to get moving, they were fast, efficient and took care of my stuff beautifully. I will absolutely use this team in the future for all my moving needs. The customer service was amazing.”</p>
+                                <p class="review-source">via Thumbtack</p>
+                            </article>
+                        </div>
+                        <div class="col-sm-4">
+                            <article class="review-card">
+                                <h3>Tracy Larrimer</h3>
+                                <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
+                                <p>“Great company - very responsive, professional and friendly. Would recommend them to anyone.”</p>
+                                <p class="review-source">via Google</p>
+                            </article>
+                        </div>
+                        <div class="col-sm-4">
+                            <article class="review-card">
+                                <h3>Donna</h3>
+                                <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
+                                <p>“I have to admit, I was a bit apprehensive but the Owner was great and kept in touch with me. The movers were patient and did a great job.”</p>
+                                <p class="review-source">via Google</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <div class="row footer" id="footer">
                 <div class="inner">
@@ -522,11 +579,16 @@
                 </div><!--End Inner-->
 
                     <div class="col-sm-12">
-                      <p class="disclaim">Hercules Local Movers is a dedicated division of Hercules Local Movers serving residential and commercial movers in Ft. Lauderdale, Miami, West Palm Beach and surrounding areas. FL Mover Registration #IM150012 • Licensed &amp; Insured</p>
+                      <p class="disclaim">Hercules Local Movers is a professional moving company serving residential and commercial movers in Ft. Lauderdale, Miami, West Palm Beach and surrounding areas. FL Mover Registration #IM150012 • Licensed &amp; Insured</p>
                     </div>
             </div><!--End Footer-->
    </div>
  </div>
+
+<nav class="mobile-action-bar" aria-label="Quick contact">
+  <a class="mobile-call" href="tel:+17543542008"><i class="fas fa-phone"></i> Call Now</a>
+  <a class="mobile-estimate" href="#estimate"><i class="fas fa-calculator"></i> Free Estimate</a>
+</nav>
 
 <div class="terms-modal" id="terms-modal" hidden>
   <div class="terms-dialog" role="dialog" aria-labelledby="terms-title" aria-modal="true">
