@@ -1205,6 +1205,11 @@ p.stars {
     text-transform: uppercase;
     }
 
+/* Font Awesome 5.5 draws fa-phone mirrored; fa-phone-alt only ships from 5.9. */
+.fa-phone {
+    transform: scaleX(-1);
+    }
+
 .mobile-action-bar {
     display: none;
     }
