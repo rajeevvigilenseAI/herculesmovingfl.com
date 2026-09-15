@@ -947,6 +947,55 @@ p.stars {
     font-size: 22px;
     }    
 
+.review-ticker {
+    overflow: hidden;
+    min-height: 56px;
+    background: #2f4f4f;
+    border-top: 3px solid #ff7700;
+    border-bottom: 3px solid #ff7700;
+    }
+
+.review-ticker-track {
+    display: flex;
+    width: max-content;
+    animation: reviewTicker 60s linear infinite;
+    }
+
+.review-ticker:hover .review-ticker-track,
+.review-ticker:focus-within .review-ticker-track {
+    animation-play-state: paused;
+    }
+
+.review-ticker-group {
+    display: flex;
+    }
+
+.review-ticker-item {
+    padding: 13px 34px;
+    color: #fff;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 17px;
+    line-height: 24px;
+    white-space: nowrap;
+    }
+
+.review-ticker-stars {
+    margin-right: 8px;
+    color: #ff9c3f;
+    letter-spacing: 1px;
+    }
+
+.review-ticker-name {
+    margin-left: 6px;
+    color: #cfd8d8;
+    font-size: 14px;
+    text-transform: uppercase;
+    }
+
+@keyframes reviewTicker {
+    to { transform: translateX(-50%); }
+    }
+
 .hub-banner {
     min-height: 460px;
     height: auto;
@@ -1079,6 +1128,20 @@ p.stars {
 
 .hub-faq dd {
     margin: 8px 0 0;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .review-ticker {
+        overflow-x: auto;
+        }
+
+    .review-ticker-track {
+        animation: none;
+        }
+
+    .review-ticker-group[aria-hidden="true"] {
+        display: none;
+        }
     }
 
 .customer-reviews {
@@ -3184,6 +3247,19 @@ ul.policies {
         line-height: 1.35 !important;
         color: #2f4f4f !important;
         }
+
+    .review-ticker {
+        min-height: 52px;
+    }
+
+    .review-ticker-item {
+        padding: 11px 20px;
+        font-size: 15px;
+    }
+
+    .review-ticker-name {
+        font-size: 12px;
+    }
 
     .customer-reviews {
         padding: 38px 0 18px;
