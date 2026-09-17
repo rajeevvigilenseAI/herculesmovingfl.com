@@ -1333,7 +1333,7 @@ p.cite {
 /*Footers*/
 
 .footer .col-sm-12 {
-    height: 35px;
+    height: auto;
     margin-top: 25px;
 	padding: 0!important;
     }
@@ -1350,9 +1350,18 @@ p.cite {
 
 .inner {
     width: 95%;
-    height: 275px;
+    min-height: 275px;
     margin: auto;
+    padding-bottom: 20px;
     border-bottom: 1px solid #fff;
+    }
+
+/* Footer columns are floated, so the rule needs a clearfix or it rides up
+   through the tallest column instead of sitting under it. */
+.inner::after {
+    content: "";
+    display: table;
+    clear: both;
     }
 
 .q-links {
@@ -1380,6 +1389,15 @@ p.cite {
 .footer .col-sm-6 img {
     width: 300px;
     margin: auto auto auto 20%;
+    }
+
+.footer .col-sm-6.footer-mid h6 {
+    width: 100%;
+    margin: 12px auto 10px;
+    }
+
+.footer-mid .links li {
+    margin: 10px auto;
     }
 	
 ul.links {
