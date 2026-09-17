@@ -1245,9 +1245,13 @@ p.stars {
     text-align: center;
     }
 
+/* Thumbtack injects its own stylesheet at runtime and pins the card to a
+   narrow fixed width by id, so the flex basis here is what widens it. */
 #tt-review-widget-one {
     min-height: 180px;
-    flex: 1 1 320px;
+    flex: 0 1 640px;
+    max-width: 640px;
+    text-align: left;
     }
 
 .thumbtack-embed .tt-logo,

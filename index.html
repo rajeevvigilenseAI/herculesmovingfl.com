@@ -497,17 +497,9 @@
             <section class="row customer-reviews" aria-labelledby="customer-reviews-heading">
                 <div class="container">
                     <h2 id="customer-reviews-heading">What South Florida Customers Say</h2>
-                    <div class="thumbtack-embed thumbtack-embed-pair">
-                        <div class="widget" id="tt-review-widget-star">
-                            <img src="https://cdn.thumbtackstatic.com/fe-assets-web/media/logos/thumbtack/wordmark.svg" alt="Thumbtack" class="tt-logo" />
-                            <a target="_blank" rel="noopener noreferrer" href="https://www.thumbtack.com/fl/miami/moving-companies/hercules-movers/service/582161479852285966">
-                                <div>Hercules Movers</div>
-                            </a>
-                            <div id="tt-dynamic">
-                                <img src="https://cdn.thumbtackstatic.com/fe-assets-web/media/pages/profile/standard-widgets/review-widget/orange_star.svg" alt=""><img src="https://cdn.thumbtackstatic.com/fe-assets-web/media/pages/profile/standard-widgets/review-widget/orange_star.svg" alt=""><img src="https://cdn.thumbtackstatic.com/fe-assets-web/media/pages/profile/standard-widgets/review-widget/orange_star.svg" alt=""><img src="https://cdn.thumbtackstatic.com/fe-assets-web/media/pages/profile/standard-widgets/review-widget/orange_star.svg" alt=""><img src="https://cdn.thumbtackstatic.com/fe-assets-web/media/pages/profile/standard-widgets/review-widget/orange_star.svg" alt="">&nbsp;<span>72 reviews</span>
-                            </div>
-                            <script src="https://www.thumbtack.com/profile/widgets/scripts/?service_pk=582161479852285966&widget_id=review&type=star"></script>
-                        </div>
+                    <!-- One Thumbtack widget per page only: their script writes into the
+                         first #tt-dynamic it finds, so two on a page overwrite each other. -->
+                    <div class="thumbtack-embed">
                         <div class="widget" id="tt-review-widget-one">
                             <img src="https://cdn.thumbtackstatic.com/fe-assets-web/media/logos/thumbtack/wordmark.svg" alt="Thumbtack" />
                             <div id="tt-dynamic">
