@@ -194,7 +194,7 @@ header {
 	}
 
 header.smaller {
-	height: 35px;
+	height: 50px;
 	}
 	
 header.smaller .topmast {
@@ -202,8 +202,20 @@ header.smaller .topmast {
 	}
 
 header.smaller .navbar-fixed-top {
-	padding-top: 10px!important;
+	padding-top: 4px!important;
 	}
+
+/* The tall header lets each nav link pad down to the header's bottom edge, so
+   the active tab reaches it. Once the header shrinks that padding would hang
+   the highlight below the white strip, hence the compact box here. */
+header.smaller .navbar-right {
+    margin-top: 0;
+    }
+
+header.smaller .navbar-default .navbar-nav>li>a {
+    padding-top: 8px;
+    padding-bottom: 11px;
+    }
 
 .social {
     display: none!important;
