@@ -1423,7 +1423,7 @@ ul.links li a {
 
 .subtext4 {
 	position: relative;
-	float: right;
+	width: 100%;
 	margin: 4% auto auto auto;
 	color: #fff;
 	}
@@ -1474,6 +1474,7 @@ ul.links li a {
 .logo1 {
     display: block;
 	width: 180px;
+    margin: 0 auto 10px;
     }  
 
 .call2 {
