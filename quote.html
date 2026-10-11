@@ -839,14 +839,36 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
       setTimeout(function () { f.submit(); }, 300);
     }
 
+    // FormSubmit unreachable (blocked by the phone's content blocker, carrier
+    // filter or DNS): a form post would strand the customer on a "server not
+    // found" page, so hand them a prefilled text to our number instead.
+    function textUs() {
+      var body = "Hi Hercules, I'd like a moving quote.\n" +
+        "Name: " + payload.Name + "\n" +
+        "From: " + payload["Moving from"] + "\n" +
+        "To: " + payload["Moving to"] + "\n" +
+        "Size: " + payload["Home size"] + "\n" +
+        "Date: " + payload["Move date"] + "\n" +
+        "Ref: " + ref;
+      btn.disabled = false;
+      btn.textContent = "Get My Free Quote";
+      err.innerHTML = 'We couldn\'t send your request from this browser. Tap below to text it to us instead, it\'s already filled in:' +
+        '<a class="btn go" style="display:block;text-align:center;text-decoration:none;margin-top:10px" href="sms:+17543542008?body=' +
+        encodeURIComponent(body) + '">Text Us My Details</a>' +
+        '<span style="display:block;margin-top:8px">Or call <a href="tel:+17543542008">(754) 354-2008</a>.</span>';
+      var a = err.querySelector("a.btn");
+      a.addEventListener("click", function () { track("track", "Contact"); lead(); });
+    }
+
+    var unreachable = false;
     var timedOut = new Promise(function (_, reject) {
-      setTimeout(function () { reject(new Error("No reply after 15s")); }, 15000);
+      setTimeout(function () { unreachable = true; reject(new Error("No reply after 15s")); }, 15000);
     });
     Promise.race([fetch(ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify(payload)
-    }), timedOut])
+    }).catch(function (netErr) { unreachable = true; throw netErr; }), timedOut])
       .then(function (r) {
         return r.text().then(function (body) {
           var j = {};
@@ -861,7 +883,8 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
       .catch(function (ex) {
         if (window.console) console.error("Quote form send failed, using fallback:", ex);
         try {
-          fallback(String(ex && ex.message || ex));
+          if (unreachable) textUs();
+          else fallback(String(ex && ex.message || ex));
         } catch (e2) {
           btn.disabled = false;
           btn.textContent = "Get My Free Quote";
