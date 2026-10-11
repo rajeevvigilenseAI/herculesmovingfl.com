@@ -811,25 +811,62 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     btn.disabled = true;
     btn.textContent = "Sending…";
 
-    fetch(ENDPOINT, {
+    function lead() {
+      track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
+    }
+
+    // Some phone browsers (in-app browsers, strict privacy modes) refuse the
+    // background request. Rather than lose the lead, post a plain form to
+    // FormSubmit exactly like the contact forms do, and note why in the email.
+    function fallback(reason) {
+      var f = document.createElement("form");
+      f.method = "POST";
+      f.action = ENDPOINT.replace("/ajax/", "/");
+      f.style.display = "none";
+      var fields = Object.assign({}, payload, {
+        "_next": location.origin + "/thankyou.html",
+        "Send note": "Sent by fallback. Background send failed: " + reason
+      });
+      Object.keys(fields).forEach(function (k) {
+        var i = document.createElement("input");
+        i.type = "hidden";
+        i.name = k;
+        i.value = fields[k];
+        f.appendChild(i);
+      });
+      document.body.appendChild(f);
+      lead();
+      setTimeout(function () { f.submit(); }, 300);
+    }
+
+    var timedOut = new Promise(function (_, reject) {
+      setTimeout(function () { reject(new Error("No reply after 15s")); }, 15000);
+    });
+    Promise.race([fetch(ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify(payload)
-    })
+    }), timedOut])
       .then(function (r) {
-        return r.json().then(function (j) {
-          if (!r.ok || String(j.success) !== "true") throw new Error(j.message || "Send failed");
+        return r.text().then(function (body) {
+          var j = {};
+          try { j = JSON.parse(body); } catch (e) { throw new Error("HTTP " + r.status + ", not JSON: " + body.slice(0, 120)); }
+          if (!r.ok || String(j.success) !== "true") throw new Error("HTTP " + r.status + ": " + (j.message || "Send failed"));
         });
       })
       .then(function () {
-        track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
+        lead();
         show(7);
       })
       .catch(function (ex) {
-        if (window.console) console.error("Quote form send failed:", ex);
-        btn.disabled = false;
-        btn.textContent = "Get My Free Quote";
-        err.innerHTML = 'Something went wrong sending your request. Please call <a href="tel:+17543542008">(754) 354-2008</a> and we\'ll quote you right away.';
+        if (window.console) console.error("Quote form send failed, using fallback:", ex);
+        try {
+          fallback(String(ex && ex.message || ex));
+        } catch (e2) {
+          btn.disabled = false;
+          btn.textContent = "Get My Free Quote";
+          err.innerHTML = 'Something went wrong sending your request. Please call <a href="tel:+17543542008">(754) 354-2008</a> and we\'ll quote you right away.';
+        }
       });
   });
 })();
