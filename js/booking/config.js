@@ -48,10 +48,43 @@ window.HerculesBooking.config = {
   ]
 };
 
-// Fires the Google Ads "Request quote" conversion after a successful
-// reservation. No-ops until googleAdsConversionLabel is set in config above.
+// Remembers where a visitor came from (UTM tags / ad click IDs on the landing
+// URL) for the rest of the visit, so the office email can say which ad or
+// channel produced the lead.
+window.HerculesBooking.leadSource = (function () {
+  var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"];
+  var src = {};
+  try {
+    var params = new URLSearchParams(window.location.search);
+    KEYS.forEach(function (k) {
+      if (params.get(k)) src[k] = params.get(k);
+    });
+    if (Object.keys(src).length) {
+      sessionStorage.setItem("hq_src", JSON.stringify(src));
+    } else {
+      src = JSON.parse(sessionStorage.getItem("hq_src") || "{}") || {};
+    }
+  } catch (e) {
+    src = src || {};
+  }
+  return function () {
+    return src;
+  };
+})();
+
+// Fires the Meta Pixel "Lead" (on pages that load the pixel) and the Google
+// Ads "Request quote" conversion after a successful reservation. Each one
+// no-ops when its tag isn't on the page.
 window.HerculesBooking.trackConversion = function (result) {
   var cfg = window.HerculesBooking.config;
+  var reference = result && result.reference ? String(result.reference) : undefined;
+  var value = result && result.estimatedPrice != null ? Number(result.estimatedPrice) || 0 : undefined;
+  if (typeof fbq === "function") {
+    var leadData = { currency: "USD", content_name: "Move reservation" };
+    if (value != null) leadData.value = value;
+    // eventID lets Meta de-duplicate this against a future server-side event.
+    fbq("track", "Lead", leadData, reference ? { eventID: reference } : undefined);
+  }
   if (!cfg || !cfg.googleAdsId || !cfg.googleAdsConversionLabel) return;
   if (typeof gtag !== "function") return;
   var payload = {

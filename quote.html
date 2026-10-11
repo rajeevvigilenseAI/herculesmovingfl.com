@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>South Florida's Most Trusted Local Movers | Free Quote — Hercules Local Movers</title>
+<meta name="description" content="Licensed South Florida movers serving Miami-Dade, Broward and Palm Beach. No weight minimums, no hidden fees. Get your instant moving estimate.">
+<!-- Paid-ads landing page: kept out of search results, the sitemap and the site menu. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+<link rel="apple-touch-icon" href="images/favicon.png">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700|Oswald:500,600,700&display=swap" rel="stylesheet">
+
+<!-- Meta Pixel: Hercules Direct (Regal Lifestyle LLC) -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1092095600098380');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1092095600098380&ev=PageView&noscript=1"></noscript>
+
+<!-- Google tag (gtag.js) — same Google Ads account as the rest of the site -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18375543247"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18375543247');
+</script>
+
+<style>
+/* Landing-page shell. The estimate card itself is styled by home-quote.css,
+   exactly as on the homepage; only its positioning is overridden here. */
+:root{--orange:#F07F22;--orange-d:#D96A10;--navy:#13294B;--navy-2:#1C3A66;--ink:#1B2433;--muted:#5B6678;--line:#E3E8EF;--bg:#F6F8FB}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.5;-webkit-font-smoothing:antialiased}
+.lp h1,.lp h2,.lp h3{font-family:Oswald,'Roboto Condensed',sans-serif;line-height:1.15;margin:0 0 .5rem;letter-spacing:.2px}
+.lp .wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+.lp-top{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line)}
+.lp-top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.lp-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);font-family:Oswald,sans-serif;font-weight:700;font-size:1.25rem;white-space:nowrap}
+.lp-brand img{height:44px;width:auto}
+.lp-call{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:999px;white-space:nowrap}
+.lp-call:hover{background:var(--orange-d);color:#fff}
+@media(max-width:420px){.lp-call .num{display:none}.lp-brand span{display:none}}
+
+.lp-hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 60%,#24497F 100%);color:#fff;padding:30px 0 40px;text-align:center}
+.lp-pill{display:inline-block;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 14px;font-size:.8rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#DCE6F5}
+.lp-hero h1{font-size:clamp(1.9rem,5vw,3rem);margin:12px 0 8px;text-transform:uppercase}
+.lp-hero h1 em{font-style:normal;color:var(--orange)}
+.lp-hero .lead{font-size:1.1rem;color:#DCE6F5;max-width:40rem;margin:0 auto 20px}
+.lp-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.lp-chips li{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px;font-size:.92rem}
+.lp-areas{margin:14px 0 0;font-size:.95rem;color:#B9C8DE}
+
+/* 6-step quote card */
+.lp .card{background:#fff;color:var(--ink);border-radius:14px;box-shadow:0 18px 50px rgba(5,15,35,.35);padding:22px;border-top:5px solid var(--orange);max-width:560px;margin:0 auto;text-align:left;scroll-margin-top:80px}
+.lp .card h2{font-size:1.7rem;color:var(--navy);margin-bottom:2px}
+.lp .card .sub{color:var(--muted);font-size:.95rem;margin:0 0 14px}
+.lp .progress{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0}
+.lp .progress i{display:block;height:100%;width:16.6%;background:var(--orange);transition:width .3s}
+.lp .stepnum{font-size:.8rem;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:12px}
+.lp .step{display:none}
+.lp .step.active{display:block;animation:lpfade .25s ease}
+@keyframes lpfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.lp .q{font-family:Oswald,sans-serif;font-size:1.35rem;color:var(--navy);margin:0 0 4px}
+.lp .hint{color:var(--muted);font-size:.92rem;margin:0 0 12px}
+.lp .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lp .choices.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:420px){.lp .choices.three{grid-template-columns:1fr 1fr}}
+.lp .choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px 10px;text-align:left;cursor:pointer;font:inherit;color:var(--ink);transition:border-color .15s,background .15s}
+.lp .choice b{display:block;font-size:1.05rem}
+.lp .choice small{color:var(--muted);font-size:.85rem}
+.lp .choice:hover,.lp .choice:focus-visible{border-color:var(--orange);outline:none}
+.lp .choice[aria-pressed="true"]{border-color:var(--orange);background:#FFF5EC}
+.lp label.f{display:block;font-weight:700;font-size:.92rem;margin:10px 0 6px}
+.lp input.in{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.lp input.in:focus{border-color:var(--orange);outline:none}
+.lp .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.lp .row2{grid-template-columns:1fr}}
+.lp .err{color:#C0392B;font-size:.9rem;min-height:1.2em;margin-top:6px}
+.lp .nav{display:flex;gap:10px;margin-top:14px}
+.lp .btn{flex:1;border:0;border-radius:12px;padding:15px 16px;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer}
+.lp .btn.go{background:var(--orange);color:#fff}
+.lp .btn.go:hover{background:var(--orange-d)}
+.lp .btn.go[disabled]{opacity:.6;cursor:wait}
+.lp .btn.back{flex:0 0 auto;background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.lp .check{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:var(--muted);margin-top:10px}
+.lp .check input{margin-top:3px}
+.lp .fine{font-size:.8rem;color:var(--muted);margin-top:10px}
+.lp .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.lp .done{text-align:center;padding:10px 0}
+.lp .done .tick{width:56px;height:56px;border-radius:50%;background:#E8F7EE;color:#1F9D55;display:grid;place-items:center;margin:0 auto 10px;font-size:28px}
+
+.lp section.s{padding:52px 0}
+.lp section.alt{background:var(--bg)}
+.lp .eyebrow{color:var(--orange);font-weight:700;font-size:.82rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.lp .s h2{font-size:clamp(1.6rem,3.6vw,2.2rem);color:var(--navy);text-transform:uppercase}
+.lp .s .sub{color:var(--muted);max-width:40rem;margin:0 0 22px}
+.lp .cols{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.lp .cols{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.lp .cols{grid-template-columns:1fr}}
+.lp .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.lp .box h3{font-size:1.15rem;color:var(--navy);margin-bottom:4px}
+.lp .box p{margin:0;color:var(--muted);font-size:1rem}
+.lp .stars{color:#F5A623;letter-spacing:2px}
+.lp .rev q{display:block;margin:8px 0 10px;font-size:1.05rem;color:var(--ink)}
+.lp .rev .who{font-size:.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.lp .stepsx{counter-reset:n}
+.lp .stepsx .box{position:relative;padding-top:48px}
+.lp .stepsx .box::before{counter-increment:n;content:counter(n);position:absolute;top:14px;left:18px;width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-weight:700;display:grid;place-items:center;font-size:.9rem}
+.lp .areas ul{margin:6px 0 0;padding-left:18px;color:var(--muted);columns:2}
+.lp details{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.lp summary{cursor:pointer;font-weight:700;color:var(--navy)}
+.lp details p{color:var(--muted);margin:10px 0 0}
+.lp-cta{background:var(--navy);color:#fff;text-align:center;padding:46px 0}
+.lp-cta h2{color:#fff;text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.3rem)}
+.lp-cta p{color:#DCE6F5;margin:0 0 18px}
+.lp-btn{display:inline-block;text-decoration:none;font-weight:700;padding:14px 24px;border-radius:12px;margin:4px}
+.lp-btn.go{background:var(--orange);color:#fff}
+.lp-btn.ghost{border:2px solid rgba(255,255,255,.5);color:#fff}
+.lp-foot{background:#0D1D36;color:#9FB1CB;font-size:.88rem;padding:24px 0 96px}
+.lp-foot a{color:#C9D6EA}
+.lp-mbar{display:none}
+@media(max-width:700px){
+  .lp-mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+  .lp-mbar a{flex:1;text-align:center;text-decoration:none;font-weight:700;padding:13px 10px;border-radius:12px;color:#fff}
+  .lp-mbar .c1{background:var(--navy)}
+  .lp-mbar .c2{background:var(--orange)}
+}
+
+/* Ranking + response-time proof band */
+.lp-proof{background:#fff;padding:40px 0 8px}
+.lp-proof .grid{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.lp-proof .grid{grid-template-columns:1fr}}
+.lp-stat{border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff;position:relative;overflow:hidden}
+.lp-stat.hero-stat{background:linear-gradient(150deg,#FFF6EE 0%,#fff 70%);border-color:#F6CFA9}
+.lp-stat .k{font-size:.8rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--orange)}
+.lp-stat .big{font-family:Oswald,sans-serif;font-size:2.6rem;line-height:1;color:var(--navy);margin:8px 0 6px}
+.lp-stat .big small{font-size:1.1rem;color:var(--muted);font-family:'Roboto Condensed',sans-serif}
+.lp-stat p{margin:0;color:var(--muted)}
+.lp-trophy{position:absolute;right:16px;top:14px;width:54px;height:54px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-size:1.5rem;box-shadow:0 6px 18px rgba(240,127,34,.35)}
+.lp-bars{display:flex;flex-direction:column;gap:8px;margin:12px 0 4px}
+.lp-bar{display:grid;grid-template-columns:96px 1fr 58px;align-items:center;gap:8px;font-size:.9rem;color:var(--ink)}
+.lp-bar i{display:block;height:12px;border-radius:99px;background:var(--line);position:relative;overflow:hidden}
+.lp-bar i b{position:absolute;inset:0 auto 0 0;border-radius:99px}
+.lp-bar.us i b{background:var(--orange)}
+.lp-bar.them i b{background:#AAB6C8}
+.lp-bar span:last-child{text-align:right;font-weight:700}
+.lp-src{font-size:.78rem;color:var(--muted);margin-top:10px}
+/* Videos */
+.lp-videos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.lp-video{background:#000;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(10,25,50,.15)}
+.lp-video .ratio{position:relative;padding-top:56.25%}
+.lp-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+.lp-video figcaption{background:#fff;padding:10px 14px;color:var(--ink);font-weight:700}
+</style>
+</head>
+<body class="lp">
+
+<header class="lp-top">
+  <div class="wrap">
+    <a class="lp-brand" href="#estimate"><img src="images/Hercules%20Moving%20(1).png" alt="Hercules Local Movers logo"><span>Hercules Local Movers</span></a>
+    <a class="lp-call js-call" href="tel:+17543542008"><i class="fas fa-phone"></i> <span class="num">(754) 354-2008</span></a>
+  </div>
+</header>
+
+<main>
+<section class="lp-hero">
+  <div class="wrap">
+    <span class="lp-pill">Licensed &amp; Insured · FL Mover Reg. IM150012</span>
+    <h1>South Florida's <em>Most Trusted</em> Local Movers</h1>
+    <p class="lead">Apartments, condos and homes — from Miami to West Palm Beach. Get your free moving quote in under 60 seconds.</p>
+
+<div class="card" id="estimate">
+      <h2>Get Your Free Moving Quote</h2>
+      <p class="sub">No obligation · Takes less than 60 seconds</p>
+      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+      <div class="stepnum" id="stepnum">Step 1 of 6</div>
+
+      <form id="qf" novalidate>
+        <div class="hp" aria-hidden="true"><label>Leave empty <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+
+        <div class="step active" data-step="1">
+          <p class="q">What type of move are you planning?</p>
+          <p class="hint">Tap one to continue</p>
+          <div class="choices" data-field="moveType">
+            <button type="button" class="choice" data-value="Local"><b>🏙️ Local move</b><small>Within South Florida</small></button>
+            <button type="button" class="choice" data-value="Long distance"><b>🛣️ Long distance</b><small>50+ miles / out of state</small></button>
+          </div>
+        </div>
+
+        <div class="step" data-step="2">
+          <p class="q">Where are you moving from?</p>
+          <p class="hint">City or ZIP code is fine</p>
+          <label class="f" for="from">Moving from</label>
+          <input class="in" id="from" name="from" autocomplete="address-level2" placeholder="e.g. Fort Lauderdale or 33301">
+          <div class="err" id="e2"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="button" class="btn go next">Continue</button></div>
+        </div>
+
+        <div class="step" data-step="3">
+          <p class="q">Where are you moving to?</p>
+          <p class="hint">City, ZIP or state</p>
+          <label class="f" for="to">Moving to</label>
+          <input class="in" id="to" name="to" placeholder="e.g. West Palm Beach or 33401">
+          <div class="err" id="e3"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="button" class="btn go next">Continue</button></div>
+        </div>
+
+        <div class="step" data-step="4">
+          <p class="q">How much are you moving?</p>
+          <p class="hint">Tap one to continue</p>
+          <div class="choices three" data-field="homeSize">
+            <button type="button" class="choice" data-value="Studio"><b>Studio</b></button>
+            <button type="button" class="choice" data-value="1 Bedroom"><b>1 Bedroom</b></button>
+            <button type="button" class="choice" data-value="2 Bedrooms"><b>2 Bedrooms</b></button>
+            <button type="button" class="choice" data-value="3 Bedrooms"><b>3 Bedrooms</b></button>
+            <button type="button" class="choice" data-value="4+ Bedrooms"><b>4+ Bedrooms</b></button>
+            <button type="button" class="choice" data-value="Office / Commercial"><b>Office</b><small>Commercial</small></button>
+          </div>
+          <div class="nav"><button type="button" class="btn back">Back</button></div>
+        </div>
+
+        <div class="step" data-step="5">
+          <p class="q">When do you want to move?</p>
+          <p class="hint">An estimate is fine — you can change it later</p>
+          <label class="f" for="date">Move date</label>
+          <input class="in" type="date" id="date" name="moveDate">
+          <label class="check"><input type="checkbox" id="flex" name="flexible" value="Yes"> My date is flexible</label>
+          <div class="err" id="e5"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="button" class="btn go next">Continue</button></div>
+        </div>
+
+        <div class="step" data-step="6">
+          <p class="q">Where should we send your quote?</p>
+          <p class="hint">We'll text or call you — usually within the hour</p>
+          <div class="row2">
+            <div><label class="f" for="fn">First name</label><input class="in" id="fn" name="firstName" autocomplete="given-name"></div>
+            <div><label class="f" for="ln">Last name</label><input class="in" id="ln" name="lastName" autocomplete="family-name"></div>
+          </div>
+          <label class="f" for="ph">Mobile phone</label>
+          <input class="in" id="ph" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555">
+          <label class="f" for="em">Email <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <input class="in" id="em" name="email" type="email" autocomplete="email">
+          <label class="check"><input type="checkbox" id="consent" checked> By submitting, I agree Hercules Local Movers may call or text me about my move at the number provided. Msg &amp; data rates may apply. Reply STOP to opt out.</label>
+          <div class="err" id="e6"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="submit" class="btn go" id="send">Get My Free Quote</button></div>
+          <p class="fine">See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a> and <a href="terms.html" target="_blank" rel="noopener">terms</a>.</p>
+        </div>
+
+        <div class="step" data-step="7">
+          <div class="done">
+            <div class="tick">✓</div>
+            <p class="q">Got it — your quote request is in!</p>
+            <p class="hint">We'll call or text you shortly. Need it faster?</p>
+            <a class="btn go js-call" style="display:inline-block;text-decoration:none;padding:14px 22px" href="tel:+17543542008">Call (754) 354-2008</a>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <ul class="lp-chips">
+      <li>🏆 Top 3 Thumbtack mover in Miami searches</li>
+      <li>⭐ 5-star reviews on Google &amp; Thumbtack</li>
+      <li>💵 No hidden fees</li>
+      <li>📦 No weight minimums</li>
+      <li>🕡 Open 7 days, 6:30 AM – 10 PM</li>
+    </ul>
+    <p class="lp-areas">Serving Miami-Dade, Broward &amp; Palm Beach counties · Florida-origin moves to anywhere in the U.S.</p>
+  </div>
+</section>
+
+<section class="lp-proof">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--orange);font-weight:700;font-size:.82rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Ranked among the best</div>
+    <h2 style="font-size:clamp(1.6rem,3.6vw,2.2rem);color:var(--navy);text-transform:uppercase">A Top 3 Mover in South Florida</h2>
+    <div class="grid">
+      <div class="lp-stat hero-stat">
+        <div class="lp-trophy" aria-hidden="true"><i class="fas fa-trophy"></i></div>
+        <div class="k">Thumbtack ranking</div>
+        <div class="big">Top 3</div>
+        <p>Hercules ranked in the <strong>Top 3 movers</strong> in more than half of Miami customer searches on Thumbtack last month.</p>
+      </div>
+      <div class="lp-stat">
+        <div class="k">We answer fast</div>
+        <div class="big">47 <small>min</small></div>
+        <div class="lp-bars" aria-label="Average response time comparison">
+          <div class="lp-bar us"><span>Hercules</span><i><b style="width:53%"></b></i><span>47 min</span></div>
+          <div class="lp-bar them"><span>Average pro</span><i><b style="width:100%"></b></i><span>89 min</span></div>
+        </div>
+        <p>Nearly <strong>2× faster</strong> than the average mover.</p>
+      </div>
+      <div class="lp-stat">
+        <div class="k">Customers say</div>
+        <div class="big" style="color:#F5A623;letter-spacing:3px">★★★★★</div>
+        <p>“The best moving experience I have ever had!” — <strong>Daniel Daoust, Google</strong></p>
+      </div>
+    </div>
+    <p class="lp-src">Ranking and response times from Thumbtack's pro performance report for Hercules Local Movers (Miami), past 30 days.</p>
+  </div>
+</section>
+
+<section class="s">
+  <div class="wrap">
+    <div class="eyebrow">See us in action</div>
+    <h2>Watch Hercules Move</h2>
+    <p class="sub">What a Hercules move looks like.</p>
+    <div class="lp-videos">
+      <!-- To add a video: drop an H.264 .mp4 (+ a .jpg poster frame) in /videos,
+           then copy this <figure> and change the two file names and the caption. -->
+      <figure class="lp-video" style="margin:0">
+        <div class="ratio"><video controls playsinline preload="none" poster="videos/hercules-move-1.jpg"><source src="videos/hercules-move-1.mp4" type="video/mp4">Your browser can't play this video.</video></div>
+        <figcaption>“They arrived right at nine, just as promised.” <span style="font-weight:400;color:var(--muted)">· Dramatization of a customer review</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="s alt">
+  <div class="wrap">
+    <div class="eyebrow">Verified customer reviews</div>
+    <h2>Real People. Real Moves.</h2>
+    <p class="sub">What our customers say on Google and Thumbtack.</p>
+    <div class="cols">
+      <div class="box rev"><div class="stars">★★★★★</div><q>The best moving experience I have ever had!</q><div class="who">Daniel Daoust · Google</div></div>
+      <div class="box rev"><div class="stars">★★★★★</div><q>Unreal job. Careful, efficient, and seamless communication and scheduling. Couldn't ask for a better moving company.</q><div class="who">Brooke Petrovic · Google</div></div>
+      <div class="box rev"><div class="stars">★★★★★</div><q>Incredibly efficient, careful, and professional throughout the entire move.</q><div class="who">Natasha S. · Thumbtack</div></div>
+      <div class="box rev"><div class="stars">★★★★★</div><q>I was nervous and overwhelmed and they were patient and walked me through the entire process… they were fast, efficient and took care of my stuff beautifully.</q><div class="who">Diana H. · Thumbtack</div></div>
+      <div class="box rev"><div class="stars">★★★★★</div><q>Great company — very responsive, professional and friendly. Would recommend them to anyone.</q><div class="who">Tracy Larrimer · Google</div></div>
+      <div class="box rev"><div class="stars">★★★★★</div><q>The Owner was great and kept in touch with me. The movers were patient and did a great job.</q><div class="who">Donna · Google</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="s">
+  <div class="wrap">
+    <div class="eyebrow">Simple process</div>
+    <h2>How It Works</h2>
+    <div class="cols stepsx">
+      <div class="box"><h3>Request your quote</h3><p>Answer six quick questions above — it takes under a minute.</p></div>
+      <div class="box"><h3>Get your price</h3><p>We call or text you with upfront, all-inclusive pricing and open dates.</p></div>
+      <div class="box"><h3>Book &amp; relax</h3><p>Pick your date and arrival window. Our crew handles the rest.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="s alt">
+  <div class="wrap">
+    <div class="eyebrow">Why Hercules</div>
+    <h2>Why Customers Choose Us</h2>
+    <div class="cols">
+      <div class="box"><h3>No hidden fees</h3><p>We quote accurately and include all fees in your quote — no surprises on moving day.</p></div>
+      <div class="box"><h3>No weight minimums</h3><p>Small moves pay for what they move, not for weight they don't have.</p></div>
+      <div class="box"><h3>No size minimums</h3><p>You're never charged for truck space you aren't using.</p></div>
+      <div class="box"><h3>Licensed &amp; insured</h3><p>Registered Florida mover (IM150012) · USDOT 8486147.</p></div>
+      <div class="box"><h3>Big or small, same service</h3><p>A studio gets the same care and crew as a four-bedroom home.</p></div>
+      <div class="box"><h3>Open 7 days</h3><p>6:30 AM – 10:00 PM, every day. Call or text anytime.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="s">
+  <div class="wrap">
+    <div class="eyebrow">Service areas</div>
+    <h2>Miami to West Palm Beach</h2>
+    <p class="sub">Local moves anywhere in South Florida, plus long-distance moves from Florida to anywhere in the U.S.</p>
+    <div class="cols areas">
+      <div class="box"><h3>Miami-Dade</h3><ul><li>Miami</li><li>Miami Beach</li><li>Brickell</li><li>Coral Gables</li><li>Doral</li><li>Hialeah</li><li>Kendall</li><li>Aventura</li><li>Homestead</li><li>North Miami</li></ul></div>
+      <div class="box"><h3>Broward</h3><ul><li>Fort Lauderdale</li><li>Hollywood</li><li>Pembroke Pines</li><li>Miramar</li><li>Weston</li><li>Plantation</li><li>Davie</li><li>Sunrise</li><li>Coral Springs</li><li>Pompano Beach</li></ul></div>
+      <div class="box"><h3>Palm Beach</h3><ul><li>West Palm Beach</li><li>Boca Raton</li><li>Delray Beach</li><li>Boynton Beach</li><li>Lake Worth</li><li>Wellington</li><li>Jupiter</li><li>Palm Beach Gardens</li><li>Royal Palm Beach</li><li>Palm Beach</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="s alt">
+  <div class="wrap" style="max-width:820px">
+    <div class="eyebrow">Got questions?</div>
+    <h2>Frequently Asked Questions</h2>
+    <details><summary>Are you licensed and insured?</summary><p>Yes. Hercules Local Movers is registered with the State of Florida as a Mover (Registration No. IM150012), USDOT 8486147, and fully insured.</p></details>
+    <details><summary>How fast will I get my quote?</summary><p>We usually reach out within the hour during business hours (7 days, 6:30 AM – 10 PM). For the fastest answer, call (754) 354-2008.</p></details>
+    <details><summary>Are there any hidden fees?</summary><p>No. We quote accurately and all fees are included in your quote.</p></details>
+    <details><summary>Do you do small moves?</summary><p>Yes — we have no weight or size minimums, so you only pay for what you actually move.</p></details>
+    <details><summary>Which areas do you serve?</summary><p>Local moves throughout Miami-Dade, Broward and Palm Beach counties, and long-distance moves that start in Florida and go anywhere in the U.S.</p></details>
+  </div>
+</section>
+
+<section class="lp-cta">
+  <div class="wrap">
+    <h2>Ready to Move?</h2>
+    <p>Get your free quote in under 60 seconds. No obligation.</p>
+    <a class="lp-btn go" href="#estimate">Get My Free Quote</a>
+    <a class="lp-btn ghost js-call" href="tel:+17543542008">Call (754) 354-2008</a>
+  </div>
+</section>
+</main>
+
+<footer class="lp-foot">
+  <div class="wrap">
+    <p><strong>Hercules Local Movers</strong> · Serving Miami-Dade, Broward &amp; Palm Beach · <a href="tel:+17543542008">(754) 354-2008</a></p>
+    <p>Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012. USDOT 8486147. Licensed &amp; Insured.</p>
+    <p><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms and Conditions</a></p>
+  </div>
+</footer>
+
+<nav class="lp-mbar" aria-label="Quick contact">
+  <a class="c1 js-call" href="tel:+17543542008"><i class="fas fa-phone"></i> Call Now</a>
+  <a class="c2" href="#estimate"><i class="fas fa-calculator"></i> Free Quote</a>
+</nav>
+
+
+
+<script>
+// /quote form: 6 tap-through steps, emailed to herculesmoversfl@gmail.com via
+// FormSubmit (same inbox as the rest of the site), then a Meta "Lead" and the
+// Google Ads "Request quote" conversion fire with the same reference ID.
+(function () {
+  "use strict";
+  var ENDPOINT = "https://formsubmit.co/ajax/herculesmoversfl@gmail.com";
+  var GADS_SEND_TO = "AW-18375543247/QlvXCJ_a8uMcEM-TkrpE";
+  var TOTAL = 6;
+
+  // Where the visitor came from (ad URL tags), kept for the whole visit.
+  var src = {};
+  try {
+    var p = new URLSearchParams(location.search);
+    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"].forEach(function (k) {
+      if (p.get(k)) src[k] = p.get(k);
+    });
+    if (Object.keys(src).length) sessionStorage.setItem("hq_src", JSON.stringify(src));
+    else src = JSON.parse(sessionStorage.getItem("hq_src") || "{}") || {};
+  } catch (e) {}
+
+  function track() { if (typeof fbq === "function") fbq.apply(null, arguments); }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".js-call"), function (a) {
+    a.addEventListener("click", function () {
+      track("track", "Contact");
+      if (typeof gtag === "function") gtag("event", "click_to_call");
+    });
+  });
+
+  var form = document.getElementById("qf");
+  var data = {};
+  var cur = 1;
+  var started = false;
+
+  function show(n) {
+    cur = n;
+    Array.prototype.forEach.call(form.querySelectorAll(".step"), function (s) {
+      s.classList.toggle("active", +s.getAttribute("data-step") === n);
+    });
+    document.getElementById("bar").style.width = (Math.min(n, TOTAL) / TOTAL) * 100 + "%";
+    document.getElementById("stepnum").textContent = n <= TOTAL ? "Step " + n + " of " + TOTAL : "Done";
+    var f = form.querySelector(".step.active input.in");
+    if (f && window.innerWidth > 700) f.focus();
+  }
+
+  Array.prototype.forEach.call(form.querySelectorAll(".choices"), function (group) {
+    group.addEventListener("click", function (e) {
+      var b = e.target.closest(".choice");
+      if (!b) return;
+      Array.prototype.forEach.call(group.querySelectorAll(".choice"), function (x) { x.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      data[group.getAttribute("data-field")] = b.getAttribute("data-value");
+      if (!started) { started = true; track("trackCustom", "QuoteStarted"); }
+      setTimeout(function () { show(cur + 1); }, 160);
+    });
+  });
+
+  Array.prototype.forEach.call(form.querySelectorAll(".back"), function (b) {
+    b.addEventListener("click", function () { show(Math.max(1, cur - 1)); });
+  });
+
+  function need(id, errId, msg) {
+    var v = document.getElementById(id).value.trim();
+    document.getElementById(errId).textContent = v ? "" : msg;
+    return v;
+  }
+
+  Array.prototype.forEach.call(form.querySelectorAll(".next"), function (b) {
+    b.addEventListener("click", function () {
+      if (cur === 2) { var f = need("from", "e2", "Please enter a city or ZIP."); if (!f) return; data.from = f; }
+      if (cur === 3) { var t = need("to", "e3", "Please enter a city, ZIP or state."); if (!t) return; data.to = t; }
+      if (cur === 5) {
+        var d = document.getElementById("date").value, fl = document.getElementById("flex").checked;
+        if (!d && !fl) { document.getElementById("e5").textContent = "Pick a date, or tick “flexible”."; return; }
+        document.getElementById("e5").textContent = "";
+        data.moveDate = d || "Flexible";
+        data.flexible = fl ? "Yes" : "No";
+      }
+      show(cur + 1);
+    });
+  });
+
+  ["from", "to", "date"].forEach(function (id) {
+    document.getElementById(id).addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); var n = form.querySelector(".step.active .next"); if (n) n.click(); }
+    });
+  });
+  var today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  document.getElementById("date").min = today.toISOString().slice(0, 10);
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = document.getElementById("e6");
+    var fn = document.getElementById("fn").value.trim();
+    var ln = document.getElementById("ln").value.trim();
+    var ph = document.getElementById("ph").value.trim();
+    var em = document.getElementById("em").value.trim();
+    if (!fn) { err.textContent = "Please enter your first name."; return; }
+    if (ph.replace(/\D/g, "").length < 10) { err.textContent = "Please enter a valid phone number."; return; }
+    if (em && !/^\S+@\S+\.\S+$/.test(em)) { err.textContent = "Please check your email address."; return; }
+    if (!document.getElementById("consent").checked) { err.textContent = "Please agree so we can contact you with your quote."; return; }
+    if (form._honey.value) return; // bot
+    err.textContent = "";
+
+    var ref = "HQ-" + Date.now().toString(36).toUpperCase();
+    var source = [src.utm_source, src.utm_campaign, src.utm_content].filter(Boolean).join(" / ") ||
+      (src.fbclid ? "facebook (untagged)" : src.gclid ? "google ads" : "Direct / unknown");
+
+    var payload = {
+      "_subject": "New quote request: " + fn + " " + ln + " — " + (data.from || "") + " → " + (data.to || "") + " (" + source + ")",
+      "_template": "table",
+      "_captcha": "false",
+      "Name": (fn + " " + ln).trim(),
+      "Phone": ph,
+      "Email": em || "—",
+      "Move type": data.moveType || "—",
+      "Moving from": data.from || "—",
+      "Moving to": data.to || "—",
+      "Home size": data.homeSize || "—",
+      "Move date": data.moveDate || "—",
+      "Date flexible": data.flexible || "—",
+      "Lead source": source,
+      "Page": location.origin + location.pathname,
+      "Facebook click ID": src.fbclid || "—",
+      "Google click ID": src.gclid || "—",
+      "Reference": ref
+    };
+    if (em) payload._replyto = em;
+
+    var btn = document.getElementById("send");
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+
+    fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    })
+      .then(function (r) {
+        return r.json().then(function (j) {
+          if (!r.ok || String(j.success) !== "true") throw new Error(j.message || "Send failed");
+        });
+      })
+      .then(function () {
+        track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
+        if (typeof gtag === "function") gtag("event", "conversion", { send_to: GADS_SEND_TO, transaction_id: ref });
+        show(7);
+      })
+      .catch(function (ex) {
+        if (window.console) console.error("Quote form send failed:", ex);
+        btn.disabled = false;
+        btn.textContent = "Get My Free Quote";
+        err.innerHTML = 'Something went wrong sending your request. Please call <a href="tel:+17543542008">(754) 354-2008</a> and we\'ll quote you right away.';
+      });
+  });
+})();
+</script>
+</body>
+</html>
