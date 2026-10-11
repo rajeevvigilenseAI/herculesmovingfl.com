@@ -135,6 +135,7 @@ window.HerculesBooking = window.HerculesBooking || {};
       " shortly to confirm everything below and lock in your crew.";
 
     fields["Your Reference"] = reference;
+    add(fields, "Source", leadSourceLabel());
     add(fields, "Move Date", niceDate(payload.moveDate));
     add(fields, "Arrival Window", trim(payload.arrivalWindow));
     add(fields, "Moving From", formatAddress(payload.origin));
@@ -175,6 +176,17 @@ window.HerculesBooking = window.HerculesBooking || {};
       "Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012. Fla. Mover Reg. No. IM150012. A written estimate and contract must be signed and dated by both you and Hercules Movers before any moving services are provided.";
 
     return fields;
+  }
+
+  // Short channel tag for the office, e.g. "facebook · hercules_direct · ad name".
+  // Blank (and omitted from the email) for visitors who didn't arrive via a tagged link.
+  function leadSourceLabel() {
+    var hb = window.HerculesBooking;
+    var src = hb && typeof hb.leadSource === "function" ? hb.leadSource() : {};
+    var parts = [src.utm_source, src.utm_campaign, src.utm_content].filter(Boolean);
+    if (!parts.length && src.fbclid) parts.push("facebook (untagged)");
+    if (!parts.length && src.gclid) parts.push("google ads");
+    return parts.join(" · ");
   }
 
   function add(fields, label, value) {

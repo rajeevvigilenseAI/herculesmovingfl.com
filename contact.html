@@ -139,21 +139,18 @@
                             <div class="col-sm-8 form-left" data-scroll-reveal="wait .5s enter right over 1s and move 1000px">
                                 <p>Contact Your Local Movers</p>
                                 
-                                <!-- TODO: Replace with Formspree endpoint -->
-                                <form id="inquiry" action="#" method="post" name="ContactForm">
-                                <input name="env_report" type="hidden" value="REMOTE_HOST,REMOTE_ADDR,HTTP_USER_AGENT,AUTH_TYPE,REMOTE_USER" /> 
-                                <input name="recipients" type="hidden" value="excellentmoversfl@gmail.com" /> 
-                                        <input type="hidden" name="mail_options" value="Exclude=email;realname;" /> 
-                                        <input name="subject" type="hidden" value="Customer Inquiry Hercules Local Movers" /> 
-                                        <input name="good_url" type="hidden" value="thankyou.html" /> 
-                                        <input name="Origin" type="hidden" value="contact.html" />
+                                            <form id="inquiry" action="https://formsubmit.co/herculesmoversfl@gmail.com" method="post" name="ContactForm">
+                    <input type="hidden" name="_subject" value="Customer Inquiry Hercules Local Movers" />
+                    <input type="hidden" name="_next" value="https://herculesmovingfl.com/thankyou.html" />
+                    <input type="hidden" name="_captcha" value="false" />
+                    <input type="hidden" name="_template" value="table" />
+                    <input type="hidden" name="Page" value="contact.html" />
+                    <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" />
                                     <fieldset>
                                     <div class="inline">
                                         <div>Full Name*<br /> <input name="Name" type="text"  required /></div>
                                         <div>E-Mail*<br /> <input name="Email" type="email"  required /></div>
                                         <div>Phone*<br /> <input name="Phone" type="text"  required /></div>
-                                        <div class="reverse">E-Mail2*<br /> <input name="cfld1" value="q7ga" type="text" /></div>
-                                        <div class="reverse">Phone2*<br /> <input name="cfld2" type="text" /></div>
                                    </div>
                                     
                                     <div class="inline2">
