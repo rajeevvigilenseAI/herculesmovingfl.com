@@ -24,14 +24,7 @@ fbq('track','PageView');
 </script>
 <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1092095600098380&ev=PageView&noscript=1"></noscript>
 
-<!-- Google tag (gtag.js) — same Google Ads account as the rest of the site -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18375543247"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-18375543247');
-</script>
+<!-- No Google tags on this page: it is reserved for Facebook/Instagram ad traffic. -->
 
 <style>
 /* Landing-page shell. The estimate card itself is styled by home-quote.css,
@@ -419,12 +412,11 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 
 <script>
 // /quote form: 6 tap-through steps, emailed to herculesmoversfl@gmail.com via
-// FormSubmit (same inbox as the rest of the site), then a Meta "Lead" and the
-// Google Ads "Request quote" conversion fire with the same reference ID.
+// FormSubmit (same inbox as the rest of the site), then a Meta "Lead" fires
+// with the same reference ID. Facebook/Instagram ads only: no Google tags here.
 (function () {
   "use strict";
   var ENDPOINT = "https://formsubmit.co/ajax/herculesmoversfl@gmail.com";
-  var GADS_SEND_TO = "AW-18375543247/QlvXCJ_a8uMcEM-TkrpE";
   var TOTAL = 6;
 
   // Where the visitor came from (ad URL tags), kept for the whole visit.
@@ -443,7 +435,6 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
   Array.prototype.forEach.call(document.querySelectorAll(".js-call"), function (a) {
     a.addEventListener("click", function () {
       track("track", "Contact");
-      if (typeof gtag === "function") gtag("event", "click_to_call");
     });
   });
 
@@ -564,7 +555,6 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
       })
       .then(function () {
         track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
-        if (typeof gtag === "function") gtag("event", "conversion", { send_to: GADS_SEND_TO, transaction_id: ref });
         show(7);
       })
       .catch(function (ex) {
