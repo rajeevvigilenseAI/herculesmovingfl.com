@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>South Florida's Most Trusted Local Movers | Free Estimate — Hercules Local Movers</title>
+<title>South Florida's Most Trusted Local Movers | Free Quote — Hercules Local Movers</title>
 <meta name="description" content="Licensed South Florida movers serving Miami-Dade, Broward and Palm Beach. No weight minimums, no hidden fees. Get your instant moving estimate.">
 <!-- Paid-ads landing page: kept out of search results, the sitemap and the site menu. -->
 <meta name="robots" content="noindex, nofollow">
@@ -11,8 +11,6 @@
 <link rel="apple-touch-icon" href="images/favicon.png">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700|Oswald:500,600,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="book-move.css">
-<link rel="stylesheet" href="home-quote.css">
 
 <!-- Meta Pixel: Hercules Direct (Regal Lifestyle LLC) -->
 <script>
@@ -62,10 +60,44 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 .lp-chips li{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px;font-size:.92rem}
 .lp-areas{margin:14px 0 0;font-size:.95rem;color:#B9C8DE}
 
-/* Homepage widget, un-overlaid: same card, sitting in normal page flow. */
-.lp .hero-quote-overlay{position:static;top:auto;right:auto;transform:none;width:100%;max-width:780px;margin:0 auto;animation:none;text-align:left;scroll-margin-top:76px}
-.lp .hero-quote-card{max-height:none;overflow:visible}
-@media(max-width:1199px){.lp .hero-quote-overlay{width:100%;max-width:560px}}
+/* 6-step quote card */
+.lp .card{background:#fff;color:var(--ink);border-radius:14px;box-shadow:0 18px 50px rgba(5,15,35,.35);padding:22px;border-top:5px solid var(--orange);max-width:560px;margin:0 auto;text-align:left;scroll-margin-top:80px}
+.lp .card h2{font-size:1.7rem;color:var(--navy);margin-bottom:2px}
+.lp .card .sub{color:var(--muted);font-size:.95rem;margin:0 0 14px}
+.lp .progress{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0}
+.lp .progress i{display:block;height:100%;width:16.6%;background:var(--orange);transition:width .3s}
+.lp .stepnum{font-size:.8rem;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:12px}
+.lp .step{display:none}
+.lp .step.active{display:block;animation:lpfade .25s ease}
+@keyframes lpfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.lp .q{font-family:Oswald,sans-serif;font-size:1.35rem;color:var(--navy);margin:0 0 4px}
+.lp .hint{color:var(--muted);font-size:.92rem;margin:0 0 12px}
+.lp .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lp .choices.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:420px){.lp .choices.three{grid-template-columns:1fr 1fr}}
+.lp .choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px 10px;text-align:left;cursor:pointer;font:inherit;color:var(--ink);transition:border-color .15s,background .15s}
+.lp .choice b{display:block;font-size:1.05rem}
+.lp .choice small{color:var(--muted);font-size:.85rem}
+.lp .choice:hover,.lp .choice:focus-visible{border-color:var(--orange);outline:none}
+.lp .choice[aria-pressed="true"]{border-color:var(--orange);background:#FFF5EC}
+.lp label.f{display:block;font-weight:700;font-size:.92rem;margin:10px 0 6px}
+.lp input.in{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.lp input.in:focus{border-color:var(--orange);outline:none}
+.lp .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.lp .row2{grid-template-columns:1fr}}
+.lp .err{color:#C0392B;font-size:.9rem;min-height:1.2em;margin-top:6px}
+.lp .nav{display:flex;gap:10px;margin-top:14px}
+.lp .btn{flex:1;border:0;border-radius:12px;padding:15px 16px;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer}
+.lp .btn.go{background:var(--orange);color:#fff}
+.lp .btn.go:hover{background:var(--orange-d)}
+.lp .btn.go[disabled]{opacity:.6;cursor:wait}
+.lp .btn.back{flex:0 0 auto;background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.lp .check{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:var(--muted);margin-top:10px}
+.lp .check input{margin-top:3px}
+.lp .fine{font-size:.8rem;color:var(--muted);margin-top:10px}
+.lp .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.lp .done{text-align:center;padding:10px 0}
+.lp .done .tick{width:56px;height:56px;border-radius:50%;background:#E8F7EE;color:#1F9D55;display:grid;place-items:center;margin:0 auto 10px;font-size:28px}
 
 .lp section.s{padding:52px 0}
 .lp section.alt{background:var(--bg)}
@@ -145,104 +177,95 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
   <div class="wrap">
     <span class="lp-pill">Licensed &amp; Insured · FL Mover Reg. IM150012</span>
     <h1>South Florida's <em>Most Trusted</em> Local Movers</h1>
-    <p class="lead">Apartments, condos and homes — from Miami to West Palm Beach. Get an instant estimate and reserve your move right here.</p>
+    <p class="lead">Apartments, condos and homes — from Miami to West Palm Beach. Get your free moving quote in under 60 seconds.</p>
 
-<div class="hero-quote-overlay">
-                    <div class="hero-quote-card" id="estimate">
-                        <span class="hq-badge"><i class="fas fa-bolt"></i> Free &amp; Instant</span>
+<div class="card" id="estimate">
+      <h2>Get Your Free Moving Quote</h2>
+      <p class="sub">No obligation · Takes less than 60 seconds</p>
+      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+      <div class="stepnum" id="stepnum">Step 1 of 6</div>
 
-                        <!-- Step 1: quote -->
-                        <form id="hq-step-quote" class="hq-step active" novalidate>
-                            <h3><i class="fas fa-calculator"></i> Get Your Moving Estimate</h3>
-                            <p class="hq-sub">A city, ZIP, or full address all work. Reserve your move in one visit, right here.</p>
-                            <div class="hq-row">
-                                <div class="hq-pair">
-                                    <div class="hq-field"><label for="hqOriginCity">Moving From</label><input id="hqOriginCity" name="origin-address" value="Miami" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
-                                    <div class="hq-field small"><label for="hqOriginState">State</label><input id="hqOriginState" name="origin-state" maxlength="2" value="FL" placeholder="FL" autocomplete="address-level1"></div>
-                                </div>
-                                <div class="hq-pair">
-                                    <div class="hq-field"><label for="hqDestCity">Moving To</label><input id="hqDestCity" name="destination-address" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
-                                    <div class="hq-field small"><label for="hqDestState">State</label><input id="hqDestState" name="destination-state" maxlength="2" value="FL" placeholder="FL" autocomplete="address-level1"></div>
-                                </div>
-                            </div>
-                            <div class="hq-row">
-                                <div class="hq-field">
-                                    <label for="hqHomeSize">How Much Are You Moving?</label>
-                                    <select id="hqHomeSize">
-                                        <option value="">Select</option>
-                                    </select>
-                                </div>
-                                <div class="hq-field">
-                                    <label for="hqDistanceBand">Distance</label>
-                                    <select id="hqDistanceBand"></select>
-                                </div>
-                            </div>
-                            <p class="hq-error" id="hq-error-quote"></p>
-                            <button type="submit" class="hq-submit"><i class="fas fa-truck-moving"></i> Get My Free Estimate</button>
-                            <p class="hq-note"><i class="fas fa-shield-alt"></i> Florida-origin moves. Destination anywhere in the U.S.</p>
-                        </form>
+      <form id="qf" novalidate>
+        <div class="hp" aria-hidden="true"><label>Leave empty <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
 
-                        <!-- Step 2: estimate + date/window -->
-                        <div id="hq-step-schedule" class="hq-step">
-                            <h3><i class="fas fa-check-circle"></i> Your Estimate</h3>
-                            <p class="hq-result-route" id="hq-result-route"></p>
-                            <div class="hq-result-stats">
-                                <div><span>Estimated Time</span><strong id="hq-result-hours"></strong></div>
-                                <div><span>Estimated Price</span><strong id="hq-result-price"></strong></div>
-                            </div>
-                            <p class="hq-surcharge-note" id="hq-cap-note" hidden>This estimate includes the first 8 hours. Additional time is billed hourly. Contact us for a full long-distance quote.</p>
-                            <div class="hq-row hq-row-schedule">
-                                <div class="hq-field"><label for="hqMoveDate2">Preferred Move Date</label><input id="hqMoveDate2" type="date"></div>
-                                <div class="hq-field">
-                                    <label class="hq-label-block">Preferred Arrival Time</label>
-                                    <div class="hq-window-grid" id="hq-window-grid"></div>
-                                </div>
-                            </div>
-                            <p class="hq-error" id="hq-error-schedule"></p>
-                            <button type="button" class="hq-submit" id="hq-to-contact"><i class="fas fa-calendar-check"></i> Continue</button>
-                            <button type="button" class="hq-link" id="hq-back-quote">Edit locations</button>
-                        </div>
+        <div class="step active" data-step="1">
+          <p class="q">What type of move are you planning?</p>
+          <p class="hint">Tap one to continue</p>
+          <div class="choices" data-field="moveType">
+            <button type="button" class="choice" data-value="Local"><b>🏙️ Local move</b><small>Within South Florida</small></button>
+            <button type="button" class="choice" data-value="Long distance"><b>🛣️ Long distance</b><small>50+ miles / out of state</small></button>
+          </div>
+        </div>
 
-                        <!-- Step 3: contact + confirm -->
-                        <div id="hq-step-contact" class="hq-step">
-                            <h3><i class="fas fa-user"></i> Almost Done</h3>
-                            <p class="hq-sub">Enter your details to confirm this appointment.</p>
-                            <div class="hq-row">
-                                <div class="hq-field"><label for="hqFirstName">First Name</label><input id="hqFirstName" autocomplete="given-name"></div>
-                                <div class="hq-field"><label for="hqLastName">Last Name</label><input id="hqLastName" autocomplete="family-name"></div>
-                            </div>
-                            <div class="hq-row">
-                                <div class="hq-field"><label for="hqPhone">Mobile Phone</label><input id="hqPhone" type="tel" autocomplete="tel" placeholder="(754) 354-2008"></div>
-                                <div class="hq-field"><label for="hqEmail">Email</label><input id="hqEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
-                            </div>
-                            <input id="hqWebsite" class="reverse" tabindex="-1" autocomplete="off">
-                            <p class="hq-error" id="hq-error-contact"></p>
-                            <button type="button" class="hq-submit" id="hq-confirm"><i class="fas fa-check"></i> Confirm Appointment</button>
-                            <p class="hq-legal">By confirming, you agree to our <button type="button" class="terms-link" data-open-terms>Terms and Conditions</button> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. You also consent to calls, texts, and emails from Hercules Movers about your estimate and move. Message and data rates may apply. Reply STOP to opt out of texts.</p>
-                            <button type="button" class="hq-link" id="hq-back-schedule">Back</button>
-                        </div>
+        <div class="step" data-step="2">
+          <p class="q">Where are you moving from?</p>
+          <p class="hint">City or ZIP code is fine</p>
+          <label class="f" for="from">Moving from</label>
+          <input class="in" id="from" name="from" autocomplete="address-level2" placeholder="e.g. Fort Lauderdale or 33301">
+          <div class="err" id="e2"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="button" class="btn go next">Continue</button></div>
+        </div>
 
-                        <!-- Step 4: confirmation -->
-                        <div id="hq-step-done" class="hq-step">
-                            <div class="hq-confirm">
-                                <h3><i class="fas fa-check-circle"></i> Your Move Is Reserved!</h3>
-                                <p class="hq-confirm-ref" id="hq-confirm-ref"></p>
-                                <div class="hq-result-stats">
-                                    <div><span>Move Date</span><strong id="hq-confirm-date"></strong></div>
-                                    <div><span>Arrival Window</span><strong id="hq-confirm-window"></strong></div>
-                                </div>
-                                <div class="hq-result-stats">
-                                    <div><span>Estimated Time</span><strong id="hq-confirm-hours"></strong></div>
-                                    <div><span>Estimated Price</span><strong id="hq-confirm-price"></strong></div>
-                                </div>
-                                <p class="hq-confirm-note" id="hq-confirm-review" hidden>Because of the details you shared, our team will personally review your move before it's finalized.</p>
-                                <p class="hq-confirm-note" id="hq-confirm-email">A confirmation email is on its way. Need to make a change or cancel? Just reply to that email.</p>
-                                <p class="hq-confirm-note">Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012. A written estimate and contract must be signed and dated by both of us before moving services begin.</p>
-                                <p class="hq-confirm-note" id="hq-confirm-callback" hidden>We've emailed you a copy of these details, and our team will call you shortly to confirm. To change or cancel, reply to that email or call <a href="tel:+17543542008">1 (754) 354-2008</a>.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="step" data-step="3">
+          <p class="q">Where are you moving to?</p>
+          <p class="hint">City, ZIP or state</p>
+          <label class="f" for="to">Moving to</label>
+          <input class="in" id="to" name="to" placeholder="e.g. West Palm Beach or 33401">
+          <div class="err" id="e3"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="button" class="btn go next">Continue</button></div>
+        </div>
+
+        <div class="step" data-step="4">
+          <p class="q">How much are you moving?</p>
+          <p class="hint">Tap one to continue</p>
+          <div class="choices three" data-field="homeSize">
+            <button type="button" class="choice" data-value="Studio"><b>Studio</b></button>
+            <button type="button" class="choice" data-value="1 Bedroom"><b>1 Bedroom</b></button>
+            <button type="button" class="choice" data-value="2 Bedrooms"><b>2 Bedrooms</b></button>
+            <button type="button" class="choice" data-value="3 Bedrooms"><b>3 Bedrooms</b></button>
+            <button type="button" class="choice" data-value="4+ Bedrooms"><b>4+ Bedrooms</b></button>
+            <button type="button" class="choice" data-value="Office / Commercial"><b>Office</b><small>Commercial</small></button>
+          </div>
+          <div class="nav"><button type="button" class="btn back">Back</button></div>
+        </div>
+
+        <div class="step" data-step="5">
+          <p class="q">When do you want to move?</p>
+          <p class="hint">An estimate is fine — you can change it later</p>
+          <label class="f" for="date">Move date</label>
+          <input class="in" type="date" id="date" name="moveDate">
+          <label class="check"><input type="checkbox" id="flex" name="flexible" value="Yes"> My date is flexible</label>
+          <div class="err" id="e5"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="button" class="btn go next">Continue</button></div>
+        </div>
+
+        <div class="step" data-step="6">
+          <p class="q">Where should we send your quote?</p>
+          <p class="hint">We'll text or call you — usually within the hour</p>
+          <div class="row2">
+            <div><label class="f" for="fn">First name</label><input class="in" id="fn" name="firstName" autocomplete="given-name"></div>
+            <div><label class="f" for="ln">Last name</label><input class="in" id="ln" name="lastName" autocomplete="family-name"></div>
+          </div>
+          <label class="f" for="ph">Mobile phone</label>
+          <input class="in" id="ph" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555">
+          <label class="f" for="em">Email <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <input class="in" id="em" name="email" type="email" autocomplete="email">
+          <label class="check"><input type="checkbox" id="consent" checked> By submitting, I agree Hercules Local Movers may call or text me about my move at the number provided. Msg &amp; data rates may apply. Reply STOP to opt out.</label>
+          <div class="err" id="e6"></div>
+          <div class="nav"><button type="button" class="btn back">Back</button><button type="submit" class="btn go" id="send">Get My Free Quote</button></div>
+          <p class="fine">See our <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a> and <a href="terms.html" target="_blank" rel="noopener">terms</a>.</p>
+        </div>
+
+        <div class="step" data-step="7">
+          <div class="done">
+            <div class="tick">✓</div>
+            <p class="q">Got it — your quote request is in!</p>
+            <p class="hint">We'll call or text you shortly. Need it faster?</p>
+            <a class="btn go js-call" style="display:inline-block;text-decoration:none;padding:14px 22px" href="tel:+17543542008">Call (754) 354-2008</a>
+          </div>
+        </div>
+      </form>
+    </div>
 
     <ul class="lp-chips">
       <li>🏆 Top 3 Thumbtack mover in Miami searches</li>
@@ -322,9 +345,9 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     <div class="eyebrow">Simple process</div>
     <h2>How It Works</h2>
     <div class="cols stepsx">
-      <div class="box"><h3>Get your estimate</h3><p>Enter where you're moving from and to and how much you're moving. Your estimate appears instantly.</p></div>
-      <div class="box"><h3>Pick a date &amp; time</h3><p>Choose your move date and arrival window.</p></div>
-      <div class="box"><h3>We confirm</h3><p>Add your details to reserve. Our team calls you to confirm and lock in your crew.</p></div>
+      <div class="box"><h3>Request your quote</h3><p>Answer six quick questions above — it takes under a minute.</p></div>
+      <div class="box"><h3>Get your price</h3><p>We call or text you with upfront, all-inclusive pricing and open dates.</p></div>
+      <div class="box"><h3>Book &amp; relax</h3><p>Pick your date and arrival window. Our crew handles the rest.</p></div>
     </div>
   </div>
 </section>
@@ -362,7 +385,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     <div class="eyebrow">Got questions?</div>
     <h2>Frequently Asked Questions</h2>
     <details><summary>Are you licensed and insured?</summary><p>Yes. Hercules Local Movers is registered with the State of Florida as a Mover (Registration No. IM150012), USDOT 8486147, and fully insured.</p></details>
-    <details><summary>Is the online estimate my final price?</summary><p>It's an estimate based on your locations and home size. Final charges are governed by our Terms and Conditions, and a written estimate and contract are signed before any moving services begin.</p></details>
+    <details><summary>How fast will I get my quote?</summary><p>We usually reach out within the hour during business hours (7 days, 6:30 AM – 10 PM). For the fastest answer, call (754) 354-2008.</p></details>
     <details><summary>Are there any hidden fees?</summary><p>No. We quote accurately and all fees are included in your quote.</p></details>
     <details><summary>Do you do small moves?</summary><p>Yes — we have no weight or size minimums, so you only pay for what you actually move.</p></details>
     <details><summary>Which areas do you serve?</summary><p>Local moves throughout Miami-Dade, Broward and Palm Beach counties, and long-distance moves that start in Florida and go anywhere in the U.S.</p></details>
@@ -372,8 +395,8 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 <section class="lp-cta">
   <div class="wrap">
     <h2>Ready to Move?</h2>
-    <p>Get your instant estimate and reserve your date in minutes.</p>
-    <a class="lp-btn go" href="#estimate">Get My Free Estimate</a>
+    <p>Get your free quote in under 60 seconds. No obligation.</p>
+    <a class="lp-btn go" href="#estimate">Get My Free Quote</a>
     <a class="lp-btn ghost js-call" href="tel:+17543542008">Call (754) 354-2008</a>
   </div>
 </section>
@@ -389,41 +412,169 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 
 <nav class="lp-mbar" aria-label="Quick contact">
   <a class="c1 js-call" href="tel:+17543542008"><i class="fas fa-phone"></i> Call Now</a>
-  <a class="c2" href="#estimate"><i class="fas fa-calculator"></i> Free Estimate</a>
+  <a class="c2" href="#estimate"><i class="fas fa-calculator"></i> Free Quote</a>
 </nav>
 
-<div class="terms-modal" id="terms-modal" hidden>
-  <div class="terms-dialog" role="dialog" aria-labelledby="terms-title" aria-modal="true">
-    <button type="button" class="terms-close" id="terms-close" aria-label="Close">&times;</button>
-    <h2 id="terms-title">Terms and Conditions</h2>
-    <p class="terms-full-link"><a href="terms.html" target="_blank" rel="noopener">Open full Terms page</a></p>
-    <div class="terms-body" id="terms-body"></div>
-  </div>
-</div>
 
-<script src="js/booking/config.js"></script>
-<script src="js/booking/quote-core.js"></script>
-<script src="js/booking/fallback.js"></script>
-<script src="js/booking/api.js"></script>
-<script src="js/booking/terms-content.js"></script>
-<script src="js/booking/maps-loader.js"></script>
-<script src="js/booking/places-autocomplete.js"></script>
-<script src="js/booking/home-widget.js"></script>
+
 <script>
-  // Landing-page-only signals for Meta: someone started an estimate, or tapped to call.
-  (function () {
-    var started = false;
-    var quote = document.getElementById("hq-step-quote");
-    if (quote) quote.addEventListener("submit", function () {
-      if (!started && typeof fbq === "function") { started = true; fbq("trackCustom", "EstimateStarted"); }
-    }, true);
-    Array.prototype.forEach.call(document.querySelectorAll(".js-call"), function (a) {
-      a.addEventListener("click", function () {
-        if (typeof fbq === "function") fbq("track", "Contact");
-        if (typeof gtag === "function") gtag("event", "click_to_call");
-      });
+// /quote form: 6 tap-through steps, emailed to herculesmoversfl@gmail.com via
+// FormSubmit (same inbox as the rest of the site), then a Meta "Lead" and the
+// Google Ads "Request quote" conversion fire with the same reference ID.
+(function () {
+  "use strict";
+  var ENDPOINT = "https://formsubmit.co/ajax/herculesmoversfl@gmail.com";
+  var GADS_SEND_TO = "AW-18375543247/QlvXCJ_a8uMcEM-TkrpE";
+  var TOTAL = 6;
+
+  // Where the visitor came from (ad URL tags), kept for the whole visit.
+  var src = {};
+  try {
+    var p = new URLSearchParams(location.search);
+    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"].forEach(function (k) {
+      if (p.get(k)) src[k] = p.get(k);
     });
-  })();
+    if (Object.keys(src).length) sessionStorage.setItem("hq_src", JSON.stringify(src));
+    else src = JSON.parse(sessionStorage.getItem("hq_src") || "{}") || {};
+  } catch (e) {}
+
+  function track() { if (typeof fbq === "function") fbq.apply(null, arguments); }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".js-call"), function (a) {
+    a.addEventListener("click", function () {
+      track("track", "Contact");
+      if (typeof gtag === "function") gtag("event", "click_to_call");
+    });
+  });
+
+  var form = document.getElementById("qf");
+  var data = {};
+  var cur = 1;
+  var started = false;
+
+  function show(n) {
+    cur = n;
+    Array.prototype.forEach.call(form.querySelectorAll(".step"), function (s) {
+      s.classList.toggle("active", +s.getAttribute("data-step") === n);
+    });
+    document.getElementById("bar").style.width = (Math.min(n, TOTAL) / TOTAL) * 100 + "%";
+    document.getElementById("stepnum").textContent = n <= TOTAL ? "Step " + n + " of " + TOTAL : "Done";
+    var f = form.querySelector(".step.active input.in");
+    if (f && window.innerWidth > 700) f.focus();
+  }
+
+  Array.prototype.forEach.call(form.querySelectorAll(".choices"), function (group) {
+    group.addEventListener("click", function (e) {
+      var b = e.target.closest(".choice");
+      if (!b) return;
+      Array.prototype.forEach.call(group.querySelectorAll(".choice"), function (x) { x.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      data[group.getAttribute("data-field")] = b.getAttribute("data-value");
+      if (!started) { started = true; track("trackCustom", "QuoteStarted"); }
+      setTimeout(function () { show(cur + 1); }, 160);
+    });
+  });
+
+  Array.prototype.forEach.call(form.querySelectorAll(".back"), function (b) {
+    b.addEventListener("click", function () { show(Math.max(1, cur - 1)); });
+  });
+
+  function need(id, errId, msg) {
+    var v = document.getElementById(id).value.trim();
+    document.getElementById(errId).textContent = v ? "" : msg;
+    return v;
+  }
+
+  Array.prototype.forEach.call(form.querySelectorAll(".next"), function (b) {
+    b.addEventListener("click", function () {
+      if (cur === 2) { var f = need("from", "e2", "Please enter a city or ZIP."); if (!f) return; data.from = f; }
+      if (cur === 3) { var t = need("to", "e3", "Please enter a city, ZIP or state."); if (!t) return; data.to = t; }
+      if (cur === 5) {
+        var d = document.getElementById("date").value, fl = document.getElementById("flex").checked;
+        if (!d && !fl) { document.getElementById("e5").textContent = "Pick a date, or tick “flexible”."; return; }
+        document.getElementById("e5").textContent = "";
+        data.moveDate = d || "Flexible";
+        data.flexible = fl ? "Yes" : "No";
+      }
+      show(cur + 1);
+    });
+  });
+
+  ["from", "to", "date"].forEach(function (id) {
+    document.getElementById(id).addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); var n = form.querySelector(".step.active .next"); if (n) n.click(); }
+    });
+  });
+  var today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  document.getElementById("date").min = today.toISOString().slice(0, 10);
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = document.getElementById("e6");
+    var fn = document.getElementById("fn").value.trim();
+    var ln = document.getElementById("ln").value.trim();
+    var ph = document.getElementById("ph").value.trim();
+    var em = document.getElementById("em").value.trim();
+    if (!fn) { err.textContent = "Please enter your first name."; return; }
+    if (ph.replace(/\D/g, "").length < 10) { err.textContent = "Please enter a valid phone number."; return; }
+    if (em && !/^\S+@\S+\.\S+$/.test(em)) { err.textContent = "Please check your email address."; return; }
+    if (!document.getElementById("consent").checked) { err.textContent = "Please agree so we can contact you with your quote."; return; }
+    if (form._honey.value) return; // bot
+    err.textContent = "";
+
+    var ref = "HQ-" + Date.now().toString(36).toUpperCase();
+    var source = [src.utm_source, src.utm_campaign, src.utm_content].filter(Boolean).join(" / ") ||
+      (src.fbclid ? "facebook (untagged)" : src.gclid ? "google ads" : "Direct / unknown");
+
+    var payload = {
+      "_subject": "New quote request: " + fn + " " + ln + " — " + (data.from || "") + " → " + (data.to || "") + " (" + source + ")",
+      "_template": "table",
+      "_captcha": "false",
+      "Name": (fn + " " + ln).trim(),
+      "Phone": ph,
+      "Email": em || "—",
+      "Move type": data.moveType || "—",
+      "Moving from": data.from || "—",
+      "Moving to": data.to || "—",
+      "Home size": data.homeSize || "—",
+      "Move date": data.moveDate || "—",
+      "Date flexible": data.flexible || "—",
+      "Lead source": source,
+      "Page": location.origin + location.pathname,
+      "Facebook click ID": src.fbclid || "—",
+      "Google click ID": src.gclid || "—",
+      "Reference": ref
+    };
+    if (em) payload._replyto = em;
+
+    var btn = document.getElementById("send");
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+
+    fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    })
+      .then(function (r) {
+        return r.json().then(function (j) {
+          if (!r.ok || String(j.success) !== "true") throw new Error(j.message || "Send failed");
+        });
+      })
+      .then(function () {
+        track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
+        if (typeof gtag === "function") gtag("event", "conversion", { send_to: GADS_SEND_TO, transaction_id: ref });
+        show(7);
+      })
+      .catch(function (ex) {
+        if (window.console) console.error("Quote form send failed:", ex);
+        btn.disabled = false;
+        btn.textContent = "Get My Free Quote";
+        err.innerHTML = 'Something went wrong sending your request. Please call <a href="tel:+17543542008">(754) 354-2008</a> and we\'ll quote you right away.';
+      });
+  });
+})();
 </script>
 </body>
 </html>
