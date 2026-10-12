@@ -793,7 +793,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     var toAddr = tidyAddress(window.HerculesQuoteCore, data.to);
 
     var payload = {
-      "_subject": "New quote request: " + fn + " " + ln + " | " + fromAddr + " → " + toAddr + " (" + source + ")",
+      "_subject": "Your Hercules Movers move request | " + (fn + " " + ln).trim() + " | " + fromAddr + " → " + toAddr + " (" + source + ")",
       "_template": "table",
       "_captcha": "false",
       "Name": (fn + " " + ln).trim(),
