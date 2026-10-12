@@ -67,6 +67,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 .lp .hint{color:var(--muted);font-size:.92rem;margin:0 0 12px}
 .lp .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lp .choices.three{grid-template-columns:1fr 1fr 1fr}
+.lp .choices .choice.wide{grid-column:1/-1}
 @media(max-width:420px){.lp .choices.three{grid-template-columns:1fr 1fr}}
 .lp .choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px 10px;text-align:left;cursor:pointer;font:inherit;color:var(--ink);transition:border-color .15s,background .15s}
 .lp .choice b{display:block;font-size:1.05rem}
@@ -216,6 +217,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
           <p class="q">How much are you moving?</p>
           <p class="hint">Tap one to continue</p>
           <div class="choices three" data-field="homeSize">
+            <button type="button" class="choice wide" data-value="Just a Few Items"><b>Just a few items</b><small>A couple of furniture pieces or boxes</small></button>
             <button type="button" class="choice" data-value="Studio"><b>Studio</b></button>
             <button type="button" class="choice" data-value="1 Bedroom"><b>1 Bedroom</b></button>
             <button type="button" class="choice" data-value="2 Bedrooms"><b>2 Bedrooms</b></button>
@@ -613,7 +615,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
   // Rough distance and price from the site's own city/ZIP tables
   // (js/booking/quote-core.js), for the lead email only. The customer never
   // sees it, and any failure just leaves the fields as N/A.
-  var SIZE_INDEX = { "Studio": 0, "1 Bedroom": 1, "2 Bedrooms": 2, "3 Bedrooms": 3, "4+ Bedrooms": 4 };
+  var SIZE_INDEX = { "Just a Few Items": 5, "Studio": 0, "1 Bedroom": 1, "2 Bedrooms": 2, "3 Bedrooms": 3, "4+ Bedrooms": 4 };
   var STATE_NAMES = {
     "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA", "colorado": "CO",
     "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA", "hawaii": "HI", "idaho": "ID",
