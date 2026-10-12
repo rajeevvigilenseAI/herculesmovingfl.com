@@ -83,6 +83,9 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 .lp label.f{display:block;font-weight:700;font-size:.92rem;margin:10px 0 6px}
 .lp input.in{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
 .lp input.in:focus{border-color:var(--orange);outline:none}
+/* iOS gives date inputs a fixed intrinsic width that spills past the card. */
+.lp input.in[type="date"]{display:block;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;min-height:50px;text-align:left}
+.lp input.in[type="date"]::-webkit-date-and-time-value{text-align:left}
 .lp .ac{position:relative}
 .lp .ac-list{position:absolute;top:100%;left:0;right:0;z-index:30;margin:4px 0 0;padding:4px 0;list-style:none;max-height:240px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 20px rgba(10,25,50,.16)}
 .lp .ac-list li{padding:10px 14px;font-size:16px;cursor:pointer}
@@ -496,6 +499,8 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
       if (cur === 5) {
         var d = document.getElementById("date").value, fl = document.getElementById("flex").checked;
         if (!d && !fl) { document.getElementById("e5").textContent = "Pick a date, or tick “flexible”."; return; }
+        // iPhone date pickers ignore "min", so check here too. Today is fine.
+        if (d && d < todayISO()) { document.getElementById("e5").textContent = "Please pick today or a later date."; return; }
         document.getElementById("e5").textContent = "";
         data.moveDate = d || "Flexible";
         data.flexible = fl ? "Yes" : "No";
@@ -614,9 +619,16 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
       if (e.key === "Enter") { e.preventDefault(); var n = form.querySelector(".step.active .next"); if (n) n.click(); }
     });
   });
-  var today = new Date();
-  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  document.getElementById("date").min = today.toISOString().slice(0, 10);
+  // Local date as YYYY-MM-DD, worked out fresh so a page left open past
+  // midnight still blocks yesterday.
+  function todayISO() {
+    var t = new Date();
+    t.setMinutes(t.getMinutes() - t.getTimezoneOffset());
+    return t.toISOString().slice(0, 10);
+  }
+  var dateIn = document.getElementById("date");
+  dateIn.min = todayISO();
+  dateIn.addEventListener("focus", function () { dateIn.min = todayISO(); });
 
   // Rough distance and price from the site's own city/ZIP tables
   // (js/booking/quote-core.js), for the lead email only. The customer never
