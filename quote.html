@@ -42,7 +42,8 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 .lp-brand img{height:44px;width:auto}
 .lp-call{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:999px;white-space:nowrap}
 .lp-call:hover{background:var(--orange-d);color:#fff}
-@media(max-width:420px){.lp-call .num{display:none}.lp-brand span{display:none}}
+@media(max-width:420px){.lp-brand span{display:none}.lp-top .wrap{height:60px;gap:8px}.lp-brand img{height:38px}.lp-call{padding:9px 13px;font-size:.98rem;gap:6px}}
+@media(max-width:350px){.lp-call{font-size:.86rem;padding:8px 10px}.lp-brand img{height:32px}.lp-pill{font-size:.72rem;letter-spacing:.3px;padding:6px 10px}}
 
 .lp-hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 60%,#24497F 100%);color:#fff;padding:30px 0 40px;text-align:center}
 .lp-pill{display:inline-block;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 14px;font-size:.8rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#DCE6F5}
@@ -138,7 +139,8 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 .lp-mbar{display:none}
 @media(max-width:700px){
   .lp-mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.08)}
-  .lp-mbar a{flex:1;text-align:center;text-decoration:none;font-weight:700;padding:13px 10px;border-radius:12px;color:#fff}
+  .lp-mbar a{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;text-decoration:none;font-weight:700;padding:9px 8px;border-radius:12px;color:#fff;line-height:1.2}
+  .lp-mbar a small{display:block;font-size:.78rem;font-weight:400;opacity:.9;margin-top:1px;letter-spacing:.2px}
   .lp-mbar .c1{background:var(--navy)}
   .lp-mbar .c2{background:var(--orange)}
 }
@@ -419,8 +421,8 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 </footer>
 
 <nav class="lp-mbar" aria-label="Quick contact">
-  <a class="c1 js-call" href="tel:+17543542008"><i class="fas fa-phone"></i> Call Now</a>
-  <a class="c2" href="#estimate"><i class="fas fa-calculator"></i> Free Quote</a>
+  <a class="c1 js-call" href="tel:+17543542008"><span><i class="fas fa-phone"></i> Call Now</span><small>(754) 354-2008</small></a>
+  <a class="c2" href="#estimate"><span><i class="fas fa-calculator"></i> Free Quote</span><small>60 seconds</small></a>
 </nav>
 
 
