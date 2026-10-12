@@ -13,13 +13,11 @@ window.HerculesBooking.config = {
   // key to your site's HTTP referrers in Google Cloud Console. See
   // docs/BOOKING-SETUP.md.
   googleMapsBrowserKey: "AIzaSyDVC28Xnuve_hVObx1ycVAwZVs8I7IjDdo",
-  // Google Ads conversion tracking. The sitewide AW- tag lives in each page
-  // <head>. Put the conversion label from the event snippet here (the part
-  // after the slash in send_to, e.g. "AbCdEfGhIjKlMnOp") so a successful
-  // reservation fires the Request quote conversion. Leave blank until you
-  // have that label from Google Ads.
-  googleAdsId: "AW-18375543247",
-  googleAdsConversionLabel: "QlvXCJ_a8uMcEM-TkrpE",
+  // Google Ads conversion tracking is off (Local Services Ads track leads
+  // inside Google). To turn it back on, add the AW- tag to each page <head>
+  // and fill in the account ID and the conversion label from Google Ads.
+  googleAdsId: "",
+  googleAdsConversionLabel: "",
   phoneDisplay: "1 (754) 354-2008",
   phoneTel: "+17543542008",
   arrivalWindows: [
