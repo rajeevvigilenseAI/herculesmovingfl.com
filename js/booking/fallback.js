@@ -138,7 +138,7 @@ window.HerculesBooking = window.HerculesBooking || {};
 
     var fields = {
       _subject:
-        "Your Hercules Movers move request: " + routeLabel(payload) + " (" + reference + ")",
+        "Your Hercules Movers move request | Website booking | " + routeLabel(payload) + " (" + reference + ")",
       _template: "box",
       // The customer gets this same message as a copy.
       _cc: trim(payload.email),
@@ -156,6 +156,9 @@ window.HerculesBooking = window.HerculesBooking || {};
       " shortly to confirm everything below and lock in your crew.";
 
     fields["Your Reference"] = reference;
+    // Read by the CRM to tell website bookings from Meta ad quotes, whichever
+    // service (FormSubmit or the Web3Forms backup) delivers the email.
+    fields["Lead type"] = "Website booking";
     add(fields, "Source", leadSourceLabel());
     add(fields, "Move Date", niceDate(payload.moveDate));
     add(fields, "Arrival Window", trim(payload.arrivalWindow));

@@ -810,8 +810,11 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     var toAddr = tidyAddress(window.HerculesQuoteCore, data.to);
 
     var payload = {
-      "_subject": "Your Hercules Movers move request | " + (fn + " " + ln).trim() + " | " + fromAddr + " → " + toAddr + " (" + source + ")",
+      // "Lead type" tells the CRM which flow this came from, whichever
+      // service (FormSubmit or the Web3Forms backup) delivers it.
+      "_subject": "Your Hercules Movers move request | Meta ads quote | " + (fn + " " + ln).trim() + " | " + fromAddr + " → " + toAddr + " (" + source + ")",
       "_template": "table",
+      "Lead type": "Meta ads quote",
       "_captcha": "false",
       "Name": (fn + " " + ln).trim(),
       "Phone": ph,
