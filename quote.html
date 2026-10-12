@@ -239,7 +239,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 
         <div class="step" data-step="5">
           <p class="q">📅 When do you want to move?</p>
-          <p class="hint">An estimate is fine. You can change it later</p>
+          <p class="hint">A rough date is fine. Tick “flexible” if it can change</p>
           <label class="sr" for="date">Move date</label>
           <input class="in" type="date" id="date" name="moveDate">
           <label class="check"><input type="checkbox" id="flex" name="flexible" value="Yes"> 🤷 My date is flexible</label>
@@ -499,11 +499,13 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
       if (cur === 3) { var t = need("to", "e3", "Please enter a city, ZIP or state."); if (!t) return; data.to = t; }
       if (cur === 5) {
         var d = document.getElementById("date").value, fl = document.getElementById("flex").checked;
-        if (!d && !fl) { document.getElementById("e5").textContent = "Pick a date, or tick “flexible”."; return; }
+        // Move date is always a real date (the CRM reads it as one); being
+        // flexible is its own Yes/No field.
+        if (!d) { document.getElementById("e5").textContent = "Please pick a date. A rough one is fine, and tick “flexible” if it can change."; return; }
         // iPhone date pickers ignore "min", so check here too. Today is fine.
         if (d && d < todayISO()) { document.getElementById("e5").textContent = "Please pick today or a later date."; return; }
         document.getElementById("e5").textContent = "";
-        data.moveDate = d || "Flexible";
+        data.moveDate = d;
         data.flexible = fl ? "Yes" : "No";
       }
       show(cur + 1);
