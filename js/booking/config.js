@@ -70,9 +70,10 @@ window.HerculesBooking.leadSource = (function () {
   };
 })();
 
-// Fires the Meta Pixel "Lead" (on pages that load the pixel) and the Google
-// Ads "Request quote" conversion after a successful reservation. Each one
-// no-ops when its tag isn't on the page.
+// Fires the Meta Pixel "Lead" (on pages that load the pixel), the GA4
+// generate_lead event and, when configured, the Google Ads "Request quote"
+// conversion after a successful reservation. Each one no-ops when its tag
+// isn't on the page.
 window.HerculesBooking.trackConversion = function (result) {
   var cfg = window.HerculesBooking.config;
   var reference = result && result.reference ? String(result.reference) : undefined;
@@ -83,8 +84,12 @@ window.HerculesBooking.trackConversion = function (result) {
     // eventID lets Meta de-duplicate this against a future server-side event.
     fbq("track", "Lead", leadData, reference ? { eventID: reference } : undefined);
   }
-  if (!cfg || !cfg.googleAdsId || !cfg.googleAdsConversionLabel) return;
   if (typeof gtag !== "function") return;
+  var lead = { form_name: "booking", currency: "USD" };
+  if (value != null) lead.value = value;
+  if (reference) lead.transaction_id = reference;
+  gtag("event", "generate_lead", lead);
+  if (!cfg || !cfg.googleAdsId || !cfg.googleAdsConversionLabel) return;
   var payload = {
     send_to: cfg.googleAdsId + "/" + cfg.googleAdsConversionLabel,
     currency: "USD"
