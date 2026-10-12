@@ -418,7 +418,7 @@
         window.HerculesBooking.trackConversion(result);
       }
     }).catch(function (err) {
-      fail(err.message);
+      fail(err.message, err.smsHref);
     }).then(function () {
       btn.disabled = false;
       btn.textContent = "Reserve My Move";
@@ -477,14 +477,25 @@
     return out;
   }
 
-  function fail(msg) {
+  function fail(msg, smsHref) {
     var box = qs(".book-step.active .book-error") || qs("#global-error");
     if (box) {
       box.textContent = msg;
+      addTextButton(box, smsHref);
       box.classList.add("show");
       box.scrollIntoView({ behavior: "smooth", block: "center" });
     }
     return false;
+  }
+
+  // Adds a one-tap "text us" button when the request couldn't be sent.
+  function addTextButton(box, smsHref) {
+    if (!box || !smsHref) return;
+    var a = document.createElement("a");
+    a.href = smsHref;
+    a.textContent = "Text Us My Details";
+    a.style.cssText = "display:block;margin-top:10px;padding:12px 16px;border-radius:8px;background:#F07F22;color:#fff;font-weight:700;text-align:center;text-decoration:none";
+    box.appendChild(a);
   }
 
   function clearError() {

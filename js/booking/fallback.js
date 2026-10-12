@@ -65,14 +65,35 @@ window.HerculesBooking = window.HerculesBooking || {};
           });
       })
       .catch(function (err) {
-        if (err instanceof TypeError) {
-          throw new Error(
-            "Unable to reach us over the internet. Please call Hercules Movers at " +
-              ((cfg && cfg.phoneDisplay) || "1 (754) 354-2008") +
-              "."
-          );
-        }
-        throw err;
+        // FormSubmit blocked or refusing: try the Web3Forms backup before
+        // giving up, so the request still reaches the office.
+        var backup = window.HerculesBooking.sendBackup;
+        var retry = backup ? backup(fields) : Promise.reject(err);
+        return retry
+          .then(function () {
+            return buildFallbackResult(payload, quote, reference);
+          })
+          .catch(function (backupErr) {
+            console.error("Reservation email was not sent:", err, backupErr);
+            var phone = (cfg && cfg.phoneDisplay) || "1 (754) 354-2008";
+            var out = new Error(
+              err instanceof TypeError
+                ? "We couldn't send your request from this browser. Tap below to text it to us instead, or call Hercules Movers at " + phone + "."
+                : err.message
+            );
+            if (window.HerculesBooking.textUsHref) {
+              out.smsHref = window.HerculesBooking.textUsHref([
+                "Hi Hercules, I'd like to book a move.",
+                "Name: " + trim(payload.firstName) + " " + trim(payload.lastName),
+                "From: " + formatAddress(payload.origin),
+                "To: " + formatAddress(payload.destination),
+                "Date: " + niceDate(payload.moveDate) + (payload.arrivalWindow ? ", " + trim(payload.arrivalWindow) : ""),
+                "Size: " + (quote.homeSizeLabel || ""),
+                "Ref: " + reference
+              ]);
+            }
+            throw out;
+          });
       });
   };
 

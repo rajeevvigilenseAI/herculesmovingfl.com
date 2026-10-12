@@ -426,6 +426,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 
 
 <script src="js/booking/quote-core.js" defer></script>
+<script src="js/booking/web3forms.js" defer></script>
 <script>
 // /quote form: 6 tap-through steps, emailed to herculesmoversfl@gmail.com via
 // FormSubmit (same inbox as the rest of the site), then a Meta "Lead" fires
@@ -905,15 +906,28 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
         show(7);
       })
       .catch(function (ex) {
-        if (window.console) console.error("Quote form send failed, using fallback:", ex);
-        try {
-          if (unreachable) textUs();
-          else fallback(String(ex && ex.message || ex));
-        } catch (e2) {
-          btn.disabled = false;
-          btn.textContent = "🚀 Get My Free Quote";
-          err.innerHTML = 'Something went wrong sending your request. Please call <a href="tel:+17543542008">(754) 354-2008</a> and we\'ll quote you right away.';
-        }
+        if (window.console) console.error("Quote form send failed, trying Web3Forms:", ex);
+        var reason = String(ex && ex.message || ex);
+        var backup = window.HerculesBooking && window.HerculesBooking.sendBackup;
+        var sent = backup
+          ? backup(Object.assign({}, payload, { "Send note": "FormSubmit failed: " + reason }))
+          : Promise.reject(new Error("Backup not loaded"));
+        sent
+          .then(function () {
+            lead();
+            show(7);
+          })
+          .catch(function (ex2) {
+            if (window.console) console.error("Web3Forms backup failed too:", ex2);
+            try {
+              if (unreachable) textUs();
+              else fallback(reason + " | " + String(ex2 && ex2.message || ex2));
+            } catch (e2) {
+              btn.disabled = false;
+              btn.textContent = "🚀 Get My Free Quote";
+              err.innerHTML = 'Something went wrong sending your request. Please call <a href="tel:+17543542008">(754) 354-2008</a> and we\'ll quote you right away.';
+            }
+          });
       });
   });
 })();
