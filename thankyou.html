@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- OpenAI Ads pixel -->
+<script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"Wvwpm824GgMgcm8GgogoGi",debug:false});</script>
     
     
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,6 +70,7 @@
   gtag('config', 'G-KN18M4EST2');
   // Contact forms post to FormSubmit, which redirects here on success.
   gtag('event', 'generate_lead', { form_name: 'contact_form' });
+  if (typeof oaiq === 'function') oaiq('measure', 'lead_created', { type: 'customer_action' });
 </script>
 </head>
 

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- OpenAI Ads pixel -->
+<script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"Wvwpm824GgMgcm8GgogoGi",debug:false});</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>South Florida's Most Trusted Local Movers | Free Quote | Hercules Local Movers</title>
 <meta name="description" content="Licensed South Florida movers serving Miami-Dade, Broward and Palm Beach. No weight minimums, no hidden fees. Get your instant moving estimate.">
@@ -432,7 +434,8 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 <script>
 // /quote form: 6 tap-through steps, emailed to herculesmoversfl@gmail.com via
 // FormSubmit (same inbox as the rest of the site), then a Meta "Lead" fires
-// with the same reference ID. Facebook/Instagram ads only: no Google tags here.
+// with the same reference ID, plus the OpenAI Ads lead_created event. No
+// Google tags here.
 (function () {
   "use strict";
   var ENDPOINT = "https://formsubmit.co/ajax/herculesmoversfl@gmail.com";
@@ -809,6 +812,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     var source = [src.utm_source, src.utm_campaign, src.utm_content].filter(Boolean).join(" / ") ||
       (src.fbclid ? "facebook (untagged)" : src.gclid ? "google ads" : "Direct / unknown");
 
+    var leadType = /chatgpt|openai/i.test(src.utm_source || "") ? "ChatGPT ads quote" : "Meta ads quote";
     var est = estimate(data.from, data.to, data.homeSize);
     var fromAddr = tidyAddress(window.HerculesQuoteCore, data.from);
     var toAddr = tidyAddress(window.HerculesQuoteCore, data.to);
@@ -816,9 +820,9 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     var payload = {
       // "Lead type" tells the CRM which flow this came from, whichever
       // service (FormSubmit or the Web3Forms backup) delivers it.
-      "_subject": "Your Hercules Movers move request | Meta ads quote | " + (fn + " " + ln).trim() + " | " + fromAddr + " → " + toAddr + " (" + source + ")",
+      "_subject": "Your Hercules Movers move request | " + leadType + " | " + (fn + " " + ln).trim() + " | " + fromAddr + " → " + toAddr + " (" + source + ")",
       "_template": "table",
-      "Lead type": "Meta ads quote",
+      "Lead type": leadType,
       "_captcha": "false",
       "Name": (fn + " " + ln).trim(),
       "Phone": ph,
@@ -845,6 +849,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 
     function lead() {
       track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
+      if (typeof oaiq === "function") oaiq("measure", "lead_created", { type: "customer_action" }, { event_id: ref });
     }
 
     // Some phone browsers (in-app browsers, strict privacy modes) refuse the
