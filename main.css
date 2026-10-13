@@ -1064,6 +1064,27 @@ p.stars {
     max-width: 1100px;
     }
 
+.small-move-prices {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 18px;
+    color: #606060;
+    }
+
+.small-move-prices th {
+    color: #ff7700;
+    }
+
+@media (max-width: 767px) {
+    .small-move-prices {
+        font-size: 15px;
+        }
+
+    .small-move-prices > thead > tr > th,
+    .small-move-prices > tbody > tr > td {
+        padding: 6px;
+        }
+    }
+
 .hub-crumbs {
     margin-bottom: 18px;
     color: #888;
