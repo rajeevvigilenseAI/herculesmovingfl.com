@@ -767,22 +767,24 @@
 
     renderRoom();
 
-    // Live estimate card beside the map.
+    // Live estimate card beside the map. Only lines with something in them;
+    // before any items, a single hint instead of a column of blanks.
     var live = [
-      ["📦", c.count ? c.count + " items to load & unload" : "Add your items", c.load + c.unload],
-      ["🔧", "Take apart & rebuild", c.asm],
-      ["🪜", "Stairs & elevators", c.stairsPick + c.stairsDrop],
-      ["🛣️", "Drive ~" + Math.round(state.miles) + " mi", c.drive],
-      ["💪", c.crew + " movers" + (c.crew > 2 ? " (+" + money(c.extraMovers) + ")" : ""), null],
-      ["🧑‍🔧", "Packing service", c.packMin ? mins(c.packMin) : null],
-      ["📦", "Packing materials & kits", c.packing ? money(c.packing) : null],
-      ["📦", "Packing supplies", c.supplies ? money(c.supplies) : null],
-      ["🛠️", "Extra stops & services", c.services ? money(c.services) : null]
-    ];
-    $("live-lines").innerHTML = live.map(function (r) {
-      var v = r[2] == null ? "" : typeof r[2] === "string" ? r[2] : r[2] > 0.5 ? mins(r[2]) : "-";
-      return '<li class="' + (v === "-" ? "muted" : "") + '"><span>' + r[0] + " " + esc(r[1]) + "</span><b>" + v + "</b></li>";
-    }).join("") + '<li class="sum"><span>⏱️ Billed time</span><b>' + (c.count ? c.hours + " hours" : "-") + "</b></li>";
+      ["📦", c.count + " item" + (c.count === 1 ? "" : "s") + " to load & unload", c.load + c.unload ? mins(c.load + c.unload) : ""],
+      ["🔧", "Take apart & rebuild", c.asm ? mins(c.asm) : ""],
+      ["🪜", "Stairs & elevators", c.stairsPick + c.stairsDrop > 0.5 ? mins(c.stairsPick + c.stairsDrop) : ""],
+      ["🛣️", "Drive ~" + Math.round(state.miles) + " mi", c.drive ? mins(c.drive) : ""],
+      ["🧑‍🔧", "Packing service", c.packMin ? mins(c.packMin) : ""],
+      ["💪", (c.crew - 2) + " extra mover" + (c.crew > 3 ? "s" : "") + " for heavy items", c.crew > 2 ? money(c.extraMovers) : ""],
+      ["📦", "Packing materials & kits", c.packing ? money(c.packing) : ""],
+      ["📦", "Packing supplies", c.supplies ? money(c.supplies) : ""],
+      ["🛠️", "Extra stops & services", c.services ? money(c.services) : ""]
+    ].filter(function (r) { return r[2]; });
+    $("live-lines").innerHTML = c.count
+      ? live.map(function (r) {
+          return "<li><span>" + r[0] + " " + esc(r[1]) + "</span><b>" + r[2] + "</b></li>";
+        }).join("") + '<li class="sum"><span>⏱️ Billed time (2 movers + truck)</span><b>' + c.hours + " hours</b></li>"
+      : '<li class="muted"><span>📦 Add your items to see your time and price.</span></li>';
     $("live-total").textContent = c.count ? money(c.total) : "-";
     $("go-live").disabled = c.count === 0 || state.playing;
     $("go-live").textContent = $("go").textContent;
@@ -1253,7 +1255,7 @@
       if (emojis.length < 4) emojis.push(byId[id].emoji);
     });
     emojis.forEach(function (em, i) { setTimeout(function () { popIntoTruck(em); }, i * 250); });
-    hudSay("📋 Added a typical " + p.name.toLowerCase() + " home. Adjust anything below.");
+    hudSay(p.id === "few" ? "📋 Added a few common items. Change them to what you actually have." : "📋 Added a typical " + p.name.toLowerCase() + " home. Adjust anything below.");
     render();
   }
 

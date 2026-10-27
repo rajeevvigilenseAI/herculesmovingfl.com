@@ -122,6 +122,7 @@ window.HerculesEstimate.ROOMS = [
 
 // "Start from a typical home": a starting list the customer then adjusts.
 window.HerculesEstimate.PRESETS = [
+  { id: "few", name: "Just a few items", items: { "armchair": 1, "tv-small": 1, "box-medium": 4, "box-large": 2 } },
   { id: "studio", name: "Studio", items: { "full-bed": 1, "loveseat": 1, "tv-small": 1, "tv-stand": 1, "dresser": 1, "dining-table": 1, "dining-chair": 2, "box-medium": 10, "box-small": 5 } },
   { id: "1br", name: "1 bedroom", items: { "queen-bed": 1, "dresser": 1, "nightstand": 2, "sofa": 1, "coffee-table": 1, "tv-small": 1, "tv-stand": 1, "dining-table": 1, "dining-chair": 4, "box-medium": 15, "box-small": 8, "box-large": 4 } },
   { id: "2br", name: "2 bedrooms", items: { "queen-bed": 1, "full-bed": 1, "dresser": 2, "nightstand": 3, "sofa": 1, "armchair": 1, "coffee-table": 1, "tv-small": 2, "tv-stand": 1, "dining-table": 1, "dining-chair": 4, "desk": 1, "office-chair": 1, "box-medium": 25, "box-small": 12, "box-large": 8 } },
