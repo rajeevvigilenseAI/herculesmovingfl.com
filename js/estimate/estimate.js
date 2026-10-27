@@ -29,29 +29,61 @@
     // Average driving speed for the drive-time estimate.
     localMph: 30,
     highwayMph: 50,
-    truckCuft: 1700,
+    // Trucks, smallest first. The estimate quietly uses the 18 ft truck and
+    // steps up to the 26 ft once the load is bigger than a 3-bedroom home.
+    // Customers never see the size; the office does, in the lead email.
+    trucks: [
+      { name: "18 ft", cuft: 1000 },
+      { name: "26 ft", cuft: 1700 }
+    ],
     // PLACEHOLDERS: confirm with the office before relying on these.
     pricePerHourAfter8: 150,
     extraMoverPerHour: 60,
     supplies: [
-      { id: "tvbox", name: "TV box", emoji: "📺", price: 40, from: ["tv-small", "tv-large"] },
-      { id: "wardrobe", name: "Wardrobe box", emoji: "👔", price: 20, from: ["clothes"] },
+      { id: "tvbox-rent", name: "TV box (rent, we take it back)", emoji: "📺", price: 35, from: ["tv-small", "tv-large"] },
+      { id: "tvbox-buy", name: "TV box (buy, yours to keep)", emoji: "📺", price: 65 },
+      { id: "wardrobe", name: "Wardrobe box", emoji: "👔", price: 25, from: ["clothes"] },
       { id: "large", name: "Large boxes (empty)", emoji: "📦", price: 5 },
       { id: "medium", name: "Medium boxes (empty)", emoji: "📦", price: 4 },
       { id: "small", name: "Small boxes (empty)", emoji: "📦", price: 3 },
-      { id: "fragile", name: "Fragile packing kit (dishes, glass, art)", emoji: "🥂", price: 45, flag: "fragile" },
+      { id: "fragile", name: "Fragile packing kit (dishes, glass, art)", emoji: "🥂", price: 15, flag: "fragile" },
       { id: "mattressbag", name: "Mattress bag", emoji: "🛏️", price: 15, from: ["king-bed", "queen-bed", "full-bed", "bunk-bed", "mattress"] }
     ],
-    // Things we quote by phone; ticking them adds them to the request.
-    onCall: [
-      { id: "packing", name: "Full packing service (we pack for you)", emoji: "🧑‍🔧" },
-      { id: "crating", name: "Custom crating (marble, glass, art)", emoji: "🪵" },
-      { id: "storage", name: "Storage between moves", emoji: "🏬" },
-      { id: "extrastop", name: "An extra pickup or drop-off stop", emoji: "📍" },
-      { id: "longcarry", name: "Long walk from truck to door (75+ ft)", emoji: "🚶" },
-      { id: "junk", name: "Junk or donation drop-off", emoji: "♻️" }
-    ]
+    // Priced extra services. An extra stop is priced per stop the customer
+    // adds on the map, the others by how many they ask for.
+    stopPrice: 50,
+    services: [
+      { id: "longcarry", name: "Long walk from truck to door (75+ ft)", emoji: "🚶", price: 25, unit: "per location" },
+      // Suggested fee for a donation or junk run; dump fees, if any, are extra.
+      { id: "junk", name: "Junk or donation drop-off", emoji: "♻️", price: 75, unit: "per trip" }
+    ],
+    // Full packing service: our crew packs. The packing time is added to
+    // the billed hours like any other work, plus a materials charge.
+    // PLACEHOLDERS for the office to confirm.
+    packs: [
+      { id: "pack-kitchen", name: "Kitchen only", emoji: "🍽️", materials: 45, minutes: 60 },
+      { id: "pack-small", name: "Studio or 1 bedroom", emoji: "🏠", materials: 95, minutes: 120 },
+      { id: "pack-medium", name: "2 to 3 bedrooms", emoji: "🏡", materials: 225, minutes: 300 },
+      { id: "pack-large", name: "4+ bedrooms", emoji: "🏘️", materials: 410, minutes: 480 }
+    ],
+    // Material-only kits for customers who pack themselves, priced a little
+    // under the same boxes bought one by one. PLACEHOLDERS.
+    kits: [
+      { id: "kit-small", name: "Starter kit (studio / 1 bedroom)", emoji: "📦", price: 95, has: "10 small, 15 medium, 5 large boxes, tape & packing paper" },
+      { id: "kit-medium", name: "Home kit (2 to 3 bedrooms)", emoji: "📦", price: 225, has: "15 small, 30 medium, 10 large, 2 wardrobe boxes, tape & paper" },
+      { id: "kit-large", name: "Big home kit (4+ bedrooms)", emoji: "📦", price: 410, has: "25 small, 45 medium, 20 large, 4 wardrobe boxes, 2 dish packs, tape & paper" }
+    ],
+    // Nothing needs a phone quote any more; kept for older code paths.
+    onCall: []
   };
+
+  function findIn(list, id) { return list.filter(function (x) { return x.id === id; })[0] || null; }
+
+  function truckFor(cuft) {
+    var t = PRICING.trucks;
+    for (var i = 0; i < t.length; i++) if (cuft <= t[i].cuft) return t[i];
+    return t[t.length - 1];
+  }
 
   // How many people it takes to lift one item safely.
   function crewForWeight(lbs) {
@@ -71,7 +103,10 @@
     fromFloor: "ground", toFloor: "ground",
     miles: 0,
     items: {}, order: [],
-    supplies: {}, onCall: {},
+    supplies: {}, onCall: {}, excluded: {},
+    // Extra stops in route order: { text, addr, kind: "pickup" | "dropoff" }
+    stops: [], stopFractions: [],
+    pack: null, kit: null,
     playing: false, played: false
   };
 
@@ -133,7 +168,13 @@
       drive = Math.max(10, (state.miles / mph) * 60);
     }
 
-    var totalMin = load + unload + asm + stairsPick + stairsDrop + drive;
+    var pack = findIn(PRICING.packs, state.pack), kit = findIn(PRICING.kits, state.kit);
+    var packMin = pack ? pack.minutes : 0;
+    var packing = (pack ? pack.materials : 0) + (kit ? kit.price : 0);
+    var packLines = [];
+    if (pack) packLines.push("Full packing service, " + pack.name + ": ~" + mins(pack.minutes) + " packing + " + money(pack.materials) + " materials");
+    if (kit) packLines.push(kit.name + " (" + kit.has + "): " + money(kit.price));
+    var totalMin = load + unload + asm + stairsPick + stairsDrop + drive + packMin;
     var hours = Math.max(PRICING.minHours, Math.ceil(totalMin / 60));
     var table = (window.HerculesQuoteCore && window.HerculesQuoteCore.HOUR_PRICE) || {};
     var base = hours <= 8 ? table[hours] : table[8] + (hours - 8) * PRICING.pricePerHourAfter8;
@@ -148,12 +189,24 @@
       }
     });
 
+    var services = state.stops.length * PRICING.stopPrice, serviceLines = [];
+    if (state.stops.length) serviceLines.push(state.stops.length + " × Extra stop (" + money(services) + ")");
+    PRICING.services.forEach(function (s) {
+      var q = state.supplies[s.id] || 0;
+      if (q) {
+        services += q * s.price;
+        serviceLines.push(q + " × " + s.name + " (" + money(q * s.price) + ")");
+      }
+    });
+
     return {
-      count: count, cuft: cuft, fill: cuft / PRICING.truckCuft,
+      packMin: packMin, packing: packing, packLines: packLines,
+      services: services, serviceLines: serviceLines,
+      count: count, cuft: cuft, truck: truckFor(cuft), fill: cuft / truckFor(cuft).cuft,
       load: load, unload: unload, asm: asm, stairsPick: stairsPick, stairsDrop: stairsDrop, drive: drive,
       totalMin: totalMin, hours: hours, crew: crew, heaviest: heaviest,
       base: base || 0, extraMovers: extraMovers, supplies: supplies, supplyLines: supplyLines,
-      total: (base || 0) + extraMovers + supplies
+      total: (base || 0) + extraMovers + supplies + services + packing
     };
   }
 
@@ -223,14 +276,13 @@
     err.textContent = "";
     state.from = a; state.to = b; state.fromText = fromText; state.toText = toText;
     state.fromFloor = $("pickup-floor").value; state.toFloor = $("dropoff-floor").value;
-    try { state.miles = window.HerculesQuoteCore.estimateMiles(a, b, ""); } catch (e) { state.miles = 0; }
-
     $("pick-name").textContent = shortPlace(fromText);
-    drawMap();
-    $("trip-miles").textContent = "~" + Math.round(state.miles) + " mi";
+    updateRoute();
     renderFloors();
     document.body.classList.add("has-scene");
     showStep("step-items");
+    $("board").hidden = false;
+    $("live").hidden = false;
     land();
     render();
   }
@@ -243,12 +295,12 @@
   // Updated by parkSpots() whenever the map is drawn.
   var T_START = 0.06, T_END = 0.94;
 
-  // Park the truck about 50 px down the road from each house, however long
+  // Park the truck about 75 px down the road from each house, however long
   // the route is on screen, so it never sits on top of a house.
   function parkSpots() {
     var ctm = road.getScreenCTM(), len = road.getTotalLength();
     var px = ctm && len ? len * Math.abs(ctm.a) : 0;
-    var k = px ? Math.min(0.35, 50 / px) : 0.06;
+    var k = px ? Math.min(0.35, 75 / px) : 0.06;
     T_START = k;
     T_END = 1 - k;
   }
@@ -264,12 +316,80 @@
     return { x: s.x - box.left, y: s.y - box.top };
   }
 
+  // Pickup, extra pickups, extra drop-offs, delivery.
+  function route() {
+    var pick = state.stops.filter(function (s) { return s.kind === "pickup"; });
+    var drop = state.stops.filter(function (s) { return s.kind === "dropoff"; });
+    return pick.concat(drop);
+  }
+
   function drawMap() {
     var core = window.HerculesQuoteCore;
     function ll(a) { return a && core ? core.resolveCoordinates(a) : null; }
-    var res = E.map.draw($("scene"), ll(state.from), ll(state.to));
+    var mid = route();
+    var pts = [ll(state.from)].concat(mid.map(function (s) { return ll(s.addr); })).concat([ll(state.to)]);
+    var res = E.map.draw($("scene"), pts);
     parkSpots();
     if (state.toText) $("drop-name").textContent = shortPlace(state.toText) + (res.far ? " ➚" : "");
+
+    // Pins for extra stops, and where along the road the truck pauses.
+    Array.prototype.forEach.call(document.querySelectorAll(".home.stop"), function (el) { el.remove(); });
+    state.stopFractions = [];
+    mid.forEach(function (s, i) {
+      var spot = res.screen && res.screen[i + 1];
+      state.stopFractions.push(res.fractions ? res.fractions[i + 1] : (i + 1) / (mid.length + 1));
+      if (!spot) return;
+      var el = document.createElement("div");
+      el.className = "home stop";
+      el.innerHTML = '<span class="bld">📍</span><span class="tag"><b>' + (s.kind === "pickup" ? "⬆ " : "⬇ ") + esc(shortPlace(s.text)) + "</b></span>";
+      el.style.left = spot.x + "px";
+      el.style.top = spot.y + "px";
+      $("scene").appendChild(el);
+    });
+  }
+
+  // Miles for the whole route, then redraw. Called whenever stops change.
+  function updateRoute() {
+    var core = window.HerculesQuoteCore, legs = [state.from].concat(route().map(function (s) { return s.addr; })).concat([state.to]);
+    var miles = 0;
+    for (var i = 1; i < legs.length; i++) {
+      try { miles += core.estimateMiles(legs[i - 1], legs[i], ""); } catch (e) {}
+    }
+    state.miles = miles;
+    $("trip-miles").textContent = "~" + Math.round(miles) + " mi";
+    $("trip-short").textContent = "~" + Math.round(miles) + " mi trip";
+    $("stop-count").textContent = state.stops.length ? "· " + state.stops.length + " added" : "";
+    var list = $("stop-list");
+    list.innerHTML = "";
+    state.stops.forEach(function (s, i) {
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="e">📍</span><span class="nm">' + (s.kind === "pickup" ? "Extra pickup: " : "Extra drop-off: ") + esc(HB.places ? HB.places.tidy(s.text) : s.text) +
+        ' <small>' + money(PRICING.stopPrice) + '</small></span><button type="button" class="mv-btn">Remove ✕</button>';
+      li.querySelector("button").addEventListener("click", function () { removeStop(i); });
+      list.appendChild(li);
+    });
+    drawMap();
+    placeEnds();
+    render();
+  }
+
+  function addStop() {
+    var text = $("stop-input").value.trim(), err = $("stop-err");
+    var addr = text && HB.places ? HB.places.locate(text) : null;
+    if (!addr) { err.textContent = "We couldn't place that stop. Try a city or ZIP."; return; }
+    err.textContent = "";
+    if (state.played) resetTrip();
+    var kind = $("stop-kind").value;
+    state.stops.push({ text: text, addr: addr, kind: kind });
+    $("stop-input").value = "";
+    hudSay("📍 " + (kind === "pickup" ? "Extra pickup" : "Extra drop-off") + " at " + shortPlace(text) + " added (+" + money(PRICING.stopPrice) + ")");
+    updateRoute();
+  }
+
+  function removeStop(i) {
+    if (state.played) resetTrip();
+    state.stops.splice(i, 1);
+    updateRoute();
   }
 
   function placeTruck(t, facingLeft) {
@@ -349,7 +469,8 @@
   function flyToTruck(emoji, fromEl, count) {
     var n = Math.min(count || 1, 5);
     var start = fromEl.getBoundingClientRect();
-    var end = truck.getBoundingClientRect();
+    var door = $("home-pick"), end = door.getBoundingClientRect();
+    var walkers = Math.min(n, 2);
     for (var i = 0; i < n; i++) {
       (function (i) {
         setTimeout(function () {
@@ -370,7 +491,8 @@
             if (landedIn) return;
             landedIn = true;
             f.remove();
-            gulp();
+            // A mover picks it up at the door and walks it to the truck.
+            if (i < walkers) carry(emoji, spotOf(door), truckSpot(), 0).then(gulp);
           }
           a.onfinish = inTruck;
           setTimeout(inTruck, 1000);
@@ -378,6 +500,52 @@
       })(i);
     }
     if (reduceMotion) gulp();
+  }
+
+  function spotOf(el) {
+    var s = $("scene").getBoundingClientRect(), r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - s.left, y: r.bottom - s.top - 18 };
+  }
+
+  function truckSpot() {
+    var s = $("scene").getBoundingClientRect(), r = truckBody.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - s.left, y: r.bottom - s.top - 4 };
+  }
+
+  // One mover walks from one spot to another with the item on his head. The
+  // idle crew by the truck steps aside while anyone is walking.
+  var walking = 0;
+  function carry(emoji, from, to, delay) {
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        var c = document.createElement("span");
+        c.className = "carrier";
+        c.innerHTML = "<i>" + emoji + "</i><b><span>🚶‍♂️</span></b>";
+        // The walking emoji faces left; flip it when heading right.
+        if (to.x > from.x) c.querySelector("b").style.transform = "scaleX(-1)";
+        $("scene").appendChild(c);
+        walking++;
+        movers.classList.add("busy");
+        var dist = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+        var ms = reduceMotion ? 1 : Math.max(700, Math.min(1600, dist * 11));
+        var a = c.animate([
+          { transform: "translate(" + from.x + "px," + from.y + "px) translate(-50%,-100%)", opacity: 0 },
+          { transform: "translate(" + from.x + "px," + from.y + "px) translate(-50%,-100%)", opacity: 1, offset: 0.08 },
+          { transform: "translate(" + to.x + "px," + to.y + "px) translate(-50%,-100%)", opacity: 1, offset: 0.92 },
+          { transform: "translate(" + to.x + "px," + to.y + "px) translate(-50%,-100%) scale(.8)", opacity: 0 }
+        ], { duration: ms, easing: "linear" });
+        var done = false;
+        function end() {
+          if (done) return;
+          done = true;
+          c.remove();
+          if (--walking <= 0) { walking = 0; movers.classList.remove("busy"); }
+          resolve();
+        }
+        a.onfinish = end;
+        setTimeout(end, ms + 300);
+      }, delay || 0);
+    });
   }
 
   function gulp() {
@@ -388,26 +556,9 @@
     ], { duration: reduceMotion ? 1 : 260 });
   }
 
+  // Unloading: a mover walks each item from the truck into the new home.
   function flyFromTruck(emoji, toEl, delay) {
-    return new Promise(function (resolve) {
-      setTimeout(function () {
-        var s = truck.getBoundingClientRect(), t = toEl.getBoundingClientRect();
-        var f = document.createElement("span");
-        f.className = "fly";
-        f.textContent = emoji;
-        document.body.appendChild(f);
-        var sx = s.left + s.width / 2, sy = s.top + s.height / 2, ex = t.left + t.width / 2, ey = t.top + t.height / 2;
-        var a = f.animate([
-          { transform: "translate(" + sx + "px," + sy + "px) scale(.4)", opacity: 0.4 },
-          { transform: "translate(" + (sx + ex) / 2 + "px," + (Math.min(sy, ey) - 70) + "px) scale(1.3)", opacity: 1, offset: 0.5 },
-          { transform: "translate(" + ex + "px," + ey + "px) scale(.5)", opacity: 0 }
-        ], { duration: reduceMotion ? 1 : 650, easing: "ease-in-out" });
-        var finished = false;
-        function end() { if (finished) return; finished = true; f.remove(); resolve(); }
-        a.onfinish = end;
-        setTimeout(end, 900);
-      }, delay || 0);
-    });
+    return carry(emoji, truckSpot(), spotOf(toEl), delay);
   }
 
   function tool(on, where) {
@@ -420,7 +571,12 @@
     }
   }
 
-  function drive(ms, driveMin) {
+  function drive(ms, driveMin, from, to, minFrom, miFrom, miLeg) {
+    from = from == null ? T_START : from;
+    to = to == null ? T_END : to;
+    minFrom = minFrom || 0;
+    miFrom = miFrom || 0;
+    miLeg = miLeg == null ? state.miles : miLeg;
     return new Promise(function (resolve) {
       // A plain timer rather than requestAnimationFrame, so the move still
       // finishes if the tab is in the background.
@@ -429,17 +585,17 @@
       function frame() {
         var k = Math.min(1, (Date.now() - t0) / ms);
         var eased = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-        var p = pathPoint(T_START + (T_END - T_START) * eased);
+        var p = pathPoint(from + (to - from) * eased);
         var left = lastX !== null && p.x < lastX;
         lastX = p.x;
         truck.style.left = p.x + "px";
         truck.style.top = p.y + "px";
         truckBody.style.transform = left ? "scaleX(1)" : "scaleX(-1)";
         if (Math.random() < 0.25) dust(p.x - 18, p.y + 8, 1);
-        clock.textContent = "🕒 " + mins(driveMin * eased) + " · " + Math.round(state.miles * eased) + " mi";
+        clock.textContent = "🕒 " + mins(minFrom + driveMin * eased) + " · " + Math.round(miFrom + miLeg * eased) + " mi";
         if (k >= 1) { clearInterval(timer); resolve(); }
       }
-      if (reduceMotion) { placeTruck(T_END, false); resolve(); return; }
+      if (reduceMotion) { placeTruck(to, false); resolve(); return; }
       timer = setInterval(frame, 16);
       frame();
     });
@@ -593,19 +749,69 @@
     mine.innerHTML = "";
     state.order.forEach(function (id) {
       var it = byId[id], q = state.items[id];
-      var li = document.createElement("li");
-      li.innerHTML =
-        '<span class="e">' + it.emoji + '</span><span class="nm">' + esc(it.name) +
+      var li = dragRow("item", id, it.emoji, esc(it.name) +
         (it.asm ? ' <small>🔧 take apart &amp; rebuild</small>' : "") +
-        (crewForWeight(it.lbs) > 2 ? ' <small class="hv">💪 ' + crewForWeight(it.lbs) + "-person lift</small>" : "") +
-        '</span><span class="step"><button type="button" aria-label="Fewer">−</button><b>' + q +
-        '</b><button type="button" aria-label="More">+</button></span>';
-      var btns = li.querySelectorAll("button");
-      btns[0].addEventListener("click", function () { setQty(id, q - 1); });
-      btns[1].addEventListener("click", function () { setQty(id, q + 1); });
+        (crewForWeight(it.lbs) > 2 ? ' <small class="hv">💪 ' + crewForWeight(it.lbs) + "-person lift</small>" : ""),
+        q, function (n) { setQty(id, n); }, "inc");
       mine.appendChild(li);
     });
     $("my-items-empty").hidden = state.order.length > 0;
+
+    // Packing supplies and phone-quoted services sit in whichever column
+    // they belong to right now.
+    var incX = $("inc-extras"), sup = $("supplies"), oc = $("oncall"), outL = $("excluded");
+    incX.innerHTML = ""; sup.innerHTML = ""; oc.innerHTML = ""; outL.innerHTML = "";
+    PRICING.supplies.forEach(function (s) {
+      var q = state.supplies[s.id] || 0, sug = suggestFor(s);
+      var label = esc(s.name) + " <small>" + money(s.price) + " each</small>" +
+        (sug > q ? ' <button type="button" class="sug" data-sug="' + sug + '">Suggested: ' + sug + "</button>" : "");
+      var li = dragRow("supply", s.id, s.emoji, label, q ? q : null, function (n) { state.supplies[s.id] = Math.max(0, Math.min(200, n)); render(); }, q ? "inc" : "ext");
+      var sb = li.querySelector(".sug");
+      if (sb) sb.addEventListener("click", function () { state.supplies[s.id] = sug; render(); });
+      (q ? incX : sup).appendChild(li);
+    });
+    var svc = $("services");
+    svc.innerHTML = "";
+    PRICING.services.forEach(function (s) {
+      var q = state.supplies[s.id] || 0;
+      var li = dragRow("supply", s.id, s.emoji, esc(s.name) + " <small>" + money(s.price) + " " + s.unit + "</small>", q ? q : null,
+        function (n) { state.supplies[s.id] = Math.max(0, Math.min(20, n)); render(); }, q ? "inc" : "ext");
+      (q ? incX : svc).appendChild(li);
+    });
+    // Extra stops need an address, so this row opens the stop box.
+    var stopRow = document.createElement("li");
+    stopRow.innerHTML = '<span class="e">📍</span><span class="nm">Extra pickup or drop-off stop <small>' + money(PRICING.stopPrice) + ' per stop, shows on your route</small></span><button type="button" class="mv-btn">⬅ Add a stop</button>';
+    stopRow.querySelector("button").addEventListener("click", openStops);
+    svc.appendChild(stopRow);
+    state.stops.forEach(function (s, i) {
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="e">📍</span><span class="nm">' + (s.kind === "pickup" ? "Extra pickup: " : "Extra drop-off: ") + esc(shortPlace(s.text)) + " <small>" + money(PRICING.stopPrice) + '</small></span><button type="button" class="mv-btn">Remove ✕</button>';
+      li.querySelector("button").addEventListener("click", function () { removeStop(i); });
+      incX.appendChild(li);
+    });
+    var packsL = $("packs"), kitsL = $("kits");
+    packsL.innerHTML = ""; kitsL.innerHTML = "";
+    PRICING.packs.forEach(function (p) {
+      var on = state.pack === p.id;
+      var li = dragRow("pack", p.id, p.emoji, "Packing: " + esc(p.name) + " <small>~" + mins(p.minutes) + " of packing (in your hours) + " + money(p.materials) + " materials</small>", null, null, on ? "inc" : "ext");
+      (on ? incX : packsL).appendChild(li);
+    });
+    PRICING.kits.forEach(function (k) {
+      var on = state.kit === k.id;
+      var li = dragRow("kit", k.id, k.emoji, esc(k.name) + " <small>" + money(k.price) + ": " + esc(k.has) + "</small>", null, null, on ? "inc" : "ext");
+      (on ? incX : kitsL).appendChild(li);
+    });
+    PRICING.onCall.forEach(function (o) {
+      var on = !!state.onCall[o.id];
+      var li = dragRow("oncall", o.id, o.emoji, esc(o.name) + " <small>Quoted by phone</small>", null, null, on ? "inc" : "ext");
+      (on ? incX : oc).appendChild(li);
+    });
+    Object.keys(state.excluded).forEach(function (id) {
+      var it = byId[id];
+      outL.appendChild(dragRow("out", id, it.emoji, state.excluded[id] + " × " + esc(it.name) + " <small>Not in the truck</small>", null, null, "ext"));
+    });
+    $("inc-extras-head").hidden = !incX.children.length;
+    $("excluded-head").hidden = !outL.children.length;
     $("item-total").textContent = c.count ? c.count + " item" + (c.count === 1 ? "" : "s") + " · ~" + Math.round(c.cuft) + " cu ft" : "";
     $("asm-row").hidden = !c.asm;
     $("asm-time").textContent = mins(c.asm);
@@ -626,18 +832,25 @@
 
     $("truck-row").hidden = c.fill <= 1;
 
-    // Not included: packing supplies with suggestions.
-    PRICING.supplies.forEach(function (s) {
-      var row = $("sup-" + s.id), q = state.supplies[s.id] || 0;
-      row.querySelector("b").textContent = q;
-      row.classList.toggle("on", q > 0);
-      var hint = row.querySelector(".sug"), sug = suggestFor(s);
-      if (sug && sug > q) {
-        hint.hidden = false;
-        hint.textContent = "Suggested: " + sug;
-        hint.onclick = function () { state.supplies[s.id] = sug; render(); };
-      } else hint.hidden = true;
-    });
+    // Live estimate card beside the map.
+    var live = [
+      ["📦", c.count ? c.count + " items to load & unload" : "Add your items", c.load + c.unload],
+      ["🔧", "Take apart & rebuild", c.asm],
+      ["🪜", "Stairs & elevators", c.stairsPick + c.stairsDrop],
+      ["🛣️", "Drive ~" + Math.round(state.miles) + " mi", c.drive],
+      ["💪", c.crew + " movers" + (c.crew > 2 ? " (+" + money(c.extraMovers) + ")" : ""), null],
+      ["🧑‍🔧", "Packing service", c.packMin ? mins(c.packMin) : null],
+      ["📦", "Packing materials & kits", c.packing ? money(c.packing) : null],
+      ["📦", "Packing supplies", c.supplies ? money(c.supplies) : null],
+      ["🛠️", "Extra stops & services", c.services ? money(c.services) : null]
+    ];
+    $("live-lines").innerHTML = live.map(function (r) {
+      var v = r[2] == null ? "" : typeof r[2] === "string" ? r[2] : r[2] > 0.5 ? mins(r[2]) : "-";
+      return '<li class="' + (v === "-" ? "muted" : "") + '"><span>' + r[0] + " " + esc(r[1]) + "</span><b>" + v + "</b></li>";
+    }).join("") + '<li class="sum"><span>⏱️ Billed time</span><b>' + (c.count ? c.hours + " hours" : "-") + "</b></li>";
+    $("live-total").textContent = c.count ? money(c.total) : "-";
+    $("go-live").disabled = c.count === 0 || state.playing;
+    $("go-live").textContent = $("go").textContent;
 
     // Running total.
     var has = c.count > 0;
@@ -658,26 +871,148 @@
     return 0;
   }
 
+  /* ---------------------------------------------------- drag and drop */
+
+  // One row in either column. kind: item | supply | oncall | out.
+  function dragRow(kind, id, emoji, labelHtml, qty, onQty, zone) {
+    var li = document.createElement("li");
+    li.className = "drag";
+    li.dataset.kind = kind;
+    li.dataset.id = id;
+    var stepper = qty != null && onQty
+      ? '<span class="step"><button type="button" aria-label="Fewer">−</button><b>' + qty + '</b><button type="button" aria-label="More">+</button></span>'
+      : "";
+    var btn = zone === "inc"
+      ? '<button type="button" class="mv-btn" title="' + (kind === "item" ? "I'll move it myself" : "Remove") + '">' + (kind === "item" ? "Not in truck ➜" : "Remove ✕") + "</button>"
+      : '<button type="button" class="mv-btn" title="Add to my move">⬅ Add</button>';
+    li.innerHTML = '<span class="grip" aria-hidden="true">⠿</span><span class="e">' + emoji + '</span><span class="nm">' + labelHtml + "</span>" + stepper + btn;
+    if (stepper) {
+      var b = li.querySelectorAll(".step button");
+      b[0].addEventListener("click", function () { onQty(qty - 1); });
+      b[1].addEventListener("click", function () { onQty(qty + 1); });
+    }
+    li.querySelector(".mv-btn").addEventListener("click", function () { moveTo(kind, id, zone === "inc" ? "ext" : "inc", li); });
+    return li;
+  }
+
+  function moveTo(kind, id, zone, fromEl) {
+    if (state.played) resetTrip();
+    if (kind === "item" && zone === "ext") {
+      var it = byId[id];
+      state.excluded[id] = state.items[id];
+      delete state.items[id];
+      state.order = state.order.filter(function (x) { return x !== id; });
+      hudSay("🙋 OK, you'll move your " + it.name.toLowerCase() + " yourself.");
+      render();
+    } else if (kind === "out" && zone === "inc") {
+      var q = state.excluded[id];
+      delete state.excluded[id];
+      addItem(byId[id], q, fromEl);
+    } else if (kind === "supply") {
+      var s = PRICING.supplies.concat(PRICING.services).filter(function (x) { return x.id === id; })[0];
+      state.supplies[id] = zone === "inc" ? Math.max(1, s.from || s.flag ? suggestFor(s) : 1) : 0;
+      if (zone === "inc") { flyToTruck(s.emoji, fromEl, 1); hudSay("📦 " + s.name + " added"); }
+      render();
+    } else if (kind === "pack") {
+      var p = findIn(PRICING.packs, id);
+      state.pack = zone === "inc" ? id : null;
+      if (zone === "inc") {
+        if (state.kit) state.kit = null;
+        hudSay("🧑‍🔧 Full packing (" + p.name.toLowerCase() + ") added. Materials included.");
+      }
+      render();
+    } else if (kind === "kit") {
+      if (zone === "inc" && state.pack) {
+        hudSay("🧑‍🔧 Your packing service already includes materials.");
+        return;
+      }
+      var k = findIn(PRICING.kits, id);
+      state.kit = zone === "inc" ? id : null;
+      if (zone === "inc") { flyToTruck("📦", fromEl, 2); hudSay("📦 " + k.name + " added"); }
+      render();
+    } else if (kind === "oncall") {
+      state.onCall[id] = zone === "inc";
+      if (zone === "inc") hudSay("📞 We'll quote that by phone");
+      render();
+    }
+  }
+
+  // Pointer-based dragging so it works with a mouse and on phones. On touch
+  // screens only the ⠿ grip starts a drag, so the page still scrolls.
+  function setupDrag() {
+    var board = $("board"), drag = null;
+    function zoneAt(x, y) {
+      var el = document.elementFromPoint(x, y);
+      return el && el.closest ? el.closest("[data-zone]") : null;
+    }
+    function clearOver() {
+      Array.prototype.forEach.call(board.querySelectorAll(".zone.over"), function (z) { z.classList.remove("over"); });
+    }
+    board.addEventListener("pointerdown", function (e) {
+      var li = e.target.closest("li.drag");
+      if (!li || e.target.closest("button, select, input")) return;
+      if (e.pointerType !== "mouse" && !e.target.closest(".grip")) return;
+      // Stops the browser selecting text as the mouse moves.
+      e.preventDefault();
+      drag = { li: li, x: e.clientX, y: e.clientY, from: li.closest("[data-zone]").dataset.zone, ghost: null };
+
+    });
+    window.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      if (!drag.ghost) {
+        if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 6) return;
+        var r = drag.li.getBoundingClientRect();
+        var g = drag.li.cloneNode(true);
+        g.classList.add("ghost");
+        g.style.width = r.width + "px";
+        g.style.left = r.left + "px";
+        g.style.top = r.top + "px";
+        drag.dx = e.clientX - r.left;
+        drag.dy = e.clientY - r.top;
+        document.body.appendChild(g);
+        drag.ghost = g;
+        drag.li.classList.add("dragging");
+        document.body.classList.add("is-dragging");
+      }
+      e.preventDefault();
+      // Near the top or bottom of the screen, scroll so the other column
+      // (stacked above or below on phones) can be reached.
+      var edge = 110;
+      drag.speed = e.clientY < edge + 60 ? -14 : e.clientY > window.innerHeight - edge ? 14 : 0;
+      if (drag.speed && !drag.scroller) {
+        drag.scroller = setInterval(function () { if (drag && drag.speed) window.scrollBy(0, drag.speed); }, 16);
+      }
+      drag.ghost.style.left = e.clientX - drag.dx + "px";
+      drag.ghost.style.top = e.clientY - drag.dy + "px";
+      clearOver();
+      var z = zoneAt(e.clientX, e.clientY);
+      if (z && z.dataset.zone !== drag.from) z.classList.add("over");
+    }, { passive: false });
+    function end(e) {
+      if (!drag) return;
+      var d = drag;
+      drag = null;
+      if (d.scroller) clearInterval(d.scroller);
+      clearOver();
+      document.body.classList.remove("is-dragging");
+      if (!d.ghost) return;
+      d.ghost.remove();
+      d.li.classList.remove("dragging");
+      var z = e && zoneAt(e.clientX, e.clientY);
+      if (z && z.dataset.zone !== d.from) moveTo(d.li.dataset.kind, d.li.dataset.id, z.dataset.zone, d.li);
+    }
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", function () { end(null); });
+  }
+
+  function openStops() {
+    var box = $("stops-box");
+    box.open = true;
+    box.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+    setTimeout(function () { $("stop-input").focus({ preventScroll: true }); }, 300);
+  }
+
   function buildExtras() {
-    var ul = $("supplies");
-    PRICING.supplies.forEach(function (s) {
-      var li = document.createElement("li");
-      li.id = "sup-" + s.id;
-      li.innerHTML = '<span class="e">' + s.emoji + '</span><span class="nm">' + esc(s.name) +
-        ' <small>' + money(s.price) + ' each</small> <button type="button" class="sug" hidden></button></span>' +
-        '<span class="step"><button type="button" aria-label="Fewer">−</button><b>0</b><button type="button" aria-label="More">+</button></span>';
-      var btns = li.querySelectorAll(".step button");
-      btns[0].addEventListener("click", function () { state.supplies[s.id] = Math.max(0, (state.supplies[s.id] || 0) - 1); render(); });
-      btns[1].addEventListener("click", function () { state.supplies[s.id] = Math.min(200, (state.supplies[s.id] || 0) + 1); render(); });
-      ul.appendChild(li);
-    });
-    var oc = $("oncall");
-    PRICING.onCall.forEach(function (o) {
-      var li = document.createElement("li");
-      li.innerHTML = '<label><input type="checkbox"> <span class="e">' + o.emoji + "</span> " + esc(o.name) + " <small>Quoted by phone</small></label>";
-      li.querySelector("input").addEventListener("change", function (e) { state.onCall[o.id] = e.target.checked; });
-      oc.appendChild(li);
-    });
     ["pick", "drop"].forEach(function (side) {
       $("floor-" + side + "-edit").addEventListener("change", function (e) {
         if (side === "pick") state.fromFloor = e.target.value; else state.toFloor = e.target.value;
@@ -714,6 +1049,12 @@
     var steps = Promise.resolve()
       .then(function () { return sleep(500); })
       .then(function () {
+        if (!c.packMin) return;
+        hudSay("🧑‍🔧 Packing up your home (~" + mins(c.packMin) + ")");
+        var house = $("home-pick");
+        return Promise.all([0, 1, 2].map(function (i) { return carry("📦", spotOf(house), truckSpot(), i * 450); }));
+      })
+      .then(function () {
         if (!asmItems.length) return;
         tool(true, 0);
         hudSay("🔧 Taking apart " + asmItems.map(function (id) { return byId[id].name.toLowerCase(); }).slice(0, 3).join(", ") + " (~" + mins(c.asm * 0.4) + ")");
@@ -732,9 +1073,32 @@
       })
       .then(function () {
         movers.classList.remove("here");
-        hudSay("🛣️ Driving to " + $("drop-name").textContent + " (~" + mins(c.drive) + ")");
-        var ms = Math.max(2600, Math.min(6500, 2200 + c.drive * 45));
-        return drive(ms, c.drive);
+        var stops = route(), marks = [T_START].concat(state.stopFractions.map(function (f) {
+          return Math.min(T_END - 0.02, Math.max(T_START + 0.02, f));
+        })).concat([T_END]);
+        var ms = Math.max(2600, Math.min(6500, 2200 + c.drive * 45)) + stops.length * 600;
+        var legs = Promise.resolve(), done = 0;
+        hudSay("🛣️ Driving to " + (stops.length ? shortPlace(stops[0].text) : $("drop-name").textContent) + " (~" + mins(c.drive) + " total)");
+        marks.slice(1).forEach(function (to, i) {
+          var from = marks[i], share = (to - from) / (T_END - T_START);
+          legs = legs.then(function () {
+            var start = done;
+            done += share;
+            return drive(ms * share, c.drive * share, from, to, c.drive * start, state.miles * start, state.miles * share);
+          }).then(function () {
+            var s = stops[i];
+            if (!s) return;
+            movers.classList.add("here");
+            hudSay(s.kind === "pickup" ? "⬆ Picking up at " + shortPlace(s.text) : "⬇ Dropping off at " + shortPlace(s.text));
+            gulp();
+            return sleep(1300).then(function () {
+              movers.classList.remove("here");
+              var next = stops[i + 1];
+              hudSay("🛣️ Driving to " + (next ? shortPlace(next.text) : $("drop-name").textContent));
+            });
+          });
+        });
+        return legs;
       })
       .then(function () {
         var p = pathPoint(T_END);
@@ -743,9 +1107,9 @@
         hudSay("📤 Unloading at " + $("drop-name").textContent + " (~" + mins(c.unload) + ")");
         var pile = $("drop-pile"), emojis = [];
         state.order.forEach(function (id) { emojis.push(byId[id].emoji); });
-        var shown = emojis.slice(0, 10);
+        var shown = emojis.slice(0, 6);
         return Promise.all(shown.map(function (em, i) {
-          return flyFromTruck(em, $("home-drop"), i * 160).then(function () { pile.textContent += em; });
+          return flyFromTruck(em, $("home-drop"), i * 380).then(function () { pile.textContent += em; });
         }));
       })
       .then(function () {
@@ -767,6 +1131,7 @@
         state.played = true;
         $("go").disabled = false;
         $("go").textContent = "🔁 Play it again";
+        render();
         showResult(c);
       });
     return steps;
@@ -793,6 +1158,7 @@
 
   function showResult(c) {
     var rows = [
+      ["🧑‍🔧", "Packing your home", c.packMin],
       ["🔧", "Taking apart", c.asm * 0.4],
       ["📦", "Loading " + c.count + " items", c.load],
       ["🪜", "Stairs / elevator at pickup", c.stairsPick],
@@ -807,7 +1173,9 @@
 
     var price = [["🚚 Truck + 2 movers, " + c.hours + " hours (includes pads, wrap & tape)", c.base]];
     if (c.extraMovers) price.push(["💪 " + (c.crew - 2) + " extra mover" + (c.crew > 3 ? "s" : "") + " for heavy items", c.extraMovers]);
+    if (c.packing) price.push(["🧑‍🔧 Packing materials", c.packing]);
     if (c.supplies) price.push(["📦 Packing supplies", c.supplies]);
+    if (c.services) price.push(["🛠️ Extra stops & services", c.services]);
     $("price-lines").innerHTML = price.map(function (p) {
       return "<li><span>" + esc(p[0]) + "</span><b>" + money(p[1]) + "</b></li>";
     }).join("");
@@ -883,7 +1251,8 @@
       "Date flexible": flex ? "Yes" : "No",
       "Approx. distance": "~" + Math.round(state.miles) + " miles",
       "Items": itemLines.join("\n"),
-      "Item count": c.count + " items, ~" + Math.round(c.cuft) + " cu ft (" + Math.round(c.fill * 100) + "% of a 26 ft truck)",
+      "Item count": c.count + " items, ~" + Math.round(c.cuft) + " cu ft (" + Math.round(c.fill * 100) + "% of a " + c.truck.name + " truck)",
+      "Truck": c.truck.name + (c.fill > 1 ? ", plus a second truck or trip" : ""),
       "Crew": c.crew + " movers" + (c.heaviest && c.crew > 2 ? " (heaviest: " + c.heaviest.name + ", ~" + c.heaviest.lbs + " lbs)" : ""),
       "Time breakdown": "Take apart " + mins(c.asm * 0.4) + " · Load " + mins(c.load) + " · Pickup stairs " + mins(c.stairsPick) +
         " · Drive " + mins(c.drive) + " · Unload " + mins(c.unload) + " · Delivery stairs " + mins(c.stairsDrop) + " · Rebuild " + mins(c.asm * 0.6),
@@ -891,7 +1260,10 @@
       "Base price": money(c.base),
       "Extra movers": c.extraMovers ? money(c.extraMovers) : "None",
       "Packing supplies": c.supplyLines.length ? c.supplyLines.join("\n") : "None",
-      "Quote by phone": asks.length ? asks.join(", ") : "None",
+      "Extra stops": state.stops.length ? route().map(function (s) { return (s.kind === "pickup" ? "Extra pickup: " : "Extra drop-off: ") + (HB.places ? HB.places.tidy(s.text) : s.text); }).join("\n") : "None",
+      "Extra services": c.serviceLines.length ? c.serviceLines.join("\n") : "None",
+      "Packing": c.packLines.length ? c.packLines.join("\n") : "None",
+      "Customer moving themselves": Object.keys(state.excluded).map(function (id) { return state.excluded[id] + " × " + byId[id].name; }).join("\n") || "None",
       "Estimated total": money(c.total),
       "Notes": $("notes").value.trim() || "N/A",
       "Lead source": source,
@@ -971,15 +1343,24 @@
     $("edit-where").addEventListener("click", function () {
       document.body.classList.remove("has-scene");
       showStep("step-where");
+      $("board").hidden = true;
+      $("live").hidden = true;
       $("step-result").hidden = true;
     });
 
     setupSearch();
     buildExtras();
-    $("go").addEventListener("click", function () {
+    setupDrag();
+    attachSuggest($("stop-input"));
+    $("stop-add").addEventListener("click", addStop);
+    $("stop-input").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addStop(); } });
+    function go() {
       if (state.played) resetTrip();
       playMove();
-    });
+      render();
+    }
+    $("go").addEventListener("click", go);
+    $("go-live").addEventListener("click", go);
     $("send-form").addEventListener("submit", send);
     $("date").min = todayISO();
     $("date").addEventListener("focus", function () { $("date").min = todayISO(); });
