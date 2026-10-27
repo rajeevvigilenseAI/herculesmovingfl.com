@@ -693,6 +693,7 @@
   function resetTrip() {
     state.played = false;
     $("step-result").hidden = true;
+    document.body.classList.remove("reading");
     $("clock").hidden = true;
     truck.hidden = false;
     placeTruck(T_START, false);
@@ -815,6 +816,8 @@
     $("price-asks").textContent = asks.length ? "We'll also quote by phone: " + asks.join(", ") + "." : "";
     $("price-big").hidden = c.fill <= 1;
     $("step-result").hidden = false;
+    // Let the scene scroll away so the results are easy to read on phones.
+    document.body.classList.add("reading");
     setTimeout(function () { $("step-result").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); }, reduceMotion ? 0 : 900);
   }
 
