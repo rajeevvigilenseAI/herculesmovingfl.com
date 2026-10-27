@@ -23,6 +23,14 @@ window.HerculesBooking.config = {
   // https://herculesmovingfl.com/booking-confirmed.html so customers land on
   // their confirmation.
   depositUrl: "https://square.link/u/SrxJaH93",
+  // CRM deposit checkout: makes a Square checkout tied to the lead by phone
+  // and records the deposit on that lead. Leave empty until the CRM change
+  // that makes /pay/deposit public is deployed; until then the fixed link
+  // above is used. Live value:
+  // "https://hercules-local-movers-platform.vercel.app/pay/deposit"
+  crmDepositUrl: "",
+  // Card fee the CRM checkout adds on top of the deposit (3.7%).
+  crmDepositFeeNote: "A 3.7% card fee is added at checkout.",
   depositAmount: 50,
   phoneDisplay: "1 (754) 354-2008",
   phoneTel: "+17543542008",

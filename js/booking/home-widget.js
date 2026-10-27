@@ -22,6 +22,12 @@
     var dateInput = document.getElementById("hqMoveDate2");
     if (dateInput) dateInput.min = todayYmd();
 
+    // The CRM checkout adds a card fee to the deposit; say so before the tap.
+    var choiceNote = document.querySelector(".hq-choice-note");
+    if (choiceNote && cfg.crmDepositUrl && cfg.crmDepositFeeNote) {
+      choiceNote.appendChild(document.createTextNode(" " + cfg.crmDepositFeeNote));
+    }
+
     fillWindows();
     fillHomeSizes();
     fillDistanceBands();
@@ -225,7 +231,7 @@
             gtag("event", "booking_choice", { choice: choice });
           }
           if (choice === "deposit" && cfg.depositUrl) {
-            goToDeposit(result);
+            goToDeposit(result, { name: (firstName + " " + lastName).trim(), phone: phone, email: email });
             return;
           }
           renderConfirmation(result, choice);
@@ -240,12 +246,31 @@
         });
     }
 
+    var depositHref = "";
+
+    /**
+     * The CRM checkout ties the deposit to the lead by phone, so it gets the
+     * customer's details. Without it (or without a usable phone) the fixed
+     * Square link is used, and that payment is matched from Square's email by
+     * name.
+     */
+    function depositLink(contact) {
+      var digits = String((contact && contact.phone) || "").replace(/\D/g, "");
+      if (digits.length === 11 && digits.charAt(0) === "1") digits = digits.slice(1);
+      if (!cfg.crmDepositUrl || digits.length !== 10) return cfg.depositUrl;
+      return cfg.crmDepositUrl +
+        "?name=" + encodeURIComponent(contact.name || "") +
+        "&phone=" + encodeURIComponent("+1" + digits) +
+        "&email=" + encodeURIComponent(contact.email || "");
+    }
+
     /**
      * The booking is already in the office's inbox at this point. Keep a copy
      * for booking-confirmed.html (Square sends the customer there after
      * payment), show where they are going, then hand off to Square checkout.
      */
-    function goToDeposit(result) {
+    function goToDeposit(result, contact) {
+      depositHref = depositLink(contact);
       try {
         localStorage.setItem("hercules_last_booking", JSON.stringify({
           reference: result.reference,
@@ -262,7 +287,7 @@
       renderConfirmation(result, "deposit");
       showStep(stepDone);
       setTimeout(function () {
-        window.location.href = cfg.depositUrl;
+        window.location.href = depositHref;
       }, 1800);
     }
 
@@ -303,7 +328,7 @@
         }
         depositNote.innerHTML =
           "Taking you to Square to pay your $" + (cfg.depositAmount || 50) + " deposit. " +
-          '<a href="' + escapeHtml(cfg.depositUrl) + '">Continue to secure checkout</a> if it doesn’t open.';
+          '<a href="' + escapeHtml(depositHref || cfg.depositUrl) + '">Continue to secure checkout</a> if it doesn’t open.';
         depositNote.hidden = false;
       } else if (depositNote) {
         depositNote.hidden = true;
