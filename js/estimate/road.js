@@ -16,14 +16,22 @@ window.HerculesEstimate = window.HerculesEstimate || {};
   var FAR = ["🏙️", "⛵", "🌴", "🐬", "🛳️", "🏙️", "⛵", "🌴"];
   var MID = ["hill", "🌴", "🌴", "hill", "🌴", "🏘️", "hill", "🌴"];
 
-  function fillLayer(el, items, top, size, spread) {
+  // Horizontal: items spread along the width. Vertical: along the height,
+  // with the far layer (boats, dolphins) kept inside the ocean on the right
+  // and the mid layer (hills, palms) on the land either side of the road.
+  function fillLayer(el, items, top, size, spread, vertical, far) {
     el.innerHTML = "";
     for (var copy = 0; copy < 2; copy++) {
       items.forEach(function (it, i) {
         var s = document.createElement("span");
-        var x = (copy * 100 + (i + 0.5) * (100 / items.length)) / 2;
-        s.style.left = x + "%";
-        s.style.top = top + ((i * 37) % spread) + "%";
+        var along = (copy * 100 + (i + 0.5) * (100 / items.length)) / 2;
+        if (vertical) {
+          s.style.top = along + "%";
+          s.style.left = (far ? 80 + ((i * 7) % 14) : (i % 2 ? 8 + ((i * 11) % 16) : 58 + ((i * 5) % 10))) + "%";
+        } else {
+          s.style.left = along + "%";
+          s.style.top = top + ((i * 37) % spread) + "%";
+        }
         if (it === "hill") {
           s.className = "hill";
           s.style.width = size * 3.2 + "px";
@@ -49,19 +57,34 @@ window.HerculesEstimate = window.HerculesEstimate || {};
     var svg = scene.querySelector("svg.map");
     svg.setAttribute("viewBox", "0 0 " + W + " " + H);
 
-    if (!scene.dataset.scenery) {
-      scene.dataset.scenery = "1";
-      fillLayer(scene.querySelector(".layer-far"), FAR, 4, W < 600 ? 22 : 30, 20);
-      fillLayer(scene.querySelector(".layer-mid"), MID, 18, W < 600 ? 22 : 28, 30);
+    // Tall, narrow scene (beside the form): the road runs top to bottom along
+    // the coast. Short, wide strip (phones): it runs left to right.
+    var vertical = H > W * 1.1, small = Math.min(W, H) < 200;
+    scene.classList.toggle("vertical", vertical);
+    var key = (vertical ? "v" : "h") + (small ? "s" : "");
+    if (scene.dataset.scenery !== key) {
+      scene.dataset.scenery = key;
+      var size = small ? 16 : 24;
+      fillLayer(scene.querySelector(".layer-far"), FAR, 4, size, 20, vertical, true);
+      fillLayer(scene.querySelector(".layer-mid"), MID, small ? 6 : 18, size, small ? 14 : 30, vertical, false);
     }
 
-    // A rolling road across the lower part of the scene: gentle hills.
-    var x0 = W * 0.09, x1 = W * 0.91, y0 = H * 0.76, amp = Math.min(22, H * 0.06);
-    var waves = W > 700 ? 2 : 1.5, d = "", steps = 60;
-    for (var i = 0; i <= steps; i++) {
-      var t = i / steps, x = x0 + (x1 - x0) * t;
-      var y = y0 - amp * Math.sin(t * Math.PI * 2 * waves);
-      d += (i ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+    var d = "", steps = 60, i, t;
+    if (vertical) {
+      // Leave the top for the caption bar; wiggle gently left and right.
+      var top = H * 0.27, bottom = H * 0.9, cx = W * 0.4, wig = Math.min(30, W * 0.11);
+      for (i = 0; i <= steps; i++) {
+        t = i / steps;
+        d += (i ? " L" : "M") + (cx + wig * Math.sin(t * Math.PI * 3)).toFixed(1) + " " + (top + (bottom - top) * t).toFixed(1);
+      }
+    } else {
+      // A rolling road across the lower part of the scene: gentle hills.
+      var x0 = W * 0.09, x1 = W * 0.91, y0 = H * (small ? 0.8 : 0.76), amp = Math.min(small ? 8 : 22, H * 0.06);
+      var waves = W > 700 ? 2 : 1.5;
+      for (i = 0; i <= steps; i++) {
+        t = i / steps;
+        d += (i ? " L" : "M") + (x0 + (x1 - x0) * t).toFixed(1) + " " + (y0 - amp * Math.sin(t * Math.PI * 2 * waves)).toFixed(1);
+      }
     }
     Array.prototype.forEach.call(svg.querySelectorAll(".route"), function (el) { el.setAttribute("d", d); });
 

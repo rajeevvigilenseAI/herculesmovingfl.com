@@ -349,6 +349,7 @@
     if (state.from && state.to && E.minimap && core && miniKey !== lastMiniKey) {
       lastMiniKey = miniKey;
       var ll = function (a) { return core.resolveCoordinates(a); };
+      $("mm-open").hidden = false;
       E.minimap.show($("minimap"), [{ ll: ll(state.from), text: state.fromText, kind: "pick" }]
         .concat(mid.map(function (s) { return { ll: ll(s.addr), text: s.text, kind: "stop" }; }))
         .concat([{ ll: ll(state.to), text: state.toText, kind: "drop" }]));
@@ -1589,10 +1590,22 @@
     $("go-live").addEventListener("click", go);
     $("send-form").addEventListener("submit", send);
     setupRooms();
+    // Computers: the button enlarges the route card. Phones: the card is a
+    // pop-up opened from the stats row, and the same button closes it.
+    var phone = window.matchMedia("(max-width: 860px)");
     $("mm-toggle").addEventListener("click", function () {
       var mm = $("minimap");
+      if (phone.matches) {
+        mm.classList.remove("open");
+        return;
+      }
       mm.classList.toggle("big");
       this.textContent = mm.classList.contains("big") ? "✕" : "⤢";
+      E.minimap.resize();
+    });
+    $("mm-open").addEventListener("click", function () {
+      $("minimap").classList.add("open");
+      $("mm-toggle").textContent = "✕";
       E.minimap.resize();
     });
     $("send").addEventListener("click", function () { lastChoice = "deposit"; });

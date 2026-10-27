@@ -36,19 +36,22 @@ h1,h2,h3{font-family:Oswald,'Roboto Condensed',sans-serif;line-height:1.15;margi
 /* Layout: scene left (sticky), steps right. Stacked on phones. */
 /* This page runs wider than the rest of the site so the map can breathe. */
 main.wrap,.board.wrap{max-width:1440px}
-.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,1fr);gap:22px;align-items:start;padding:18px 20px 18px}
+/* Form on the left with most of the room; a slim scene column on the right. */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);gap:22px;align-items:start;padding:18px 20px 18px}
 body:not(.has-scene) .grid{padding-bottom:120px}
-.scene-col{position:sticky;top:72px}
+.steps-col{order:1}
+.scene-col{order:2;position:sticky;top:72px}
 @media(max-width:860px){
-  .grid{grid-template-columns:1fr;gap:12px;padding-top:12px}
-  .scene-col{position:static}
-  body.has-scene .scene-col{position:sticky;top:60px;z-index:20}
+  /* Phones: the scene is a short strip pinned above the calculator. */
+  .grid{grid-template-columns:1fr;gap:10px;padding-top:10px}
+  .scene-col{order:0;position:static}
+  body.has-scene .scene-col{position:sticky;top:60px;z-index:20;background:var(--bg);padding-bottom:6px;margin:0 -16px;padding-left:16px;padding-right:16px}
   body.has-scene.reading .scene-col{position:static}
 }
 
 /* ------------------------------------------------------------- the scene */
-.scene{position:relative;height:clamp(380px,58vh,600px);border-radius:18px;overflow:hidden;background:linear-gradient(#7CC8F8,#BFE6FF);box-shadow:0 14px 40px rgba(10,25,50,.18);user-select:none}
-@media(max-width:860px){.scene{height:280px;border-radius:14px}}
+.scene{position:relative;height:clamp(300px,calc(100vh - 430px),600px);border-radius:18px;overflow:hidden;background:linear-gradient(#7CC8F8,#BFE6FF);box-shadow:0 14px 40px rgba(10,25,50,.18);user-select:none}
+@media(max-width:860px){.scene{height:150px;border-radius:14px}}
 .scene.shake{animation:shake .35s}
 @keyframes shake{20%{transform:translateY(3px)}40%{transform:translateY(-2px)}60%{transform:translateY(2px)}80%{transform:translateY(-1px)}}
 .sun{position:absolute;right:18px;top:12px;font-size:38px;animation:spin 30s linear infinite}
@@ -69,12 +72,23 @@ body:not(.has-scene) .grid{padding-bottom:120px}
 .layer .hill{position:absolute;transform:translate(-50%,-100%);border-radius:50% 50% 0 0/100% 100% 0 0;background:radial-gradient(circle at 38% 30%,#C8F09E,#6FC046 70%)}
 .layer-far{top:33%;height:22%;z-index:1}
 .layer-mid{top:52%;height:30%;z-index:1}
+.scene.vertical .sea{top:0;bottom:0;left:auto;right:0;width:26%;height:auto}
+.scene.vertical .land-band{top:0;bottom:0;left:0;right:26%;border-top:0;border-right:5px solid #F3E2A0}
+.scene.vertical .layer{top:0;left:0;width:100%;height:200%}
+.scene.vertical.moving .layer-far{animation:slideV 16s linear infinite}
+.scene.vertical.moving .layer-mid{animation:slideV 8s linear infinite}
+@keyframes slideV{to{transform:translateY(-50%)}}
 .scene.moving .layer-far{animation:slide 16s linear infinite}
 .scene.moving .layer-mid{animation:slide 7s linear infinite}
 @keyframes slide{to{transform:translateX(-50%)}}
-.minimap{position:absolute;right:10px;top:58px;z-index:9;width:190px;height:130px;border-radius:12px;overflow:hidden;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,.25);background:#E8EEF5;transition:width .25s,height .25s}
-.minimap.big{width:calc(100% - 20px);height:calc(100% - 110px)}
-@media(max-width:860px){.minimap{width:128px;height:92px;border-width:2px}}
+.minimap{position:relative;margin-top:10px;width:100%;height:170px;border-radius:14px;overflow:hidden;border:3px solid #fff;box-shadow:0 6px 18px rgba(10,25,50,.15);background:#E8EEF5;transition:height .25s}
+.minimap.big{height:380px}
+.stat-btn{flex:none;border:1px solid var(--line);background:#fff;border-radius:12px;padding:5px 9px;font:inherit;font-size:.8rem;font-weight:700;color:var(--navy);cursor:pointer;display:none}
+@media(max-width:860px){
+  .stat-btn{display:inline-block}
+  .minimap{display:none;position:fixed;left:12px;right:12px;top:72px;width:auto;height:55vh;z-index:70;margin:0}
+  .minimap.open{display:block}
+}
 .minimap .mm-map{position:absolute;inset:0}
 .mm-toggle{position:absolute;right:4px;top:4px;z-index:500;width:26px;height:26px;border-radius:7px;border:0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer;font-size:15px;line-height:1}
 .mm-label{position:absolute;left:4px;top:4px;z-index:500;background:rgba(255,255,255,.92);border-radius:6px;padding:1px 6px;font-size:.72rem;font-weight:700;color:var(--navy)}
@@ -223,6 +237,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 .assist p{margin:0 0 6px;font-size:.9rem}
 .assist-row{display:flex;gap:6px}
 .assist-row .in{padding:9px 10px}
+.assist-row .btn{white-space:nowrap}
 .btn.wide{width:100%;margin-top:8px;padding:12px}
 .bldg{border:1px solid var(--line);border-radius:10px;margin:12px 0 0;padding:6px 10px 8px}
 .bldg legend{font-weight:700;font-size:.9rem;padding:0 4px;color:var(--navy)}
@@ -290,6 +305,19 @@ body:not(.has-scene) .bar{display:none}
 @media (prefers-reduced-motion: reduce){
   .sea::before,.layer .em.bob,.scene.moving .layer,.sun,.cloud,.movers.here .mv,.wrench,.home.climb .bld{animation:none!important}
 }
+/* Phone strip: everything inside the short scene gets smaller. Kept last so
+   it wins over the general scene styles above. */
+@media(max-width:860px){
+  .home .bld{font-size:28px}
+  .home .tag{font-size:.66rem;padding:1px 6px;max-width:100px}
+  .truck .body{font-size:32px}
+  .movers{font-size:15px;right:-30px}
+  .carrier{font-size:17px}
+  .hud{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.75rem;padding:4px 9px;top:6px;left:6px;right:6px;max-width:none}
+  .trip{display:none}
+  .clock{font-size:.78rem;padding:3px 8px;bottom:6px;right:6px}
+  .sun{font-size:24px;top:6px;right:8px}
+}
 </style>
 </head>
 <body>
@@ -322,11 +350,6 @@ body:not(.has-scene) .bar{display:none}
         <path class="route route-edge"/><path class="route route-bg"/><path class="route route-dash" id="road-path"/>
       </svg>
       <div class="deco"></div>
-      <div class="minimap" id="minimap" hidden>
-        <div class="mm-map"></div>
-        <button type="button" class="mm-toggle" id="mm-toggle" aria-label="Bigger map">⤢</button>
-        <span class="mm-label">🗺️ Your real route</span>
-      </div>
       <div class="home" id="home-pick"><span class="bld">🏠</span><span class="tag"><b id="pick-name">Pickup</b><i id="pick-floor" hidden></i></span></div>
       <div class="home" id="home-drop"><span class="pile" id="drop-pile"></span><span class="bld">🏡</span><span class="tag"><b id="drop-name">Delivery</b><i id="drop-floor" hidden></i></span></div>
       <div class="truck" id="truck" hidden>
@@ -343,6 +366,12 @@ body:not(.has-scene) .bar{display:none}
       <span>🚚 <b id="cargo-text">0% full</b></span>
       <span>💪 <b id="mover-count">2</b> movers</span>
       <span>📍 <b id="trip-short">-</b></span>
+      <button type="button" class="stat-btn" id="mm-open" hidden>🗺️ Route</button>
+    </div>
+    <div class="minimap" id="minimap" hidden>
+      <div class="mm-map"></div>
+      <button type="button" class="mm-toggle" id="mm-toggle" aria-label="Bigger map">⤢</button>
+      <span class="mm-label">🗺️ Your real route</span>
     </div>
   </div>
 
