@@ -43,8 +43,8 @@ h1,h2,h3{font-family:Oswald,'Roboto Condensed',sans-serif;line-height:1.15;margi
 }
 
 /* ------------------------------------------------------------- the scene */
-.scene{position:relative;height:320px;border-radius:18px;overflow:hidden;background:linear-gradient(#7CC8F8,#BFE6FF 55%,#E7F6FF);box-shadow:0 14px 40px rgba(10,25,50,.18);user-select:none}
-@media(max-width:860px){.scene{height:230px;border-radius:14px}}
+.scene{position:relative;height:320px;border-radius:18px;overflow:hidden;background:linear-gradient(160deg,#5CC7F2,#2B97D2);box-shadow:0 14px 40px rgba(10,25,50,.18);user-select:none}
+@media(max-width:860px){.scene{height:280px;border-radius:14px}}
 .scene.shake{animation:shake .35s}
 @keyframes shake{20%{transform:translateY(3px)}40%{transform:translateY(-2px)}60%{transform:translateY(2px)}80%{transform:translateY(-1px)}}
 .sun{position:absolute;right:18px;top:12px;font-size:38px;animation:spin 30s linear infinite}
@@ -53,17 +53,26 @@ h1,h2,h3{font-family:Oswald,'Roboto Condensed',sans-serif;line-height:1.15;margi
 .cloud.c1{top:16px;left:-60px}
 .cloud.c2{top:52px;left:-60px;font-size:26px;animation-duration:55s;animation-delay:-20s}
 @keyframes drift{to{transform:translateX(900px)}}
-.ground{position:absolute;left:0;right:0;bottom:0;height:56%;background:linear-gradient(#A6E383,#6CC24A);border-top:4px solid #8FD46A}
-.palm{position:absolute;font-size:26px;bottom:6px}
-.road{position:absolute;inset:0;width:100%;height:100%}
-#road-bg{fill:none;stroke:#5B6678;stroke-width:16;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
-#road-path{fill:none;stroke:#fff;stroke-width:2.5;stroke-dasharray:9 10;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+/* Cartoon South Florida: the sea is the scene background, land is the SVG. */
+.scene::before{content:"";position:absolute;inset:-40px;background-image:radial-gradient(circle at 10px 10px,rgba(255,255,255,.35) 2px,transparent 3px),radial-gradient(circle at 30px 28px,rgba(255,255,255,.22) 2px,transparent 3px);background-size:40px 36px;animation:waves 6s linear infinite}
+@keyframes waves{to{transform:translate(40px,18px)}}
+.map{position:absolute;inset:0;width:100%;height:100%}
+.map .land{fill:#9BDC74;stroke:#F3E2A0;stroke-width:5;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.map .beach,.map .keys ellipse{fill:#B9E78F;stroke:#F3E2A0;stroke-width:3;vector-effect:non-scaling-stroke}
+.map .lake{fill:#5FBDEB;stroke:#F3E2A0;stroke-width:3;vector-effect:non-scaling-stroke}
+.map .route{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.map .route-bg{stroke:#5B6678;stroke-width:13}
+.map .route-dash{stroke:#fff;stroke-width:2.5;stroke-dasharray:8 9}
+.deco{position:absolute;inset:0;pointer-events:none;z-index:2}
+.deco .em{position:absolute;transform:translate(-50%,-50%);line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+.deco .em.bob{animation:bob 2.4s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translate(-50%,-62%) rotate(-6deg)}}
+.deco .hill{position:absolute;transform:translate(-50%,-100%);border-radius:50% 50% 0 0/100% 100% 0 0;background:radial-gradient(circle at 38% 30%,#C8F09E,#6FC046 70%);box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
 
-.home{position:absolute;transform:translate(-80%,-92%);text-align:center;z-index:3;pointer-events:none}
-#home-drop{transform:translate(-20%,-92%)}
+.home{position:absolute;transform:translate(-50%,-88%);text-align:center;z-index:3;pointer-events:none}
 .home .bld{display:block;font-size:46px;line-height:1;filter:drop-shadow(0 4px 3px rgba(0,0,0,.18))}
 @media(max-width:860px){.home .bld{font-size:36px}}
-.home .tag{display:block;margin-top:2px;background:#fff;border-radius:999px;padding:2px 8px;font-size:.78rem;font-weight:700;color:var(--navy);box-shadow:0 2px 6px rgba(0,0,0,.12);white-space:nowrap}
+.home .tag{display:block;max-width:130px;overflow:hidden;text-overflow:ellipsis;margin-top:2px;background:#fff;border-radius:999px;padding:2px 8px;font-size:.78rem;font-weight:700;color:var(--navy);box-shadow:0 2px 6px rgba(0,0,0,.12);white-space:nowrap}
 .home .tag i{font-style:normal;color:var(--orange-d);margin-left:4px}
 .home.climb .bld{animation:climb .5s ease-in-out infinite alternate}
 @keyframes climb{to{transform:translateY(-6px) scale(1.06)}}
@@ -75,10 +84,16 @@ h1,h2,h3{font-family:Oswald,'Roboto Condensed',sans-serif;line-height:1.15;margi
 .cargo{position:absolute;left:8px;right:8px;bottom:-8px;height:6px;border-radius:9px;background:rgba(255,255,255,.75);overflow:hidden}
 .cargo i{display:block;height:100%;width:0;background:var(--orange);transition:width .5s}
 .cargo i.over{background:#E0453A}
-.movers{position:absolute;left:-46px;bottom:0;font-size:24px;white-space:nowrap;opacity:0;transform:translateY(10px) scale(.6);transition:opacity .3s,transform .3s}
-.movers.in{opacity:1;transform:none;animation:hop .9s ease-in-out infinite alternate}
+.movers{position:absolute;right:-50px;bottom:-2px;font-size:24px;white-space:nowrap;opacity:0;transform:translateY(10px) scale(.6);transition:opacity .3s,transform .3s}
+.movers.here{opacity:1;transform:none}
+/* Each mover carries something on his head and steps in place. */
+.mv{display:inline-flex;flex-direction:column;align-items:center;line-height:.9;margin-right:1px}
+.mv i{font-style:normal;font-size:.8em;margin-bottom:-3px}
+.movers.here .mv{animation:hop .45s ease-in-out infinite alternate}
+.movers.here .mv:nth-child(2n){animation-delay:.22s}
 @keyframes hop{to{transform:translateY(-5px)}}
-@media(max-width:860px){.movers{font-size:19px;left:-36px}}
+@media(max-width:860px){.movers{font-size:19px;right:-40px}}
+@media(max-width:860px){.hud{font-size:.8rem;padding:5px 9px}}
 .wrench{position:absolute;z-index:6;font-size:30px;transform:translate(-50%,-50%);animation:wrench .5s ease-in-out infinite alternate}
 @keyframes wrench{from{transform:translate(-50%,-50%) rotate(-35deg)}to{transform:translate(-50%,-50%) rotate(35deg)}}
 .hud{position:absolute;left:10px;right:10px;top:10px;z-index:8;background:rgba(19,41,75,.88);color:#fff;border-radius:12px;padding:7px 11px;font-size:.92rem;font-weight:700;max-width:calc(100% - 70px)}
@@ -164,6 +179,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 .bar .nums b{font-family:Oswald,sans-serif;font-size:1.25rem;color:var(--navy)}
 .bar .nums .p b{color:var(--orange-d)}
 .bar .btn{margin-left:auto;width:auto;min-width:200px}
+body:not(.has-scene) .bar{display:none}
 @media(max-width:560px){.bar .wrap{flex-wrap:wrap;gap:6px;padding:8px 12px}.bar .nums{width:100%;justify-content:space-between}.bar .btn{width:100%;min-width:0;padding:12px}}
 
 /* Result */
@@ -181,7 +197,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 .hp{position:absolute;left:-9999px}
 
 @media (prefers-reduced-motion: reduce){
-  .sun,.cloud,.movers.in,.wrench,.home.climb .bld{animation:none!important}
+  .scene::before,.deco .em.bob,.sun,.cloud,.movers.here .mv,.wrench,.home.climb .bld{animation:none!important}
 }
 </style>
 </head>
@@ -207,17 +223,16 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
     <div class="scene" id="scene" aria-hidden="true">
       <span class="sun">☀️</span>
       <span class="cloud c1">☁️</span><span class="cloud c2">☁️</span>
-      <div class="ground"></div>
-      <span class="palm" style="left:30%">🌴</span><span class="palm" style="left:63%">🌴</span>
-      <svg class="road" viewBox="0 0 600 260" preserveAspectRatio="none">
-        <path id="road-bg" d="M60 205 L150 150 L240 212 L340 146 L440 208 L540 160"/>
-        <path id="road-path" d="M60 205 L150 150 L240 212 L340 146 L440 208 L540 160"/>
+      <svg class="map" viewBox="0 0 100 60" preserveAspectRatio="xMidYMid slice">
+        <polygon class="land"/><polygon class="beach"/><ellipse class="lake"/><g class="keys"></g>
+        <path class="route route-bg"/><path class="route route-dash" id="road-path"/>
       </svg>
+      <div class="deco"></div>
       <div class="home" id="home-pick"><span class="bld">🏠</span><span class="tag"><b id="pick-name">Pickup</b><i id="pick-floor" hidden></i></span></div>
       <div class="home" id="home-drop"><span class="pile" id="drop-pile"></span><span class="bld">🏡</span><span class="tag"><b id="drop-name">Delivery</b><i id="drop-floor" hidden></i></span></div>
       <div class="truck" id="truck" hidden>
         <span class="body">🚚</span>
-        <div class="movers" id="movers">🏋️‍♂️🏋️‍♂️<span id="mover-extra"></span></div>
+        <div class="movers" id="movers"><span class="mv"><i>📦</i>🧍‍♂️</span><span class="mv"><i>🪑</i>🧍‍♂️</span><span id="mover-extra"></span></div>
         <div class="cargo"><i id="cargo-fill"></i></div>
       </div>
       <div class="wrench" id="wrench" hidden>🔧</div>
@@ -227,7 +242,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
     </div>
     <div class="stats" aria-live="polite">
       <span>🚚 <b id="cargo-text">0% full</b></span>
-      <span>🏋️ <b id="mover-count">2</b> movers</span>
+      <span>💪 <b id="mover-count">2</b> movers</span>
       <span>📏 <b id="item-total-short">26 ft</b> truck</span>
     </div>
   </div>
@@ -286,7 +301,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
         <h3>✅ Included in your move <small id="item-total"></small></h3>
         <ul class="lines inc">
           <li class="base"><span class="e">🚚</span><span class="nm">1 moving truck (26 ft)</span></li>
-          <li class="base"><span class="e">🏋️</span><span class="nm">2 professional movers</span></li>
+          <li class="base"><span class="e">💪</span><span class="nm">2 professional movers</span></li>
           <li class="base"><span class="e">🧣</span><span class="nm">Moving pads &amp; blankets</span></li>
           <li class="base"><span class="e">🌀</span><span class="nm">Stretch wrap</span></li>
           <li class="base"><span class="e">🎞️</span><span class="nm">Tape</span></li>
@@ -304,7 +319,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
               <select class="in" id="floor-pick-edit" aria-label="Pickup floor"><option value="ground">Pickup: ground</option><option value="elevator">Pickup: elevator</option><option value="stairs-2">Pickup: 2nd fl stairs</option><option value="stairs-3">Pickup: 3rd fl stairs</option><option value="stairs-4">Pickup: 4th fl stairs</option><option value="stairs-5">Pickup: 5th fl+ stairs</option></select>
               <select class="in" id="floor-drop-edit" aria-label="Delivery floor"><option value="ground">Delivery: ground</option><option value="elevator">Delivery: elevator</option><option value="stairs-2">Delivery: 2nd fl stairs</option><option value="stairs-3">Delivery: 3rd fl stairs</option><option value="stairs-4">Delivery: 4th fl stairs</option><option value="stairs-5">Delivery: 5th fl+ stairs</option></select>
             </span></span></li>
-          <li class="auto" id="movers-row"><span class="e">🏋️</span><span class="nm">Extra movers for very heavy items <small id="movers-detail"></small></span></li>
+          <li class="auto" id="movers-row"><span class="e">💪</span><span class="nm">Extra movers for very heavy items <small id="movers-detail"></small></span></li>
           <li class="auto on" id="truck-row" hidden><span class="e">🚛</span><span class="nm">Second truck or trip <small>Your items fill more than one truck. We'll confirm by phone.</small></span></li>
         </ul>
         <ul class="lines ext" id="supplies"></ul>
@@ -359,7 +374,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
   <div class="wrap">
     <div class="nums">
       <span>⏱️ <b id="bar-time">-</b></span>
-      <span>🏋️ <b id="bar-crew">2</b> movers</span>
+      <span>💪 <b id="bar-crew">2</b> movers</span>
       <span class="p">💵 <b id="bar-price">-</b></span>
     </div>
     <button type="button" class="btn go" id="go" disabled>🚚 Start the move ➜</button>
@@ -378,6 +393,7 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 <script src="js/booking/place-lookup.js"></script>
 <script src="js/booking/web3forms.js"></script>
 <script src="js/estimate/items.js"></script>
+<script src="js/estimate/map.js"></script>
 <script src="js/estimate/estimate.js"></script>
 </body>
 </html>

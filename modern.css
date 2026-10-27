@@ -2953,3 +2953,64 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
 .hq-choice-note { margin-top: 6px !important; }
 .hq-callback { min-height: 44px; }
 #hq-step-contact .hq-legal { margin: 8px 0 4px !important; font-size: 11px !important; line-height: 1.45 !important; }
+
+/* Phones and tablets: the estimate card and the hero grow with their content
+   (a fixed height let the card spill into the reviews below), and the old
+   81px top gap for the floating header is no longer needed. */
+@media (max-width: 1199px) {
+    .banner.hero-has-form {
+        height: auto !important;
+        min-height: 0 !important;
+        padding-top: 20px !important;
+        padding-bottom: 24px !important;
+    }
+
+    .banner.hero-has-form .hero-quote-card {
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+}
+
+/* --- phone overlap fixes */
+@media (max-width: 767px) {
+    /* Service-page heroes were a fixed 200px with 74px of old header padding,
+       so the caption ran into the heading below. */
+    .residential-banner:not(.hub-banner),
+    .commercial-banner,
+    .specialty-banner {
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 36px 0 !important;
+    }
+
+    .residential-banner:not(.hub-banner) .item,
+    .commercial-banner .item,
+    .specialty-banner .item {
+        position: relative !important;
+        width: auto !important;
+        height: auto !important;
+        margin: 0 14px !important;
+    }
+
+    /* Floated footer link lists let the logo slide up over them. */
+    .footer .links {
+        float: none !important;
+        width: 100% !important;
+    }
+
+    .footer h6.q-links {
+        height: auto !important;
+    }
+
+    .footer .inner > [class*="col-sm-"]::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* Review strip heading: keep the badge and count, drop the tagline. */
+    .rv-head > span:not(.rv-score) {
+        display: none;
+    }
+}

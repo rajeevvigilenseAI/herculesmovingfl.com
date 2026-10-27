@@ -160,7 +160,7 @@ window.HerculesBooking = window.HerculesBooking || {};
     if (payload.bookingChoice === "deposit") {
       fields["Your Next Step"] =
         "You chose to book now and secure your date with a $" + ((cfg && cfg.depositAmount) || 50) +
-        " deposit through Square. If checkout didn't open, call us at " + phone + " and we'll send you the link.";
+        " deposit through Square. Your deposit is credited toward your final balance. Rescheduling is free, and cancellation is free up to 24 hours before your move. If checkout didn't open, call us at " + phone + " and we'll send you the link.";
     } else if (payload.bookingChoice === "callback") {
       fields["Your Next Step"] =
         "You asked us to call you before booking. Nothing is booked yet; we'll call to go over your estimate and answer any questions.";
