@@ -1590,7 +1590,7 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
     align-items: center;
     gap: 4px 8px;
     color: var(--hl-brand-dark);
-    font-size: 1em;
+    font-size: .8em;
     font-weight: 800;
     white-space: nowrap;
 }
@@ -3011,5 +3011,51 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
     /* Review strip heading: keep the badge and count, drop the tagline. */
     .rv-head > span:not(.rv-score) {
         display: none;
+    }
+}
+
+/* 1200-1299px laptops: the card was narrowed to 580px, which made steps 2
+   and 3 taller than the card and forced scrolling inside it. Give it more
+   width and take it from the caption. */
+@media (min-width: 1200px) and (max-width: 1299px) {
+    .hero-quote-overlay {
+        width: 700px !important;
+        right: 2% !important;
+    }
+
+    .banner.hero-has-form #myCarousel .carousel-inner .item {
+        width: 30% !important;
+        margin-left: 2.5% !important;
+    }
+
+    .banner.hero-has-form #myCarousel .carousel-inner .item h1,
+    .banner.hero-has-form #myCarousel .carousel-inner .item h2 {
+        font-size: 30px !important;
+    }
+}
+
+/* Step 2 trim on desktop so the estimate + date step fits the card. */
+@media (min-width: 1200px) {
+    #hq-step-schedule .hq-result-stats { margin-bottom: 8px !important; }
+    #hq-step-schedule .hq-result-stats > div { padding: 7px 10px !important; }
+    #hq-step-schedule .hq-result-stats strong { font-size: 23px !important; }
+    #hq-step-schedule .hq-included { margin-bottom: 8px !important; }
+    #hq-step-schedule .hq-window-grid label { min-height: 40px !important; }
+    #hq-step-schedule .hq-row { margin-bottom: 8px !important; }
+}
+
+/* The wider card has room for the date and the arrival chips side by side. */
+@media (min-width: 1200px) {
+    .hero-quote-card .hq-row.hq-row-schedule {
+        flex-direction: row !important;
+        gap: 14px !important;
+    }
+
+    .hero-quote-card .hq-row.hq-row-schedule > .hq-field {
+        margin-bottom: 0 !important;
+    }
+
+    .hero-quote-card .hq-row.hq-row-schedule > .hq-field:first-child {
+        flex: 0 0 190px;
     }
 }
