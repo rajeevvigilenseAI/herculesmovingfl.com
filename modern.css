@@ -1,0 +1,617 @@
+/*
+ * Modern refresh layer. Loaded after main.css (and home-quote.css /
+ * book-move.css) on every page, so it only restyles: no layout or content
+ * changes. Delete the <link> to modern.css to go back to the old look.
+ *
+ * Type: Plus Jakarta Sans (headings, nav, buttons) + Inter (body).
+ */
+
+:root {
+    --hl-brand: #ff7700;
+    --hl-brand-dark: #e56a00;
+    --hl-brand-soft: #fff3e8;
+    --hl-ink: #172033;
+    --hl-text: #3f4a5c;
+    --hl-muted: #667085;
+    --hl-line: #e7e9ee;
+    --hl-soft: #f7f6f3;
+    --hl-radius: 14px;
+    --hl-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 8px 24px rgba(16, 24, 40, .08);
+    --hl-shadow-lg: 0 2px 4px rgba(16, 24, 40, .06), 0 18px 40px rgba(16, 24, 40, .14);
+    --hl-display: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    --hl-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------------ type */
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    font-family: var(--hl-body);
+    color: var(--hl-text);
+}
+
+/* main.css sets a condensed font on almost every element; replace it
+   everywhere except icon fonts. */
+/* :where() keeps this rule's specificity at zero, so the heading rule below
+   (and any later font rule) still wins. */
+body :where(*:not(.fa, .fas, .far, .fab, .glyphicon)) {
+    font-family: var(--hl-body) !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-default .navbar-nav > li > a,
+.button, a.button, button, input[type="submit"],
+.hq-submit, .hq-badge, .q-links, .review-ticker-stars,
+.topmast a {
+    font-family: var(--hl-display) !important;
+}
+
+h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+p, li, dd, td, blockquote p {
+    font-weight: 400 !important;
+}
+
+/* ------------------------------------------------------------ top + nav */
+
+.topmast a {
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    letter-spacing: .01em;
+}
+
+.mast,
+header .mast {
+    box-shadow: 0 1px 0 var(--hl-line), 0 6px 18px rgba(16, 24, 40, .05);
+}
+
+.navbar-default .navbar-nav > li > a {
+    font-size: 14.5px !important;
+    font-weight: 600 !important;
+    color: var(--hl-ink) !important;
+    letter-spacing: -0.005em;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > .active > a {
+    color: var(--hl-brand) !important;
+}
+
+/* Narrow desktops: the bolder face needs a little less padding to stay on
+   one row. */
+@media (min-width: 768px) and (max-width: 1365px) {
+    .navbar-default .navbar-nav > li > a {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    /* Pages with a ninth menu item (the booking page adds "Get Estimate"). */
+    .navbar-default .navbar-nav:has(> li:nth-child(9)) > li > a {
+        padding-left: 7px !important;
+        padding-right: 7px !important;
+        font-size: 13.5px !important;
+    }
+}
+
+.navbar-default .navbar-nav .dropdown-menu {
+    border: 1px solid var(--hl-line);
+    border-radius: 12px;
+    box-shadow: var(--hl-shadow-lg);
+    padding: 6px;
+}
+
+.navbar-default .navbar-nav .dropdown-menu > li > a {
+    border-radius: 8px;
+    font-weight: 500;
+    color: var(--hl-ink);
+}
+
+/* --------------------------------------------------------------- buttons */
+
+a.button, .button, .hub-hero-cta .button, .hub-mid-cta .button,
+.go2, .go3, .hq-submit, .book-btn {
+    border: 0;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: .01em;
+    text-transform: none !important;
+    box-shadow: 0 6px 16px rgba(255, 119, 0, .28);
+    transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+a.button, .button {
+    display: inline-block;
+    padding: 14px 28px !important;
+    background: var(--hl-brand) !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+a.button:hover, .button:hover, .go2:hover, .go3:hover, .hq-submit:hover, .book-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(255, 119, 0, .34);
+    background-color: var(--hl-brand-dark) !important;
+}
+
+.go3 {
+    background: var(--hl-ink) !important;
+    box-shadow: 0 6px 16px rgba(16, 24, 40, .22);
+}
+
+/* -------------------------------------------------------------- heroes */
+
+/* Homepage carousel caption and service-page hero boxes: dark glass card
+   with white type instead of washed-out white with thin orange. */
+#myCarousel .carousel-inner .item,
+.residential-banner .item,
+.commercial-banner .item,
+.specialty-banner .item {
+    background: rgba(15, 23, 42, .74) !important;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border-radius: 16px 0 0 16px !important;
+    padding: 22px 28px !important;
+    height: auto !important;
+    box-shadow: var(--hl-shadow-lg);
+}
+
+#myCarousel .carousel-inner .item h1,
+#myCarousel .carousel-inner .item h2,
+.residential-banner .item h1,
+.commercial-banner .item h1,
+.specialty-banner .item h1 {
+    font-size: clamp(30px, 3.4vw, 46px) !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    color: #fff !important;
+    text-transform: none !important;
+    margin: 6px 0 12px !important;
+}
+
+#myCarousel .carousel-inner .item p,
+.residential-banner .item p,
+.commercial-banner .item p,
+.specialty-banner .item p {
+    font-size: clamp(16px, 1.35vw, 19px) !important;
+    line-height: 1.5 !important;
+    color: rgba(255, 255, 255, .88) !important;
+    font-weight: 500 !important;
+}
+
+/* The homepage caption shares the hero with the estimate form. */
+#myCarousel .carousel-inner .item h1,
+#myCarousel .carousel-inner .item h2 {
+    font-size: clamp(26px, 2.5vw, 36px) !important;
+}
+
+#myCarousel .carousel-inner .item p:last-child,
+.residential-banner .item p:last-child,
+.commercial-banner .item p:last-child,
+.specialty-banner .item p:last-child {
+    color: #ffb46b !important;
+}
+
+.hub-banner .item {
+    border-radius: 16px;
+}
+
+.hub-banner .item h1 {
+    font-weight: 800 !important;
+    letter-spacing: -0.025em;
+    text-transform: none !important;
+    line-height: 1.1 !important;
+}
+
+.hub-banner .item p {
+    font-weight: 500 !important;
+    line-height: 1.55 !important;
+}
+
+/* --------------------------------------------------------- home sections */
+
+.contrast {
+    background: var(--hl-soft) !important;
+}
+
+.intro .col-sm-3 {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.intro h2, .intro h3 {
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    letter-spacing: .04em !important;
+    color: var(--hl-ink) !important;
+    margin-bottom: 10px !important;
+}
+
+.intro p, .intro2 p, .about p, .qualities p, .services p, .overlay p, .overlay2 p {
+    color: var(--hl-text) !important;
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+}
+
+.about h3,
+.qualities .col-sm-3 h2, .qualities .col-sm-4 h2,
+.intro2 h2,
+.overlay h2, .overlay2 h2 {
+    font-size: clamp(26px, 2.4vw, 34px) !important;
+    font-weight: 800 !important;
+    color: var(--hl-ink) !important;
+    text-transform: none !important;
+    line-height: 1.2 !important;
+}
+
+/* Thin orange rule above section headings as the brand accent. */
+.about h3::before,
+.intro2 h2::before,
+.overlay h2::before, .overlay2 h2::before {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 4px;
+    margin-bottom: 14px;
+    border-radius: 4px;
+    background: var(--hl-brand);
+}
+
+.overlay h2::before, .overlay2 h2::before, .intro2 h2::before {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.overlay hr {
+    display: none;
+}
+
+.overlay, .overlay2 {
+    background: rgba(255, 255, 255, .94) !important;
+}
+
+.services {
+    background: var(--hl-soft) !important;
+    padding-bottom: 40px;
+}
+
+.services h2 {
+    font-size: 21px !important;
+    font-weight: 800 !important;
+    color: var(--hl-ink) !important;
+    margin: 16px 0 8px !important;
+}
+
+.services img {
+    border-radius: var(--hl-radius);
+    box-shadow: var(--hl-shadow);
+}
+
+.services .col-sm-12 > p:first-child {
+    font-weight: 800 !important;
+    color: var(--hl-ink) !important;
+}
+
+.services .col-sm-12 p {
+    color: var(--hl-text) !important;
+    font-weight: 500 !important;
+}
+
+/* ------------------------------------------------------------ hub pages */
+
+.hub-content p, .hub-content li, .hub-content dd {
+    color: var(--hl-text) !important;
+    font-size: 17px !important;
+    line-height: 1.7 !important;
+}
+
+.hub-content h2 {
+    font-size: clamp(24px, 2.2vw, 30px) !important;
+    font-weight: 800 !important;
+    color: var(--hl-ink) !important;
+    margin-top: 40px !important;
+}
+
+.hub-content dt {
+    font-family: var(--hl-display) !important;
+    font-weight: 700;
+    color: var(--hl-ink);
+    font-size: 17px;
+    margin-top: 18px;
+}
+
+.hub-content a {
+    color: var(--hl-brand-dark) !important;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+}
+
+.hub-content a.button {
+    color: #fff !important;
+}
+
+.hub-trust li strong, .hub-services li strong {
+    color: var(--hl-ink);
+}
+
+.hub-guides {
+    background: var(--hl-brand-soft);
+    border-radius: 12px;
+    padding: 14px 18px;
+}
+
+.small-move-prices {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--hl-shadow);
+}
+
+.small-move-prices th {
+    background: var(--hl-ink);
+    color: #fff !important;
+    font-family: var(--hl-display) !important;
+    font-weight: 700;
+}
+
+/* -------------------------------------------------------- reviews/cards */
+
+.review-card, .blog-card {
+    border: 1px solid var(--hl-line) !important;
+    border-radius: var(--hl-radius) !important;
+    box-shadow: var(--hl-shadow) !important;
+    background: #fff;
+    overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--hl-shadow-lg) !important;
+}
+
+.review-card h3, .blog-card h2, .blog-card h2 a {
+    font-weight: 800 !important;
+    color: var(--hl-ink) !important;
+    letter-spacing: -0.015em;
+}
+
+.review-card p, .blog-card p {
+    color: var(--hl-text) !important;
+    line-height: 1.65 !important;
+}
+
+.blog-card .read-more {
+    font-family: var(--hl-display) !important;
+    font-weight: 700;
+    color: var(--hl-brand-dark) !important;
+}
+
+.review-ticker {
+    font-weight: 500;
+}
+
+/* ------------------------------------------------------------- articles */
+
+.article-wrap {
+    max-width: 780px !important;
+}
+
+.article-wrap h1 {
+    font-size: clamp(32px, 3.6vw, 46px) !important;
+    font-weight: 800 !important;
+    line-height: 1.12 !important;
+    color: var(--hl-ink) !important;
+    text-transform: none !important;
+}
+
+.article-wrap h2 {
+    font-size: clamp(24px, 2.3vw, 30px) !important;
+    font-weight: 800 !important;
+    color: var(--hl-ink) !important;
+    margin-top: 40px !important;
+    line-height: 1.25 !important;
+}
+
+.article-wrap h3 {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--hl-ink) !important;
+}
+
+.article-wrap p, .article-wrap li {
+    font-size: 18px !important;
+    line-height: 1.75 !important;
+    color: var(--hl-text) !important;
+}
+
+.article-wrap a {
+    color: var(--hl-brand-dark);
+    text-underline-offset: 2px;
+}
+
+.article-meta {
+    color: var(--hl-muted) !important;
+    font-size: 15px !important;
+}
+
+.article-cta {
+    border: 0 !important;
+    border-radius: 16px !important;
+    background: var(--hl-ink) !important;
+    padding: 24px 28px !important;
+    box-shadow: var(--hl-shadow-lg);
+}
+
+.article-cta p, .article-cta strong {
+    color: #fff !important;
+}
+
+.article-cta a {
+    color: #ffb46b !important;
+    font-weight: 700;
+}
+
+/* The booking link is the main action, so it gets a real button. */
+.article-cta a[href="/#estimate"] {
+    display: inline-block;
+    margin: 6px 6px 6px 0;
+    padding: 11px 20px;
+    border-radius: 10px;
+    background: var(--hl-brand);
+    color: #fff !important;
+    text-decoration: none;
+    box-shadow: 0 6px 16px rgba(255, 119, 0, .35);
+}
+
+.article-wrap blockquote {
+    border-left: 4px solid var(--hl-brand);
+    background: var(--hl-soft);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    margin: 18px 0;
+}
+
+.article-wrap blockquote p {
+    font-size: 17px !important;
+    color: var(--hl-ink) !important;
+    margin: 0 0 8px;
+}
+
+.article-wrap blockquote footer {
+    color: var(--hl-muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.article-tags span {
+    border-radius: 999px !important;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------- footer */
+
+.footer {
+    background: var(--hl-ink) !important;
+    border-top: 4px solid var(--hl-brand);
+}
+
+.footer .inner {
+    border-bottom-color: rgba(255, 255, 255, .14) !important;
+}
+
+.footer p, .footer li, .footer a, .disclaim {
+    font-weight: 400 !important;
+    color: rgba(255, 255, 255, .78) !important;
+}
+
+.footer a:hover {
+    color: #ffb46b !important;
+}
+
+.q-links {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    letter-spacing: .1em;
+    color: #fff !important;
+}
+
+.footer form {
+    border: 1px solid rgba(255, 255, 255, .14) !important;
+    border-radius: 16px !important;
+    background: rgba(255, 255, 255, .04);
+}
+
+.footer input, .footer textarea {
+    border: 1px solid rgba(255, 255, 255, .18) !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, .08) !important;
+    color: #fff !important;
+    padding: 10px 12px !important;
+}
+
+.footer input::placeholder, .footer textarea::placeholder {
+    color: rgba(255, 255, 255, .55);
+}
+
+.footer .go2 {
+    background: var(--hl-brand) !important;
+    color: #fff !important;
+    border: 0 !important;
+    padding: 12px 24px !important;
+}
+
+/* The logo has black lettering, so give it a light tile on the dark footer. */
+.footer .logo1 {
+    background: #fff;
+    border-radius: 14px;
+    padding: 10px 14px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+}
+
+.disclaim {
+    color: rgba(255, 255, 255, .6) !important;
+    font-size: 13.5px !important;
+}
+
+/* ---------------------------------------------------------------- forms */
+
+.hero-quote-card {
+    border-radius: 18px !important;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, .28) !important;
+}
+
+.hq-step h3 {
+    font-weight: 800 !important;
+    letter-spacing: -0.02em;
+}
+
+.hq-field label, .hq-label-block {
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+}
+
+.hq-field > input, .hq-field > select,
+.form-left input, .form-left textarea {
+    border-radius: 10px !important;
+}
+
+/* --------------------------------------------------------------- mobile */
+
+@media (max-width: 767px) {
+    /* Inter is wider than the old condensed face; keep phone + hours on one line. */
+    .topmast a {
+        font-size: 12px !important;
+        letter-spacing: -0.01em !important;
+        white-space: nowrap;
+    }
+
+    #myCarousel .carousel-inner .item,
+    .residential-banner .item,
+    .commercial-banner .item,
+    .specialty-banner .item {
+        border-radius: 14px !important;
+        padding: 16px 18px !important;
+    }
+
+    .article-wrap p, .article-wrap li {
+        font-size: 17px !important;
+    }
+
+    .hub-content p, .hub-content li, .hub-content dd {
+        font-size: 16.5px !important;
+    }
+
+    .navbar-default .navbar-nav > li > a {
+        font-size: 16px !important;
+    }
+}
