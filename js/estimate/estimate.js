@@ -832,6 +832,8 @@
 
     $("truck-row").hidden = c.fill <= 1;
 
+    renderRoom();
+
     // Live estimate card beside the map.
     var live = [
       ["📦", c.count ? c.count + " items to load & unload" : "Add your items", c.load + c.unload],
@@ -1218,39 +1220,183 @@
       (src.fbclid ? "facebook (untagged)" : src.gclid ? "google ads" : "Direct / unknown");
   }
 
+  // FormSubmit first, then the Web3Forms backup. Resolves once one of them
+  // has the lead.
+  function deliver(payload) {
+    var timeout = new Promise(function (_, rej) { setTimeout(function () { rej(new Error("timeout")); }, 15000); });
+    return Promise.race([fetch(FORMSUBMIT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload)
+    }), timeout])
+      .then(function (r) {
+        return r.json().then(function (j) { if (!r.ok || String(j.success) !== "true") throw new Error(j.message || "Send failed"); });
+      })
+      .catch(function (ex) {
+        if (!HB.sendBackup) throw ex;
+        return HB.sendBackup(Object.assign({}, payload, { "Send note": "FormSubmit failed: " + (ex && ex.message) }));
+      });
+  }
+
+  // Neither service reachable: offer a prefilled text instead.
+  function textFallback(errEl, lines, label) {
+    var href = HB.textUsHref ? HB.textUsHref(lines) : "sms:+17543542008";
+    errEl.innerHTML = "We couldn't send it from this browser. Tap below to text it to us, it's already filled in:" +
+      '<a class="btn go" style="display:block;text-align:center;text-decoration:none;margin-top:10px" href="' + href + '">' + label + "</a>";
+  }
+
+  function routeText() {
+    var tidy = HB.places ? HB.places.tidy : function (t) { return t; };
+    // Before the truck is called, fall back to whatever is typed in the boxes.
+    var fromText = state.fromText || $("pickup").value.trim(), toText = state.toText || $("dropoff").value.trim();
+    var fromFloor = state.fromText ? state.fromFloor : $("pickup-floor").value;
+    var toFloor = state.toText ? state.toFloor : $("dropoff-floor").value;
+    return {
+      from: fromText ? tidy(fromText) + " · " + floorInfo(fromFloor).label : "N/A",
+      to: toText ? tidy(toText) + " · " + floorInfo(toFloor).label : "N/A"
+    };
+  }
+
+  function phoneOk(ph) { return String(ph || "").replace(/\D/g, "").length >= 10; }
+
+  function itemLines() {
+    return state.order.map(function (id) { return state.items[id] + " × " + byId[id].name; });
+  }
+
+  // Short lead for "call me" and "text me": whatever we know so far.
+  function shortLead(kind, name, phone, extra) {
+    var c = compute(), ref = buildReference(), r = routeText();
+    var payload = Object.assign({
+      "_subject": "Your Hercules Movers move request | Website estimate (" + kind + ") | " + (name || phone) + " | " + r.from.split(" · ")[0] + " → " + r.to.split(" · ")[0] + " (" + ref + ")",
+      "_template": "table",
+      "_captcha": "false",
+      "Lead type": "Website estimate (" + kind + ")",
+      "Name": name || "N/A",
+      "Phone": phone,
+      "Moving from": r.from,
+      "Moving to": r.to,
+      "Approx. distance": state.miles ? "~" + Math.round(state.miles) + " miles" : "N/A",
+      "Items so far": itemLines().join("\n") || "None yet",
+      "Estimate so far": c.count ? money(c.total) + " (" + c.hours + " h, " + c.crew + " movers)" : "N/A"
+    }, extra || {}, {
+      "Lead source": leadSource(),
+      "Page": location.origin + location.pathname,
+      "Reference": ref
+    });
+    return { payload: payload, ref: ref };
+  }
+
+  function openCallback() {
+    showStep("step-callback");
+    $("board").hidden = true;
+    $("live").hidden = true;
+    $("step-result").hidden = true;
+    $("cb-date").min = todayISO();
+    $("step-callback").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    setTimeout(function () { $("cb-fn").focus({ preventScroll: true }); }, 300);
+  }
+
+  function backFromCallback() {
+    if (state.from && state.to) {
+      showStep("step-items");
+      $("board").hidden = false;
+      $("live").hidden = false;
+    } else showStep("step-where");
+  }
+
+  function sendCallback() {
+    var err = $("cb-err"), fn = $("cb-fn").value.trim(), ph = $("cb-ph").value.trim(), date = $("cb-date").value;
+    if (!fn) { err.textContent = "Please enter your first name."; return; }
+    if (!phoneOk(ph)) { err.textContent = "Please enter a valid phone number."; return; }
+    if (date && date < todayISO()) { err.textContent = "Please pick today or a later date."; return; }
+    err.textContent = "";
+    var lead = shortLead("call me", fn, ph, {
+      "Move date": date || "Not given",
+      "Best time to call": $("cb-when").value,
+      "Notes": $("cb-notes").value.trim() || "N/A"
+    });
+    var btn = $("cb-send");
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+    deliver(lead.payload).then(function () {
+      $("cb-ref").textContent = lead.ref;
+      $("cb-sent").hidden = false;
+      btn.hidden = true;
+      if (typeof fbq === "function") fbq("track", "Lead", { content_name: "Website estimate (call me)" }, { eventID: lead.ref });
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = "📞 Call me";
+      textFallback(err, ["Hi Hercules, please call me about a move (" + lead.ref + ").", "Name: " + fn,
+        "From: " + lead.payload["Moving from"], "To: " + lead.payload["Moving to"], "Date: " + (date || "not sure yet")], "Text Us Instead");
+    });
+  }
+
+  // "Text me": saves the lead early, while the customer is still building.
+  var assisted = false;
+  function sendAssist() {
+    var err = $("assist-err"), ph = $("assist-ph").value.trim();
+    if (!phoneOk(ph)) { err.textContent = "Please enter a valid mobile number."; return; }
+    err.textContent = "";
+    if (assisted) return;
+    var lead = shortLead("started", "", ph, { "Note": "Customer asked us to text them to help finish their estimate." });
+    var btn = $("assist-go");
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+    deliver(lead.payload).then(function () {
+      assisted = true;
+      $("assist").innerHTML = "<p>✅ <b>Got it!</b> We'll text you shortly. Keep adding items if you like.</p>";
+      if (!$("ph").value) $("ph").value = ph;
+      hudSay("📲 Thanks! We'll text you to help finish up.");
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = "Text me";
+      textFallback(err, ["Hi Hercules, can you help me finish my moving estimate? (" + lead.ref + ")",
+        "From: " + lead.payload["Moving from"], "To: " + lead.payload["Moving to"]], "Text Us Instead");
+    });
+  }
+
+  // Older Safari has no e.submitter, so remember which button was pressed.
+  var lastChoice = "callback";
+
   function send(e) {
     e.preventDefault();
+    var choice = (e.submitter && e.submitter.dataset.choice) || lastChoice;
     var err = $("send-err");
     var fn = $("fn").value.trim(), ln = $("ln").value.trim(), ph = $("ph").value.trim(), em = $("em").value.trim();
     var date = $("date").value, flex = $("flex").checked;
     if (!fn) { err.textContent = "Please enter your first name."; return; }
-    if (ph.replace(/\D/g, "").length < 10) { err.textContent = "Please enter a valid phone number."; return; }
+    if (!phoneOk(ph)) { err.textContent = "Please enter a valid phone number."; return; }
     if (em && !/^\S+@\S+\.\S+$/.test(em)) { err.textContent = "Please check your email address."; return; }
     if (!date) { err.textContent = "Please pick a move date. A rough one is fine, tick flexible if it can change."; return; }
     if (date < todayISO()) { err.textContent = "Please pick today or a later date."; return; }
     if ($("hp").value) return;
     err.textContent = "";
 
-    var c = compute(), ref = buildReference(), source = leadSource();
-    var tidy = HB.places ? HB.places.tidy : function (t) { return t; };
-    var fromAddr = tidy(state.fromText), toAddr = tidy(state.toText);
-    var itemLines = state.order.map(function (id) { return state.items[id] + " × " + byId[id].name; });
-    var asks = PRICING.onCall.filter(function (o) { return state.onCall[o.id]; }).map(function (o) { return o.name; });
+    var c = compute(), ref = buildReference(), source = leadSource(), r = routeText();
+    var fromAddr = r.from.split(" · ")[0], toAddr = r.to.split(" · ")[0];
+    var items = itemLines();
+    var deposit = choice === "deposit" && HB.config && HB.config.depositUrl;
+    var bldg = [$("coi").checked ? "Needs a certificate of insurance (COI)" : "", $("elev-res").checked ? "Elevator or loading dock must be reserved" : ""].filter(Boolean);
 
     var payload = {
-      "_subject": "Your Hercules Movers move request | Website estimate | " + (fn + " " + ln).trim() + " | " + fromAddr + " → " + toAddr + " (" + ref + ")",
+      "_subject": "Your Hercules Movers move request | Website estimate" + (deposit ? " (booking + deposit)" : "") + " | " + (fn + " " + ln).trim() + " | " + fromAddr + " → " + toAddr + " (" + ref + ")",
       "_template": "table",
       "_captcha": "false",
       "Lead type": "Website estimate",
+      "Booking choice": deposit ? "Book now, paying the $50 deposit on Square (check Square to confirm payment)" : "Send estimate, call to confirm",
       "Name": (fn + " " + ln).trim(),
       "Phone": ph,
       "Email": em || "N/A",
-      "Moving from": fromAddr + " · " + floorInfo(state.fromFloor).label,
-      "Moving to": toAddr + " · " + floorInfo(state.toFloor).label,
+      "Moving from": r.from,
+      "Moving to": r.to,
       "Move date": date,
       "Date flexible": flex ? "Yes" : "No",
+      "Arrival window": $("window").value || "Any time",
+      "Type of move": $("mtype").value,
+      "Storage needed": $("storage").value,
+      "Building requirements": bldg.length ? bldg.join("\n") : "None",
       "Approx. distance": "~" + Math.round(state.miles) + " miles",
-      "Items": itemLines.join("\n"),
+      "Items": items.join("\n"),
       "Item count": c.count + " items, ~" + Math.round(c.cuft) + " cu ft (" + Math.round(c.fill * 100) + "% of a " + c.truck.name + " truck)",
       "Truck": c.truck.name + (c.fill > 1 ? ", plus a second truck or trip" : ""),
       "Crew": c.crew + " movers" + (c.heaviest && c.crew > 2 ? " (heaviest: " + c.heaviest.name + ", ~" + c.heaviest.lbs + " lbs)" : ""),
@@ -1265,6 +1411,7 @@
       "Packing": c.packLines.length ? c.packLines.join("\n") : "None",
       "Customer moving themselves": Object.keys(state.excluded).map(function (id) { return state.excluded[id] + " × " + byId[id].name; }).join("\n") || "None",
       "Estimated total": money(c.total),
+      "How they heard about us": $("heard").value || "Not given",
       "Notes": $("notes").value.trim() || "N/A",
       "Lead source": source,
       "Page": location.origin + location.pathname,
@@ -1272,48 +1419,104 @@
     };
     if (em) payload._replyto = em;
 
-    var btn = $("send");
-    btn.disabled = true;
-    btn.textContent = "Sending…";
+    var buttons = [$("send"), $("send-plain")];
+    var labels = buttons.map(function (b) { return b.textContent; });
+    buttons.forEach(function (b) { b.disabled = true; });
+    e.submitter && (e.submitter.textContent = "Sending…");
 
-    function done() {
+    deliver(payload).then(function () {
       $("send-form").hidden = true;
       $("sent-ref").textContent = ref;
       $("sent").hidden = false;
       if (typeof fbq === "function") fbq("track", "Lead", { content_name: "Website estimate", value: c.total, currency: "USD" }, { eventID: ref });
-    }
-    function textUs() {
-      btn.disabled = false;
-      btn.textContent = "📲 Send my estimate";
-      var href = HB.textUsHref ? HB.textUsHref([
+      if (!deposit) return;
+      // Same hand-off as the homepage: keep a copy for booking-confirmed.html,
+      // then go to Square for the deposit.
+      try {
+        localStorage.setItem("hercules_last_booking", JSON.stringify({
+          reference: ref, moveDate: date, arrivalWindow: $("window").value || "",
+          estimatedHours: c.hours, estimatedPrice: Math.round(c.total),
+          route: fromAddr + " → " + toAddr, savedAt: Date.now()
+        }));
+      } catch (ex) { /* private browsing: the confirmation page shows a generic message */ }
+      $("sent-title").textContent = "Booking saved! Taking you to pay your $" + (HB.config.depositAmount || 50) + " deposit…";
+      $("sent-text").innerHTML = "Reference <b>" + esc(ref) + "</b>. If Square doesn't open, <a href=\"" + esc(HB.config.depositUrl) + "\">continue to secure checkout</a>.";
+      setTimeout(function () { window.location.href = HB.config.depositUrl; }, 1800);
+    }).catch(function (ex) {
+      if (window.console) console.error("Estimate send failed:", ex);
+      buttons.forEach(function (b, i) { b.disabled = false; b.textContent = labels[i]; });
+      textFallback(err, [
         "Hi Hercules, here's my moving estimate (" + ref + ").",
         "Name: " + (fn + " " + ln).trim(),
         "From: " + fromAddr, "To: " + toAddr, "Date: " + date,
-        "Items: " + itemLines.join(", "),
+        "Items: " + items.join(", "),
         "Estimate: " + money(c.total) + " (" + c.hours + " h, " + c.crew + " movers)"
-      ]) : "sms:+17543542008";
-      err.innerHTML = "We couldn't send it from this browser. Tap below to text it to us, it's already filled in:" +
-        '<a class="btn go" style="display:block;text-align:center;text-decoration:none;margin-top:10px" href="' + href + '">Text Us My Estimate</a>';
-    }
+      ], "Text Us My Estimate");
+    });
+  }
 
-    var timeout = new Promise(function (_, rej) { setTimeout(function () { rej(new Error("timeout")); }, 15000); });
-    Promise.race([fetch(FORMSUBMIT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload)
-    }), timeout])
-      .then(function (r) {
-        return r.json().then(function (j) { if (!r.ok || String(j.success) !== "true") throw new Error(j.message || "Send failed"); });
-      })
-      .then(done)
-      .catch(function (ex) {
-        if (!HB.sendBackup) throw ex;
-        return HB.sendBackup(Object.assign({}, payload, { "Send note": "FormSubmit failed: " + (ex && ex.message) })).then(done);
-      })
-      .catch(function (ex) {
-        if (window.console) console.error("Estimate send failed:", ex);
-        textUs();
+  /* ----------------------------------------------------------- rooms */
+
+  var openRoom = null;
+
+  function setupRooms() {
+    var presets = $("presets"), chips = $("room-chips");
+    (E.PRESETS || []).forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = p.name;
+      b.addEventListener("click", function () { applyPreset(p, b); });
+      presets.appendChild(b);
+    });
+    (E.ROOMS || []).forEach(function (r) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.dataset.room = r.id;
+      b.textContent = r.emoji + " " + r.name;
+      b.addEventListener("click", function () {
+        openRoom = openRoom === r.id ? null : r.id;
+        renderRoom();
       });
+      chips.appendChild(b);
+    });
+  }
+
+  function applyPreset(p, fromEl) {
+    if (state.played) resetTrip();
+    var emojis = [];
+    Object.keys(p.items).forEach(function (id) {
+      if (!byId[id]) return;
+      if (!state.items[id]) state.order.push(id);
+      state.items[id] = (state.items[id] || 0) + p.items[id];
+      if (emojis.length < 4) emojis.push(byId[id].emoji);
+    });
+    emojis.forEach(function (em, i) { setTimeout(function () { flyToTruck(em, fromEl, 1); }, i * 200); });
+    hudSay("📋 Added a typical " + p.name.toLowerCase() + " home. Adjust anything below.");
+    render();
+  }
+
+  function renderRoom() {
+    Array.prototype.forEach.call(document.querySelectorAll("#room-chips .chip"), function (b) {
+      b.classList.toggle("on", b.dataset.room === openRoom);
+    });
+    var panel = $("room-panel"), room = (E.ROOMS || []).filter(function (r) { return r.id === openRoom; })[0];
+    panel.hidden = !room;
+    if (!room) return;
+    panel.innerHTML = "";
+    room.items.forEach(function (id) {
+      var it = byId[id];
+      if (!it) return;
+      var q = state.items[id] || 0;
+      var row = document.createElement("div");
+      row.className = "ri" + (q ? " has" : "");
+      row.innerHTML = '<span class="e">' + it.emoji + '</span><span class="nm">' + esc(it.name) + '</span><span class="step"><button type="button" aria-label="Fewer">−</button><b>' + q + '</b><button type="button" aria-label="More">+</button></span>';
+      var btns = row.querySelectorAll("button");
+      btns[0].addEventListener("click", function () { if (q > 0) setQty(id, q - 1); });
+      btns[1].addEventListener("click", function () { addItem(it, 1, btns[1]); });
+      panel.appendChild(row);
+    });
   }
 
   /* ---------------------------------------------------------------- setup */
@@ -1362,6 +1565,20 @@
     $("go").addEventListener("click", go);
     $("go-live").addEventListener("click", go);
     $("send-form").addEventListener("submit", send);
+    setupRooms();
+    $("send").addEventListener("click", function () { lastChoice = "deposit"; });
+    $("send-plain").addEventListener("click", function () { lastChoice = "callback"; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-callme]"), function (b) { b.addEventListener("click", openCallback); });
+    $("cb-send").addEventListener("click", sendCallback);
+    $("cb-back").addEventListener("click", backFromCallback);
+    $("assist-go").addEventListener("click", sendAssist);
+    $("assist-ph").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); sendAssist(); } });
+    // Arrival windows come from the shared booking config, like the homepage.
+    ((HB.config && HB.config.arrivalWindows) || []).forEach(function (w) {
+      var o = document.createElement("option");
+      o.textContent = w;
+      $("window").appendChild(o);
+    });
     $("date").min = todayISO();
     $("date").addEventListener("focus", function () { $("date").min = todayISO(); });
 

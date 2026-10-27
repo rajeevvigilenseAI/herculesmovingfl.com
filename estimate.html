@@ -184,6 +184,27 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 .floor-edit{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
 .floor-edit select{padding:7px 8px;font-size:14px}
 .empty{color:var(--muted);font-size:.9rem;padding:4px 2px 8px}
+.callme{display:block;margin:12px auto 0;text-align:center}
+.rooms{margin-top:12px}
+.rooms p{margin:6px 0;font-size:.92rem}
+.presets .chip{margin:2px 2px}
+.room-chips{display:flex;flex-wrap:wrap;gap:6px}
+.room-chips .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.room-panel{margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:6px;display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#FCFCFD}
+@media(max-width:480px){.room-panel{grid-template-columns:1fr}}
+.room-panel .ri{display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:8px;background:#fff;border:1px solid var(--line)}
+.room-panel .ri.has{border-color:var(--green);background:#F2FBF5}
+.room-panel .ri .nm{flex:1;min-width:0;font-size:.88rem;line-height:1.2}
+.room-panel .ri .step{display:flex;align-items:center;gap:4px}
+.room-panel .ri .step button{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:1rem;line-height:1}
+.room-panel .ri .step b{min-width:16px;text-align:center}
+.assist{margin-top:12px;border:1px dashed var(--line);border-radius:12px;padding:8px 10px;background:#F7FAFF}
+.assist p{margin:0 0 6px;font-size:.9rem}
+.assist-row{display:flex;gap:6px}
+.assist-row .in{padding:9px 10px}
+.btn.wide{width:100%;margin-top:8px;padding:12px}
+.bldg{border:1px solid var(--line);border-radius:10px;margin:12px 0 0;padding:6px 10px 8px}
+.bldg legend{font-weight:700;font-size:.9rem;padding:0 4px;color:var(--navy)}
 .stops{margin-top:12px;border:1px dashed var(--line);border-radius:12px;padding:8px 10px;background:#FCFCFD}
 .stops summary{cursor:pointer;font-weight:700;color:var(--navy)}
 .stops summary small{font-weight:400;color:var(--muted)}
@@ -325,6 +346,32 @@ body:not(.has-scene) .bar{display:none}
       </select>
       <div class="err" id="where-err"></div>
       <button type="button" class="btn go" id="where-go">🚚 Call my truck ➜</button>
+      <button type="button" class="linkish callme" data-callme>📞 Rather talk it through? Skip the list and we'll call you</button>
+    </section>
+
+    <!-- Skip the item list: just ask us to call -->
+    <section class="card est-step" id="step-callback" hidden>
+      <h2>📞 We'll call you</h2>
+      <p class="hint">Tell us how to reach you. We'll go through your items on the phone and send your price, usually within the hour.</p>
+      <div class="row2">
+        <div><label class="f" for="cb-fn">👤 First name</label><input class="in" id="cb-fn" autocomplete="given-name"></div>
+        <div><label class="f" for="cb-ph">📱 Mobile phone</label><input class="in" id="cb-ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555"></div>
+      </div>
+      <div class="row2">
+        <div><label class="f" for="cb-date">📅 Move date <small>(rough is fine)</small></label><input class="in" id="cb-date" type="date"></div>
+        <div><label class="f" for="cb-when">⏰ Best time to call</label><select class="in" id="cb-when"><option>As soon as possible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></div>
+      </div>
+      <label class="f" for="cb-notes">📝 Anything we should know? <small>(optional)</small></label>
+      <input class="in" id="cb-notes" placeholder="Rough size of the move, stairs, special items…">
+      <p class="fine">By sending, you agree Hercules Local Movers may call or text you about your move. Msg &amp; data rates may apply. Reply STOP to opt out.</p>
+      <div class="err" id="cb-err"></div>
+      <button type="button" class="btn go" id="cb-send">📞 Call me</button>
+      <button type="button" class="linkish" id="cb-back" style="margin-top:10px">⬅ Back to building my estimate</button>
+      <div class="sent" id="cb-sent" hidden>
+        <div class="big">📞</div>
+        <h3>Thanks! We'll call you shortly.</h3>
+        <p>Reference <b id="cb-ref"></b>. Need us now? <a href="tel:+17543542008">(754) 354-2008</a></p>
+      </div>
     </section>
 
     <!-- Step 2: items -->
@@ -354,7 +401,19 @@ body:not(.has-scene) .bar{display:none}
         <button type="button" class="btn go add" id="add-item">Add ➜</button>
       </div>
       <div class="err" id="item-err"></div>
-      <div class="chips" id="chips"></div>
+      <div class="chips" id="chips" hidden></div>
+      <div class="rooms">
+        <p class="presets"><b>⚡ Start from a typical home:</b> <span id="presets"></span></p>
+        <p class="rooms-head"><b>🏠 Or add room by room:</b></p>
+        <div class="room-chips" id="room-chips"></div>
+        <div class="room-panel" id="room-panel" hidden></div>
+      </div>
+      <div class="assist" id="assist">
+        <p>📲 <b>Busy or stuck?</b> Leave your number and we'll text you to finish it together.</p>
+        <div class="assist-row"><input class="in" id="assist-ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="Mobile number" aria-label="Mobile number"><button type="button" class="btn ghost" id="assist-go">Text me</button></div>
+        <div class="err" id="assist-err"></div>
+      </div>
+      <button type="button" class="linkish callme" data-callme>📞 Skip the list, just call me</button>
 
     </section>
 
@@ -394,16 +453,31 @@ body:not(.has-scene) .bar{display:none}
         <label class="f" for="date">📅 Move date</label>
         <input class="in" id="date" type="date">
         <label class="check"><input type="checkbox" id="flex"> 🤷 My date is flexible</label>
+        <div class="row2">
+          <div><label class="f" for="window">🕗 Arrival window</label><select class="in" id="window"><option value="">Any time</option></select></div>
+          <div><label class="f" for="mtype">🏷️ Type of move</label><select class="in" id="mtype"><option>Home</option><option>Apartment or condo</option><option>Office or business</option><option>Other</option></select></div>
+        </div>
+        <div class="row2">
+          <div><label class="f" for="storage">🏬 Need storage between homes?</label><select class="in" id="storage"><option>No</option><option>Yes</option><option>Not sure yet</option></select></div>
+          <div><label class="f" for="heard">👂 How did you hear about us?</label><select class="in" id="heard"><option value="">Choose…</option><option>Google</option><option>Facebook or Instagram</option><option>Thumbtack</option><option>Yelp</option><option>Friend or family</option><option>Realtor or building</option><option>Saw our truck</option><option>Returning customer</option><option>Other</option></select></div>
+        </div>
+        <fieldset class="bldg">
+          <legend>🏢 Condo or apartment building?</legend>
+          <label class="check"><input type="checkbox" id="coi"> The building needs a certificate of insurance (COI) from us</label>
+          <label class="check"><input type="checkbox" id="elev-res"> The elevator or loading dock has to be reserved</label>
+        </fieldset>
         <label class="f" for="notes">📝 Anything else? <small>(optional)</small></label>
         <input class="in" id="notes" placeholder="Gate code, parking, items not on the list…">
         <label class="check"><input type="checkbox" checked disabled> By sending, I agree Hercules Local Movers may call or text me about my move. Msg &amp; data rates may apply. Reply STOP to opt out.</label>
         <div class="err" id="send-err"></div>
-        <button type="submit" class="btn go" id="send">📲 Send my estimate</button>
+        <button type="submit" class="btn go" id="send" data-choice="deposit">💳 Book it now: $50 deposit</button>
+        <button type="submit" class="btn ghost wide" id="send-plain" data-choice="callback">📲 Just send it, call me to confirm</button>
+        <p class="fine">The $50 deposit holds your date and arrival window and is credited toward your final balance. Rescheduling is free, and cancelling is free up to 24 hours before your move. Paid securely on Square.</p>
       </form>
       <div class="sent" id="sent" hidden>
         <div class="big">🎉</div>
-        <h3>Got it! Your estimate is with our team.</h3>
-        <p>Reference <b id="sent-ref"></b>. We'll text or call you shortly.</p>
+        <h3 id="sent-title">Got it! Your estimate is with our team.</h3>
+        <p id="sent-text">Reference <b id="sent-ref"></b>. We'll text or call you shortly.</p>
         <a class="btn go" style="display:inline-block;width:auto;text-decoration:none" href="tel:+17543542008">📞 Call (754) 354-2008</a>
       </div>
     </section>
@@ -476,6 +550,7 @@ body:not(.has-scene) .bar{display:none}
 
 <script src="js/booking/quote-core.js"></script>
 <script src="js/booking/place-lookup.js"></script>
+<script src="js/booking/config.js"></script>
 <script src="js/booking/web3forms.js"></script>
 <script src="js/estimate/items.js"></script>
 <script src="js/estimate/map.js"></script>

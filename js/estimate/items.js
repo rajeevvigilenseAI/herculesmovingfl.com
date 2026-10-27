@@ -105,3 +105,25 @@ window.HerculesEstimate.ITEMS = [
 
 // Shown as one-tap chips under the search bar.
 window.HerculesEstimate.POPULAR = ["sofa", "queen-bed", "dresser", "dining-table", "tv-small", "box-medium", "fridge", "washer"];
+
+// "Add by room": tap a room to see its usual items with + and −.
+window.HerculesEstimate.ROOMS = [
+  { id: "living", name: "Living room", emoji: "🛋️", items: ["sofa", "sectional", "loveseat", "armchair", "recliner", "coffee-table", "side-table", "tv-small", "tv-large", "tv-stand", "ent-center", "bookshelf", "rug", "floor-lamp", "art", "plant", "piano"] },
+  { id: "bedroom", name: "Bedroom", emoji: "🛏️", items: ["king-bed", "queen-bed", "full-bed", "mattress", "dresser", "chest", "nightstand", "armoire", "vanity", "mirror", "tv-small", "table-lamp", "clothes"] },
+  { id: "kids", name: "Kids' room", emoji: "🧸", items: ["full-bed", "bunk-bed", "crib", "dresser", "nightstand", "kids-toys", "bookshelf", "desk"] },
+  { id: "dining", name: "Dining room", emoji: "🍽️", items: ["dining-table", "dining-chair", "china", "bar-stool", "rug", "art"] },
+  { id: "kitchen", name: "Kitchen", emoji: "🍳", items: ["fridge", "freezer", "microwave", "bar-stool", "box-medium", "box-small"] },
+  { id: "office", name: "Home office", emoji: "🖥️", items: ["desk", "office-chair", "file-cabinet", "computer", "printer", "bookshelf"] },
+  { id: "laundry", name: "Laundry", emoji: "🧺", items: ["washer", "dryer", "vacuum", "fan"] },
+  { id: "garage", name: "Garage & patio", emoji: "🌴", items: ["patio-table", "patio-chair", "grill", "bike", "mower", "toolchest", "ladder", "kayak", "tote", "safe-small", "gun-safe"] },
+  { id: "gym", name: "Gym & games", emoji: "🏋️", items: ["treadmill", "exercise-bike", "weights", "pool-table", "massage-chair"] },
+  { id: "boxes", name: "Boxes & bags", emoji: "📦", items: ["box-small", "box-medium", "box-large", "tote", "suitcase", "clothes", "xmas-tree"] }
+];
+
+// "Start from a typical home": a starting list the customer then adjusts.
+window.HerculesEstimate.PRESETS = [
+  { id: "studio", name: "Studio", items: { "full-bed": 1, "loveseat": 1, "tv-small": 1, "tv-stand": 1, "dresser": 1, "dining-table": 1, "dining-chair": 2, "box-medium": 10, "box-small": 5 } },
+  { id: "1br", name: "1 bedroom", items: { "queen-bed": 1, "dresser": 1, "nightstand": 2, "sofa": 1, "coffee-table": 1, "tv-small": 1, "tv-stand": 1, "dining-table": 1, "dining-chair": 4, "box-medium": 15, "box-small": 8, "box-large": 4 } },
+  { id: "2br", name: "2 bedrooms", items: { "queen-bed": 1, "full-bed": 1, "dresser": 2, "nightstand": 3, "sofa": 1, "armchair": 1, "coffee-table": 1, "tv-small": 2, "tv-stand": 1, "dining-table": 1, "dining-chair": 4, "desk": 1, "office-chair": 1, "box-medium": 25, "box-small": 12, "box-large": 8 } },
+  { id: "3br", name: "3 bedrooms", items: { "king-bed": 1, "queen-bed": 1, "full-bed": 1, "dresser": 3, "nightstand": 4, "sectional": 1, "armchair": 1, "coffee-table": 1, "tv-large": 1, "tv-small": 2, "tv-stand": 1, "dining-table": 1, "dining-chair": 6, "desk": 1, "office-chair": 1, "patio-table": 1, "patio-chair": 4, "box-medium": 40, "box-small": 20, "box-large": 12 } }
+];
