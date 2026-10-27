@@ -1291,3 +1291,87 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
 @media (max-width: 991px) {
     .sa-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------------------- contact page: points to the homepage estimate */
+
+.ct-estimate {
+    width: 90%;
+    margin: 0 auto 28px;
+    text-align: left;
+}
+
+.form-left .ct-estimate .ct-lead {
+    width: auto;
+    margin: 0 0 16px;
+    padding: 0;
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    color: #fff !important;
+}
+
+.ct-points {
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+}
+
+.form-left .ct-points li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+}
+
+.ct-points i {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .2);
+    font-size: 13px;
+}
+
+.ct-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    border-radius: 14px;
+    background: #fff;
+    color: var(--hl-brand-dark) !important;
+    font-family: var(--hl-display) !important;
+    font-size: 17px;
+    font-weight: 800;
+    text-decoration: none !important;
+    box-shadow: 0 10px 24px rgba(11, 19, 36, .22);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.ct-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(11, 19, 36, .28);
+}
+
+.form-left .ct-estimate .ct-alt {
+    width: auto;
+    margin: 18px 0 0;
+    padding: 0;
+    font-size: 15px !important;
+    color: rgba(255, 255, 255, .92) !important;
+}
+
+.ct-alt a {
+    color: #fff !important;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+    .ct-cta { width: 100%; justify-content: center; }
+}
