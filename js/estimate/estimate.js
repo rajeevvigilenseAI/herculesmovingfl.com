@@ -323,14 +323,36 @@
     return pick.concat(drop);
   }
 
+  // Miles of each leg: pickup, extra stops, delivery.
+  function legMiles() {
+    var core = window.HerculesQuoteCore;
+    if (!core || !state.from || !state.to) return [1];
+    var pts = [state.from].concat(route().map(function (s) { return s.addr; })).concat([state.to]), out = [];
+    for (var i = 1; i < pts.length; i++) {
+      try { out.push(core.estimateMiles(pts[i - 1], pts[i], "")); } catch (e) { out.push(1); }
+    }
+    return out;
+  }
+
+  var lastMiniKey = "";
+
   function drawMap() {
     var core = window.HerculesQuoteCore;
-    function ll(a) { return a && core ? core.resolveCoordinates(a) : null; }
     var mid = route();
-    var pts = [ll(state.from)].concat(mid.map(function (s) { return ll(s.addr); })).concat([ll(state.to)]);
-    var res = E.map.draw($("scene"), pts);
+    var res = E.road.draw($("scene"), legMiles());
     parkSpots();
-    if (state.toText) $("drop-name").textContent = shortPlace(state.toText) + (res.far ? " ➚" : "");
+    if (state.toText) $("drop-name").textContent = shortPlace(state.toText);
+
+    // The small real map: the same places, with the actual driving route.
+    // Only look the route up again when the places change, not on resize.
+    var miniKey = [state.fromText, state.toText].concat(mid.map(function (s) { return s.text; })).join("|");
+    if (state.from && state.to && E.minimap && core && miniKey !== lastMiniKey) {
+      lastMiniKey = miniKey;
+      var ll = function (a) { return core.resolveCoordinates(a); };
+      E.minimap.show($("minimap"), [{ ll: ll(state.from), text: state.fromText, kind: "pick" }]
+        .concat(mid.map(function (s) { return { ll: ll(s.addr), text: s.text, kind: "stop" }; }))
+        .concat([{ ll: ll(state.to), text: state.toText, kind: "drop" }]));
+    }
 
     // Pins for extra stops, and where along the road the truck pauses.
     Array.prototype.forEach.call(document.querySelectorAll(".home.stop"), function (el) { el.remove(); });
@@ -965,7 +987,7 @@
         if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 6) return;
         var r = drag.li.getBoundingClientRect();
         var g = drag.li.cloneNode(true);
-        g.classList.add("ghost");
+        g.classList.add("drag-ghost");
         g.style.width = r.width + "px";
         g.style.left = r.left + "px";
         g.style.top = r.top + "px";
@@ -1080,6 +1102,7 @@
         })).concat([T_END]);
         var ms = Math.max(2600, Math.min(6500, 2200 + c.drive * 45)) + stops.length * 600;
         var legs = Promise.resolve(), done = 0;
+        $("scene").classList.add("moving");
         hudSay("🛣️ Driving to " + (stops.length ? shortPlace(stops[0].text) : $("drop-name").textContent) + " (~" + mins(c.drive) + " total)");
         marks.slice(1).forEach(function (to, i) {
           var from = marks[i], share = (to - from) / (T_END - T_START);
@@ -1100,7 +1123,7 @@
             });
           });
         });
-        return legs;
+        return legs.then(function () { $("scene").classList.remove("moving"); });
       })
       .then(function () {
         var p = pathPoint(T_END);
@@ -1566,6 +1589,12 @@
     $("go-live").addEventListener("click", go);
     $("send-form").addEventListener("submit", send);
     setupRooms();
+    $("mm-toggle").addEventListener("click", function () {
+      var mm = $("minimap");
+      mm.classList.toggle("big");
+      this.textContent = mm.classList.contains("big") ? "✕" : "⤢";
+      E.minimap.resize();
+    });
     $("send").addEventListener("click", function () { lastChoice = "deposit"; });
     $("send-plain").addEventListener("click", function () { lastChoice = "callback"; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-callme]"), function (b) { b.addEventListener("click", openCallback); });

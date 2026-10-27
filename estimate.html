@@ -47,7 +47,7 @@ body:not(.has-scene) .grid{padding-bottom:120px}
 }
 
 /* ------------------------------------------------------------- the scene */
-.scene{position:relative;height:clamp(380px,58vh,600px);border-radius:18px;overflow:hidden;background:linear-gradient(160deg,#5CC7F2,#2B97D2);box-shadow:0 14px 40px rgba(10,25,50,.18);user-select:none}
+.scene{position:relative;height:clamp(380px,58vh,600px);border-radius:18px;overflow:hidden;background:linear-gradient(#7CC8F8,#BFE6FF);box-shadow:0 14px 40px rgba(10,25,50,.18);user-select:none}
 @media(max-width:860px){.scene{height:280px;border-radius:14px}}
 .scene.shake{animation:shake .35s}
 @keyframes shake{20%{transform:translateY(3px)}40%{transform:translateY(-2px)}60%{transform:translateY(2px)}80%{transform:translateY(-1px)}}
@@ -58,14 +58,35 @@ body:not(.has-scene) .grid{padding-bottom:120px}
 .cloud.c2{top:52px;left:-60px;font-size:26px;animation-duration:55s;animation-delay:-20s}
 @keyframes drift{to{transform:translateX(900px)}}
 /* Cartoon South Florida: the sea is the scene background, land is the SVG. */
-.scene::before{content:"";position:absolute;inset:-40px;background-image:radial-gradient(circle at 10px 10px,rgba(255,255,255,.35) 2px,transparent 3px),radial-gradient(circle at 30px 28px,rgba(255,255,255,.22) 2px,transparent 3px);background-size:40px 36px;animation:waves 6s linear infinite}
+/* Illustrated road scene: sky, sea, far layer (skyline, boats), land, mid
+   layer (hills, palms), then the road. Layers scroll while the truck drives. */
+.sea{position:absolute;left:0;right:0;top:34%;height:22%;background:linear-gradient(#4FB8EA,#2B97D2);overflow:hidden}
+.sea::before{content:"";position:absolute;inset:-20px -40px;background-image:radial-gradient(circle at 10px 10px,rgba(255,255,255,.4) 2px,transparent 3px),radial-gradient(circle at 30px 22px,rgba(255,255,255,.25) 2px,transparent 3px);background-size:40px 30px;animation:waves 6s linear infinite}
+.land-band{position:absolute;left:0;right:0;top:54%;bottom:0;background:linear-gradient(#A8E37F,#6CC24A);border-top:5px solid #F3E2A0}
+.layer{position:absolute;left:0;width:200%;pointer-events:none}
+.layer .em{position:absolute;transform:translate(-50%,-50%);line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+.layer .em.bob{animation:bob 2.4s ease-in-out infinite alternate}
+.layer .hill{position:absolute;transform:translate(-50%,-100%);border-radius:50% 50% 0 0/100% 100% 0 0;background:radial-gradient(circle at 38% 30%,#C8F09E,#6FC046 70%)}
+.layer-far{top:33%;height:22%;z-index:1}
+.layer-mid{top:52%;height:30%;z-index:1}
+.scene.moving .layer-far{animation:slide 16s linear infinite}
+.scene.moving .layer-mid{animation:slide 7s linear infinite}
+@keyframes slide{to{transform:translateX(-50%)}}
+.minimap{position:absolute;right:10px;top:58px;z-index:9;width:190px;height:130px;border-radius:12px;overflow:hidden;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,.25);background:#E8EEF5;transition:width .25s,height .25s}
+.minimap.big{width:calc(100% - 20px);height:calc(100% - 110px)}
+@media(max-width:860px){.minimap{width:128px;height:92px;border-width:2px}}
+.minimap .mm-map{position:absolute;inset:0}
+.mm-toggle{position:absolute;right:4px;top:4px;z-index:500;width:26px;height:26px;border-radius:7px;border:0;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer;font-size:15px;line-height:1}
+.mm-label{position:absolute;left:4px;top:4px;z-index:500;background:rgba(255,255,255,.92);border-radius:6px;padding:1px 6px;font-size:.72rem;font-weight:700;color:var(--navy)}
+.minimap .leaflet-control-attribution{font-size:9px;line-height:1.2}
+.mm-pin{background:none;border:0}
+.mm-pin span{display:block;font-size:22px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
 @keyframes waves{to{transform:translate(40px,18px)}}
 .map{position:absolute;inset:0;width:100%;height:100%}
-.map .land{fill:#9BDC74;stroke:#F3E2A0;stroke-width:5;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-.map .islands polygon,.map .keys ellipse{fill:#B9E78F;stroke:#F3E2A0;stroke-width:3;vector-effect:non-scaling-stroke}
-.map .lake{fill:#5FBDEB;stroke:#F3E2A0;stroke-width:3;vector-effect:non-scaling-stroke}
-.map .route{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke}
-.map .route-bg{stroke:#5B6678;stroke-width:13}
+.map{z-index:2}
+.map .route{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.map .route-edge{stroke:#F3E2A0;stroke-width:24}
+.map .route-bg{stroke:#5B6678;stroke-width:18}
 .map .route-dash{stroke:#fff;stroke-width:2.5;stroke-dasharray:8 9}
 .deco{position:absolute;inset:0;pointer-events:none;z-index:2}
 .deco .em{position:absolute;transform:translate(-50%,-50%);line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
@@ -240,7 +261,7 @@ body.is-dragging{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .grip{flex:none;color:#9AA6B8;font-size:1.1rem;cursor:grab;touch-action:none;padding:0 2px;user-select:none}
 .mv-btn{flex:none;border:1px solid var(--line);background:#fff;border-radius:8px;font:inherit;font-size:.8rem;font-weight:700;padding:4px 8px;cursor:pointer;color:var(--navy);white-space:nowrap}
 .mv-btn:hover{border-color:var(--orange)}
-.ghost{position:fixed;z-index:200;pointer-events:none;margin:0;list-style:none;box-shadow:0 14px 30px rgba(10,25,50,.25);transform:rotate(-2deg);opacity:.95}
+.drag-ghost{position:fixed;z-index:200;pointer-events:none;margin:0;list-style:none;box-shadow:0 14px 30px rgba(10,25,50,.25);transform:rotate(-2deg);opacity:.95}
 
 /* Sticky running total */
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:45;background:#fff;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(10,25,50,.1)}
@@ -267,7 +288,7 @@ body:not(.has-scene) .bar{display:none}
 .hp{position:absolute;left:-9999px}
 
 @media (prefers-reduced-motion: reduce){
-  .scene::before,.deco .em.bob,.sun,.cloud,.movers.here .mv,.wrench,.home.climb .bld{animation:none!important}
+  .sea::before,.layer .em.bob,.scene.moving .layer,.sun,.cloud,.movers.here .mv,.wrench,.home.climb .bld{animation:none!important}
 }
 </style>
 </head>
@@ -293,11 +314,19 @@ body:not(.has-scene) .bar{display:none}
     <div class="scene" id="scene" aria-hidden="true">
       <span class="sun">☀️</span>
       <span class="cloud c1">☁️</span><span class="cloud c2">☁️</span>
-      <svg class="map" viewBox="0 0 100 60" preserveAspectRatio="xMidYMid slice">
-        <polygon class="land"/><g class="islands"></g><ellipse class="lake"/><g class="keys"></g>
-        <path class="route route-bg"/><path class="route route-dash" id="road-path"/>
+      <div class="sea"></div>
+      <div class="layer layer-far" aria-hidden="true"></div>
+      <div class="land-band"></div>
+      <div class="layer layer-mid" aria-hidden="true"></div>
+      <svg class="map" viewBox="0 0 100 60" preserveAspectRatio="none">
+        <path class="route route-edge"/><path class="route route-bg"/><path class="route route-dash" id="road-path"/>
       </svg>
       <div class="deco"></div>
+      <div class="minimap" id="minimap" hidden>
+        <div class="mm-map"></div>
+        <button type="button" class="mm-toggle" id="mm-toggle" aria-label="Bigger map">⤢</button>
+        <span class="mm-label">🗺️ Your real route</span>
+      </div>
       <div class="home" id="home-pick"><span class="bld">🏠</span><span class="tag"><b id="pick-name">Pickup</b><i id="pick-floor" hidden></i></span></div>
       <div class="home" id="home-drop"><span class="pile" id="drop-pile"></span><span class="bld">🏡</span><span class="tag"><b id="drop-name">Delivery</b><i id="drop-floor" hidden></i></span></div>
       <div class="truck" id="truck" hidden>
@@ -553,7 +582,8 @@ body:not(.has-scene) .bar{display:none}
 <script src="js/booking/config.js"></script>
 <script src="js/booking/web3forms.js"></script>
 <script src="js/estimate/items.js"></script>
-<script src="js/estimate/map.js"></script>
+<script src="js/estimate/road.js"></script>
+<script src="js/estimate/minimap.js"></script>
 <script src="js/estimate/estimate.js"></script>
 </body>
 </html>
