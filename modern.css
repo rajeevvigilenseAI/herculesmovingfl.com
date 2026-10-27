@@ -1574,3 +1574,67 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
     .rv-row { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
     .rv-group[aria-hidden="true"] { display: none; }
 }
+
+/* ------------------------------- homepage estimate: crew + included */
+
+.hq-est-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-bottom: 4px;
+}
+
+.hq-est-head h3 {
+    margin: 0 !important;
+}
+
+.hq-crew {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--hl-grad);
+    color: #fff;
+    font-family: var(--hl-display) !important;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    box-shadow: 0 6px 16px rgba(255, 106, 0, .32);
+}
+
+.hq-included {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    margin: 0 0 10px !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+}
+
+.hq-included > span {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 600;
+}
+
+.hq-included > span:not(.hq-inc-label)::before {
+    content: "✓ ";
+    color: #10b981;
+    font-weight: 800;
+}
+
+.hq-included > .hq-inc-label {
+    padding-left: 0;
+    background: none;
+    color: var(--hl-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
