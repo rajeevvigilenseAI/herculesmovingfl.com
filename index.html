@@ -324,25 +324,25 @@
 
                 <div class="hero-quote-overlay">
                     <div class="hero-quote-card" id="estimate">
-                        <span class="hq-badge"><i class="fas fa-bolt"></i> Free &amp; Instant</span>
+                        <ol class="hq-stepper" aria-label="Booking steps"><li data-for="hq-step-quote"><span>1</span> Your move</li><li data-for="hq-step-schedule"><span>2</span> Date &amp; time</li><li data-for="hq-step-contact"><span>3</span> Your details</li></ol>
 
                         <!-- Step 1: quote -->
                         <form id="hq-step-quote" class="hq-step active" novalidate>
-                            <h3><i class="fas fa-calculator"></i> Get Your Moving Estimate</h3>
-                            <p class="hq-sub">A city, ZIP, or full address all work. Reserve your move in one visit, right here.</p>
-                            <div class="hq-row">
+                            <h3 class="hq-title">Get your moving estimate</h3>
+                            <p class="hq-sub hq-sub-chips"><span>⚡ Instant price</span><span>🚫 No minimums</span><span>💪 2 movers + 🚚 truck</span></p>
+                            <div class="hq-row hq-route">
                                 <div class="hq-pair">
-                                    <div class="hq-field"><label for="hqOriginCity">Moving From</label><input id="hqOriginCity" name="origin-address" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
+                                    <div class="hq-field hq-from"><label for="hqOriginCity">Moving from</label><input id="hqOriginCity" name="origin-address" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
                                     <div class="hq-field small"><label for="hqOriginState">State</label><input id="hqOriginState" name="origin-state" maxlength="2" value="FL" placeholder="FL" autocomplete="address-level1"></div>
                                 </div>
                                 <div class="hq-pair">
-                                    <div class="hq-field"><label for="hqDestCity">Moving To</label><input id="hqDestCity" name="destination-address" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
+                                    <div class="hq-field hq-to"><label for="hqDestCity">Moving to</label><input id="hqDestCity" name="destination-address" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
                                     <div class="hq-field small"><label for="hqDestState">State</label><input id="hqDestState" name="destination-state" maxlength="2" value="FL" placeholder="FL" autocomplete="address-level1"></div>
                                 </div>
                             </div>
                             <div class="hq-row">
                                 <div class="hq-field">
-                                    <label for="hqHomeSize">How Much Are You Moving?</label>
+                                    <label for="hqHomeSize">How much are you moving?</label>
                                     <select id="hqHomeSize">
                                         <option value="">Select</option>
                                     </select>
@@ -353,8 +353,8 @@
                                 </div>
                             </div>
                             <p class="hq-error" id="hq-error-quote"></p>
-                            <button type="submit" class="hq-submit"><i class="fas fa-truck-moving"></i> Get My Free Estimate</button>
-                            <p class="hq-note"><i class="fas fa-shield-alt"></i> Florida-origin moves. Destination anywhere in the U.S.</p>
+                            <button type="submit" class="hq-submit hq-submit-main">Get my free estimate <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+                            <p class="hq-note hq-trust"><span>⭐ 5.0 on Google</span><span>Free, no obligation</span><span>Florida-origin moves</span></p>
                         </form>
 
                         <!-- Step 2: estimate + date/window -->
@@ -418,6 +418,30 @@
                             </div>
                         </div>
                     </div>
+<script>
+(function () {
+  var card = document.getElementById("estimate");
+  if (!card) return;
+  var items = card.querySelectorAll(".hq-stepper li");
+  var order = ["hq-step-quote", "hq-step-schedule", "hq-step-contact", "hq-step-done"];
+  function sync() {
+    var active = card.querySelector(".hq-step.active");
+    var at = active ? order.indexOf(active.id) : 0;
+    // Only write when something changed: these writes are themselves
+    // class/attribute mutations and would otherwise retrigger the observer.
+    if (card.getAttribute("data-step") !== String(at + 1)) card.setAttribute("data-step", at + 1);
+    Array.prototype.forEach.call(items, function (li, i) {
+      var cls = i < at ? "done" : i === at ? "on" : "";
+      if (li.className !== cls) li.className = cls;
+    });
+  }
+  // Watch only the step panels (home-widget.js toggles their .active class).
+  Array.prototype.forEach.call(card.querySelectorAll(".hq-step"), function (step) {
+    new MutationObserver(sync).observe(step, { attributes: true, attributeFilter: ["class"] });
+  });
+  sync();
+})();
+</script>
                 </div>
             </div>
 

@@ -2396,3 +2396,350 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
     .hl-final-inner { padding: 26px 22px; border-radius: 20px; }
     .hl-final-btns, .hl-final-btns a { width: 100%; justify-content: center; }
 }
+
+/* ------------------------------------------------ hero estimate card v2 */
+
+.banner.hero-has-form .hero-quote-card {
+    border-radius: 22px !important;
+    padding: 20px 26px 18px !important;
+    border-top: 0;
+    max-height: 560px;
+}
+
+/* gradient strip along the top of the card */
+.hero-quote-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 5px;
+    border-radius: 22px 22px 0 0;
+    background: var(--hl-grad);
+}
+
+/* --- progress stepper */
+.hq-stepper {
+    display: flex;
+    gap: 6px;
+    margin: 2px 0 10px;
+    padding: 0;
+    list-style: none;
+}
+
+.hq-stepper li {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 8px 8px;
+    border-bottom: 3px solid #eef0f4;
+    font-family: var(--hl-display) !important;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #9aa3b2;
+    white-space: nowrap;
+    transition: color .2s ease, border-color .2s ease;
+}
+
+.hq-stepper li span {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eef0f4;
+    color: #7b8494;
+    font-size: 12px;
+    font-weight: 800;
+    transition: background .2s ease, color .2s ease;
+}
+
+.hq-stepper li.on {
+    color: var(--hl-ink);
+    border-bottom-color: var(--hl-brand);
+}
+
+.hq-stepper li.on span {
+    background: var(--hl-grad);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(255, 106, 0, .35);
+}
+
+.hq-stepper li.done {
+    color: #10b981;
+    border-bottom-color: #a7f3d0;
+}
+
+.hq-stepper li.done span {
+    background: #10b981;
+    color: transparent;
+    position: relative;
+}
+
+.hq-stepper li.done span::after {
+    content: "✓";
+    position: absolute;
+    color: #fff;
+}
+
+.hero-quote-card[data-step="4"] .hq-stepper {
+    display: none;
+}
+
+/* --- headings + subline */
+.hero-quote-card .hq-step h3,
+.hero-quote-card .hq-title {
+    margin: 0 0 8px !important;
+    font-family: var(--hl-display) !important;
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.025em !important;
+    color: var(--hl-ink) !important;
+}
+
+.hero-quote-card .hq-sub {
+    margin: 0 0 10px !important;
+    font-size: 15px !important;
+    color: var(--hl-muted) !important;
+}
+
+.hq-sub-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.hq-sub-chips span {
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: #fff4ea;
+    color: #9a3f00;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* --- fields */
+.hero-quote-card .hq-field label,
+.hero-quote-card .hq-label-block {
+    margin-bottom: 4px !important;
+    font-family: var(--hl-body) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #3b4659 !important;
+}
+
+.hero-quote-card .hq-field > input,
+.hero-quote-card .hq-field > select,
+.hero-quote-card .hb-ac-anchor > input {
+    min-height: 46px !important;
+    padding: 10px 14px !important;
+    border: 1.5px solid #e3e7ee !important;
+    border-radius: 12px !important;
+    background: #f7f8fb !important;
+    color: var(--hl-ink) !important;
+    font-family: var(--hl-body) !important;
+    font-size: 16px !important;
+    font-weight: 500;
+}
+
+.hero-quote-card .hq-field > input:focus,
+.hero-quote-card .hq-field > select:focus,
+.hero-quote-card .hb-ac-anchor > input:focus {
+    border-color: var(--hl-brand) !important;
+    background: #fff !important;
+    box-shadow: 0 0 0 4px rgba(255, 106, 0, .14) !important;
+}
+
+/* --- From / To as one route */
+.hq-route {
+    position: relative;
+    flex-direction: column;
+    gap: 8px !important;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: #fbfbfd;
+    border: 1px solid #eef0f4;
+}
+
+.hq-route .hq-pair {
+    width: 100%;
+}
+
+.hq-from, .hq-to {
+    position: relative;
+}
+
+.hero-quote-card .hq-route .hq-from input,
+.hero-quote-card .hq-route .hq-to input {
+    padding-left: 44px !important;
+}
+
+/* route markers sit inside the inputs */
+.hq-from::before, .hq-to::before {
+    position: absolute;
+    left: 14px;
+    bottom: 25px;
+    transform: translateY(50%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hq-from::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 4px solid #10b981;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.hq-to::before {
+    content: "📍";
+    font-size: 17px;
+    left: 12px;
+    line-height: 1;
+}
+
+/* Dotted line joining the two markers, drawn up from the "to" pin. The
+   distance between marker centres is one label + input + the 8px gap. */
+.hq-to::after {
+    content: "";
+    position: absolute;
+    left: 21px;
+    bottom: 32px;
+    height: 58px;
+    border-left: 2px dashed #c6ccd8;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* --- main button */
+.hero-quote-card .hq-submit {
+    position: relative;
+    overflow: hidden;
+    min-height: 52px !important;
+    border-radius: 14px !important;
+    background: var(--hl-grad) !important;
+    font-family: var(--hl-display) !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.005em !important;
+    text-transform: none !important;
+    box-shadow: 0 12px 26px rgba(255, 106, 0, .35) !important;
+}
+
+.hero-quote-card .hq-submit i {
+    transition: transform .2s ease;
+}
+
+.hero-quote-card .hq-submit:hover i {
+    transform: translateX(4px);
+}
+
+/* a light sweep across the main button every few seconds */
+.hq-submit-main::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40%;
+    width: 30%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
+    transform: skewX(-18deg);
+    animation: hq-shine 4.5s ease-in-out infinite;
+}
+
+@keyframes hq-shine {
+    0%, 60% { left: -40%; }
+    85%, 100% { left: 130%; }
+}
+
+.hq-trust {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 14px;
+    margin: 10px 0 0 !important;
+    font-size: 12.5px !important;
+    font-weight: 600;
+    color: var(--hl-muted) !important;
+}
+
+.hq-trust span + span::before {
+    content: "·";
+    margin-right: 14px;
+    color: #c4c9d4;
+}
+
+/* --- step 2: arrival windows as chips */
+.hero-quote-card .hq-window-grid label {
+    min-height: 44px !important;
+    border: 1.5px solid #e3e7ee !important;
+    border-radius: 12px !important;
+    background: #f7f8fb;
+    font-family: var(--hl-body) !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: var(--hl-ink);
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.hero-quote-card .hq-window-grid label:hover {
+    border-color: #ffc89b !important;
+}
+
+.hero-quote-card .hq-window-grid label.checked {
+    border-color: var(--hl-brand) !important;
+    background: #fff4ea !important;
+    color: #9a3f00;
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, .12);
+}
+
+.hero-quote-card .hq-window-grid input {
+    accent-color: var(--hl-brand);
+}
+
+.hero-quote-card .hq-result-stats > div {
+    border-radius: 14px !important;
+    border: 1.5px solid #ffe0c2 !important;
+    background: linear-gradient(160deg, #fff7ef, #fff) !important;
+}
+
+.hero-quote-card .hq-result-stats strong {
+    font-family: var(--hl-display) !important;
+    font-weight: 800 !important;
+    color: var(--hl-brand-dark) !important;
+}
+
+.hero-quote-card .hq-link {
+    font-family: var(--hl-body) !important;
+    font-weight: 600;
+    color: var(--hl-muted) !important;
+}
+
+@media (max-width: 767px) {
+    .banner.hero-has-form .hero-quote-card { padding: 18px 16px 16px !important; border-radius: 20px !important; }
+    .hq-stepper li { font-size: 0; gap: 0; justify-content: center; }
+    .hq-stepper li span { font-size: 12px; }
+    .hq-stepper li.on { font-size: 12px; gap: 6px; }
+    .hero-quote-card .hq-step h3, .hero-quote-card .hq-title { font-size: 22px !important; }
+    .hq-route { padding: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hq-submit-main::after { animation: none; display: none; }
+}
+
+.hero-quote-card .hq-row { margin-bottom: 12px !important; }
+.hq-from::before, .hq-to::before { bottom: 23px; }
+
+/* Labels line up with the text inside the route inputs, clear of the line. */
+.hero-quote-card .hq-route .hq-from label,
+.hero-quote-card .hq-route .hq-to label {
+    padding-left: 44px;
+}
