@@ -105,7 +105,7 @@
     items: {}, order: [],
     supplies: {}, onCall: {}, excluded: {},
     // Extra stops in route order: { text, addr, kind: "pickup" | "dropoff" }
-    stops: [], stopFractions: [],
+    stops: [],
     pack: null, kit: null,
     playing: false, played: false
   };
@@ -113,7 +113,6 @@
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function $(id) { return document.getElementById(id); }
-  function sleep(ms) { return new Promise(function (r) { setTimeout(r, reduceMotion ? Math.min(ms, 150) : ms); }); }
   function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
   function mins(m) {
     m = Math.max(0, Math.round(m));
@@ -276,45 +275,21 @@
     err.textContent = "";
     state.from = a; state.to = b; state.fromText = fromText; state.toText = toText;
     state.fromFloor = $("pickup-floor").value; state.toFloor = $("dropoff-floor").value;
-    $("pick-name").textContent = shortPlace(fromText);
     updateRoute();
     renderFloors();
     document.body.classList.add("has-scene");
     showStep("step-items");
     $("board").hidden = false;
     $("live").hidden = false;
-    land();
+    $("lane").hidden = false;
     render();
   }
 
-  /* --------------------------------------------------------------- scene */
+  /* ------------------------------------------------ route map and strip */
 
-  var road, truck, truckBody, movers, hud, cargoFill;
-
-  // The truck parks just past each house rather than on top of it.
-  // Updated by parkSpots() whenever the map is drawn.
-  var T_START = 0.06, T_END = 0.94;
-
-  // Park the truck about 75 px down the road from each house, however long
-  // the route is on screen, so it never sits on top of a house.
-  function parkSpots() {
-    var ctm = road.getScreenCTM(), len = road.getTotalLength();
-    var px = ctm && len ? len * Math.abs(ctm.a) : 0;
-    var k = px ? Math.min(0.35, 75 / px) : 0.06;
-    T_START = k;
-    T_END = 1 - k;
-  }
-
-  function pathPoint(t) {
-    var len = road.getTotalLength();
-    var p = road.getPointAtLength(len * t);
-    var ctm = road.getScreenCTM(), box = $("scene").getBoundingClientRect();
-    if (!ctm) return { x: 0, y: 0 };
-    var pt = road.ownerSVGElement.createSVGPoint();
-    pt.x = p.x; pt.y = p.y;
-    var s = pt.matrixTransform(ctm);
-    return { x: s.x - box.left, y: s.y - box.top };
-  }
+  // The real map (minimap.js) shows the true route. The strip across the
+  // top is the friendly part: a straight road from pickup to delivery with
+  // the truck and two movers, and a pin for each extra stop.
 
   // Pickup, extra pickups, extra drop-offs, delivery.
   function route() {
@@ -334,52 +309,61 @@
     return out;
   }
 
-  var lastMiniKey = "";
-
-  function drawMap() {
-    var core = window.HerculesQuoteCore;
-    var mid = route();
-    var res = E.road.draw($("scene"), legMiles());
-    parkSpots();
-    if (state.toText) $("drop-name").textContent = shortPlace(state.toText);
-
-    // The small real map: the same places, with the actual driving route.
-    // Only look the route up again when the places change, not on resize.
-    var miniKey = [state.fromText, state.toText].concat(mid.map(function (s) { return s.text; })).join("|");
-    if (state.from && state.to && E.minimap && core && miniKey !== lastMiniKey) {
-      lastMiniKey = miniKey;
-      var ll = function (a) { return core.resolveCoordinates(a); };
-      $("mm-open").hidden = false;
-      E.minimap.show($("minimap"), [{ ll: ll(state.from), text: state.fromText, kind: "pick" }]
-        .concat(mid.map(function (s) { return { ll: ll(s.addr), text: s.text, kind: "stop" }; }))
-        .concat([{ ll: ll(state.to), text: state.toText, kind: "drop" }]));
+  // Where each extra stop sits along the strip (0 to 1), by its miles but
+  // never bunched up against the ends.
+  function stopSpots() {
+    var legs = legMiles(), total = legs.reduce(function (a, b) { return a + b; }, 0), acc = 0, out = [];
+    for (var i = 0; i < legs.length - 1; i++) {
+      acc += total ? legs[i] / total : 1 / legs.length;
+      out.push(Math.max(0.15, Math.min(0.85, (acc + (i + 1) / legs.length) / 2)));
     }
+    return out;
+  }
 
-    // Pins for extra stops, and where along the road the truck pauses.
-    Array.prototype.forEach.call(document.querySelectorAll(".home.stop"), function (el) { el.remove(); });
-    state.stopFractions = [];
-    mid.forEach(function (s, i) {
-      var spot = res.screen && res.screen[i + 1];
-      state.stopFractions.push(res.fractions ? res.fractions[i + 1] : (i + 1) / (mid.length + 1));
-      if (!spot) return;
-      var el = document.createElement("div");
-      el.className = "home stop";
-      el.innerHTML = '<span class="bld">📍</span><span class="tag"><b>' + (s.kind === "pickup" ? "⬆ " : "⬇ ") + esc(shortPlace(s.text)) + "</b></span>";
-      el.style.left = spot.x + "px";
-      el.style.top = spot.y + "px";
-      $("scene").appendChild(el);
+  function drawStrip() {
+    $("lane-from").textContent = state.fromText ? shortPlace(state.fromText) : "Pickup";
+    $("lane-to").textContent = state.toText ? shortPlace(state.toText) : "Delivery";
+    $("lane-from-floor").textContent = floorBadge(state.fromFloor);
+    $("lane-to-floor").textContent = floorBadge(state.toFloor);
+    var box = $("lane-stops"), spots = stopSpots();
+    box.innerHTML = "";
+    route().forEach(function (st, i) {
+      var pin = document.createElement("span");
+      pin.className = "lane-stop";
+      pin.style.left = spots[i] * 100 + "%";
+      pin.innerHTML = "📍<b>" + esc(shortPlace(st.text)) + "</b>";
+      box.appendChild(pin);
     });
+    $("lane-miles").textContent = state.miles ? "~" + Math.round(state.miles) + " mi" : "";
+  }
+
+  function floorBadge(v) {
+    var f = floorInfo(v);
+    return f.kind === "stairs" ? "🪜 " + ordinal(f.flights + 1) + " fl" : f.kind === "elevator" ? "🛗" : "";
+  }
+
+  var lastMapKey = "";
+
+  // The real map: pins and the actual driving route. Only looked up again
+  // when the places change.
+  function drawMap() {
+    drawStrip();
+    var core = window.HerculesQuoteCore, mid = route();
+    var key = [state.fromText, state.toText].concat(mid.map(function (s) { return s.text; })).join("|");
+    if (!state.from || !state.to || !core || !E.minimap || key === lastMapKey) return;
+    lastMapKey = key;
+    var ll = function (a) { return core.resolveCoordinates(a); };
+    $("map-empty").hidden = true;
+    $("mm-open").hidden = false;
+    E.minimap.show($("scene"), [{ ll: ll(state.from), text: state.fromText, kind: "pick" }]
+      .concat(mid.map(function (s) { return { ll: ll(s.addr), text: s.text, kind: "stop" }; }))
+      .concat([{ ll: ll(state.to), text: state.toText, kind: "drop" }]));
   }
 
   // Miles for the whole route, then redraw. Called whenever stops change.
   function updateRoute() {
-    var core = window.HerculesQuoteCore, legs = [state.from].concat(route().map(function (s) { return s.addr; })).concat([state.to]);
-    var miles = 0;
-    for (var i = 1; i < legs.length; i++) {
-      try { miles += core.estimateMiles(legs[i - 1], legs[i], ""); } catch (e) {}
-    }
+    var legs = legMiles(), miles = state.from && state.to ? legs.reduce(function (a, b) { return a + b; }, 0) : 0;
     state.miles = miles;
-    $("trip-miles").textContent = "~" + Math.round(miles) + " mi";
     $("trip-short").textContent = "~" + Math.round(miles) + " mi trip";
     $("stop-count").textContent = state.stops.length ? "· " + state.stops.length + " added" : "";
     var list = $("stop-list");
@@ -392,7 +376,6 @@
       list.appendChild(li);
     });
     drawMap();
-    placeEnds();
     render();
   }
 
@@ -415,212 +398,48 @@
     updateRoute();
   }
 
-  function placeTruck(t, facingLeft) {
-    var p = pathPoint(t);
-    truck.style.left = p.x + "px";
-    truck.style.top = p.y + "px";
-    truckBody.style.transform = facingLeft ? "scaleX(1)" : "scaleX(-1)";
-  }
-
-  function placeEnds() {
-    // Houses sit on each end of the road, nudged back inside the scene on
-    // narrow screens so their labels never get cut off.
-    var a = pathPoint(0), b = pathPoint(1), w = $("scene").clientWidth;
-    [[$("home-pick"), a.x, a.y], [$("home-drop"), b.x, b.y]].forEach(function (h) {
-      var half = h[0].offsetWidth / 2 + 4;
-      h[0].style.left = Math.max(half, Math.min(w - half, h[1])) + "px";
-      h[0].style.top = h[2] + "px";
-    });
-    if (!state.playing) placeTruck(state.played ? T_END : T_START, false);
-  }
-
   function hudSay(text) {
-    hud.textContent = text;
-    hud.classList.remove("pop");
-    void hud.offsetWidth;
-    hud.classList.add("pop");
+    var el = $("lane-msg");
+    el.textContent = text;
+    el.classList.remove("pop");
+    void el.offsetWidth;
+    el.classList.add("pop");
   }
 
-  function dust(x, y, n) {
-    var scene = $("scene");
-    for (var i = 0; i < (n || 10); i++) {
-      var d = document.createElement("span");
-      d.className = "dust";
-      d.textContent = i % 3 ? "●" : "💨";
-      d.style.left = x + "px";
-      d.style.top = y + "px";
-      scene.appendChild(d);
-      var ang = (Math.PI * (i / ((n || 10) - 1))) + Math.PI, dist = 30 + Math.random() * 40;
-      var anim = d.animate([
-        { transform: "translate(-50%,-50%) scale(.6)", opacity: 0.9 },
-        { transform: "translate(" + (Math.cos(ang) * dist - 10) + "px," + (Math.sin(ang) * dist * 0.4 - 6) + "px) scale(1.6)", opacity: 0 }
-      ], { duration: reduceMotion ? 1 : 900 + Math.random() * 400, easing: "cubic-bezier(.2,.7,.3,1)" });
-      anim.onfinish = (function (el) { return function () { el.remove(); }; })(d);
-    }
+  // An added item pops up over the truck and drops into it.
+  function popIntoTruck(emoji) {
+    if (reduceMotion) return;
+    var t = $("lane-truck"), s = document.createElement("span");
+    s.className = "lane-pop";
+    s.textContent = emoji;
+    t.appendChild(s);
+    setTimeout(function () { s.remove(); }, 900);
+    t.classList.remove("gulp");
+    void t.offsetWidth;
+    t.classList.add("gulp");
   }
 
-  function land() {
-    placeEnds();
-    truck.hidden = false;
-    movers.classList.remove("here");
-    hudSay("🚚 Your truck is on its way…");
-    var drop = truckBody.animate([
-      { transform: truckBody.style.transform + " translateY(-340px) rotate(-10deg)", offset: 0 },
-      { transform: truckBody.style.transform + " translateY(0) rotate(0)", offset: 0.75 },
-      { transform: truckBody.style.transform + " translateY(-14px)", offset: 0.87 },
-      { transform: truckBody.style.transform + " translateY(0)", offset: 1 }
-    ], { duration: reduceMotion ? 1 : 1100, easing: "cubic-bezier(.45,0,.55,1)" });
-    // The timer is a safety net: some browsers pause animations in background
-    // tabs, and the truck must never stay stuck in the sky.
-    var landed = false;
-    function touchdown() {
-      if (landed) return;
-      landed = true;
-      drop.cancel();
-      var p = pathPoint(T_START);
-      dust(p.x, p.y + 6, 12);
-      $("scene").classList.add("shake");
-      setTimeout(function () { $("scene").classList.remove("shake"); }, 400);
-      movers.classList.add("here");
-      hudSay("💪 Truck landed! Your 2 movers are ready. Add your items below.");
-      setTimeout(function () { $("item-search").focus({ preventScroll: true }); }, 50);
-    }
-    drop.onfinish = touchdown;
-    setTimeout(touchdown, reduceMotion ? 10 : 1400);
+  // Keeps the whole truck on the road: at the start its left edge sits at
+  // the pickup end, at the finish its right edge at the delivery end.
+  function setTruck(f) {
+    var t = $("lane-truck");
+    t.style.left = f * 100 + "%";
+    t.style.transform = "translateX(-" + f * 100 + "%)";
   }
 
-  function flyToTruck(emoji, fromEl, count) {
-    var n = Math.min(count || 1, 5);
-    var start = fromEl.getBoundingClientRect();
-    var door = $("home-pick"), end = door.getBoundingClientRect();
-    var walkers = Math.min(n, 2);
-    for (var i = 0; i < n; i++) {
-      (function (i) {
-        setTimeout(function () {
-          var f = document.createElement("span");
-          f.className = "fly";
-          f.textContent = emoji;
-          document.body.appendChild(f);
-          var sx = start.left + start.width / 2, sy = start.top + start.height / 2;
-          var ex = end.left + end.width / 2, ey = end.top + end.height / 2;
-          var midY = Math.min(sy, ey) - 120;
-          var a = f.animate([
-            { transform: "translate(" + sx + "px," + sy + "px) scale(1)", opacity: 1 },
-            { transform: "translate(" + (sx + ex) / 2 + "px," + midY + "px) scale(1.5) rotate(160deg)", opacity: 1, offset: 0.5 },
-            { transform: "translate(" + ex + "px," + ey + "px) scale(.3) rotate(360deg)", opacity: 0.2 }
-          ], { duration: reduceMotion ? 1 : 750, easing: "cubic-bezier(.3,.1,.3,1)" });
-          var landedIn = false;
-          function inTruck() {
-            if (landedIn) return;
-            landedIn = true;
-            f.remove();
-            // A mover picks it up at the door and walks it to the truck.
-            if (i < walkers) carry(emoji, spotOf(door), truckSpot(), 0).then(gulp);
-          }
-          a.onfinish = inTruck;
-          setTimeout(inTruck, 1000);
-        }, i * 120);
-      })(i);
-    }
-    if (reduceMotion) gulp();
-  }
-
-  function spotOf(el) {
-    var s = $("scene").getBoundingClientRect(), r = el.getBoundingClientRect();
-    return { x: r.left + r.width / 2 - s.left, y: r.bottom - s.top - 18 };
-  }
-
-  function truckSpot() {
-    var s = $("scene").getBoundingClientRect(), r = truckBody.getBoundingClientRect();
-    return { x: r.left + r.width / 2 - s.left, y: r.bottom - s.top - 4 };
-  }
-
-  // One mover walks from one spot to another with the item on his head. The
-  // idle crew by the truck steps aside while anyone is walking.
-  var walking = 0;
-  function carry(emoji, from, to, delay) {
+  // One drive along the strip, pausing at each extra stop.
+  function driveStrip() {
+    var marks = stopSpots().concat([1]), i = 0;
     return new Promise(function (resolve) {
-      setTimeout(function () {
-        var c = document.createElement("span");
-        c.className = "carrier";
-        c.innerHTML = "<i>" + emoji + "</i><b><span>🚶‍♂️</span></b>";
-        // The walking emoji faces left; flip it when heading right.
-        if (to.x > from.x) c.querySelector("b").style.transform = "scaleX(-1)";
-        $("scene").appendChild(c);
-        walking++;
-        movers.classList.add("busy");
-        var dist = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
-        var ms = reduceMotion ? 1 : Math.max(700, Math.min(1600, dist * 11));
-        var a = c.animate([
-          { transform: "translate(" + from.x + "px," + from.y + "px) translate(-50%,-100%)", opacity: 0 },
-          { transform: "translate(" + from.x + "px," + from.y + "px) translate(-50%,-100%)", opacity: 1, offset: 0.08 },
-          { transform: "translate(" + to.x + "px," + to.y + "px) translate(-50%,-100%)", opacity: 1, offset: 0.92 },
-          { transform: "translate(" + to.x + "px," + to.y + "px) translate(-50%,-100%) scale(.8)", opacity: 0 }
-        ], { duration: ms, easing: "linear" });
-        var done = false;
-        function end() {
-          if (done) return;
-          done = true;
-          c.remove();
-          if (--walking <= 0) { walking = 0; movers.classList.remove("busy"); }
-          resolve();
-        }
-        a.onfinish = end;
-        setTimeout(end, ms + 300);
-      }, delay || 0);
-    });
-  }
-
-  function gulp() {
-    truckBody.animate([
-      { transform: truckBody.style.transform + " scale(1)" },
-      { transform: truckBody.style.transform + " scale(1.18,.9)" },
-      { transform: truckBody.style.transform + " scale(1)" }
-    ], { duration: reduceMotion ? 1 : 260 });
-  }
-
-  // Unloading: a mover walks each item from the truck into the new home.
-  function flyFromTruck(emoji, toEl, delay) {
-    return carry(emoji, truckSpot(), spotOf(toEl), delay);
-  }
-
-  function tool(on, where) {
-    var w = $("wrench");
-    w.hidden = !on;
-    if (on) {
-      var p = pathPoint(where);
-      w.style.left = p.x + "px";
-      w.style.top = p.y - 58 + "px";
-    }
-  }
-
-  function drive(ms, driveMin, from, to, minFrom, miFrom, miLeg) {
-    from = from == null ? T_START : from;
-    to = to == null ? T_END : to;
-    minFrom = minFrom || 0;
-    miFrom = miFrom || 0;
-    miLeg = miLeg == null ? state.miles : miLeg;
-    return new Promise(function (resolve) {
-      // A plain timer rather than requestAnimationFrame, so the move still
-      // finishes if the tab is in the background.
-      var t0 = Date.now(), clock = $("clock"), lastX = null, timer;
-      clock.hidden = false;
-      function frame() {
-        var k = Math.min(1, (Date.now() - t0) / ms);
-        var eased = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-        var p = pathPoint(from + (to - from) * eased);
-        var left = lastX !== null && p.x < lastX;
-        lastX = p.x;
-        truck.style.left = p.x + "px";
-        truck.style.top = p.y + "px";
-        truckBody.style.transform = left ? "scaleX(1)" : "scaleX(-1)";
-        if (Math.random() < 0.25) dust(p.x - 18, p.y + 8, 1);
-        clock.textContent = "🕒 " + mins(minFrom + driveMin * eased) + " · " + Math.round(miFrom + miLeg * eased) + " mi";
-        if (k >= 1) { clearInterval(timer); resolve(); }
+      if (reduceMotion) { setTruck(1); resolve(); return; }
+      function next() {
+        if (i >= marks.length) { resolve(); return; }
+        var to = marks[i++], st = route()[i - 1];
+        setTruck(to);
+        hudSay(st ? (st.kind === "pickup" ? "⬆ Picking up in " : "⬇ Dropping off in ") + shortPlace(st.text) : "🛣️ On the way to " + $("lane-to").textContent);
+        setTimeout(next, st ? 1300 : 1100);
       }
-      if (reduceMotion) { placeTruck(to, false); resolve(); return; }
-      timer = setInterval(frame, 16);
-      frame();
+      next();
     });
   }
 
@@ -725,7 +544,7 @@
     if (state.played) resetTrip();
     if (!state.items[it.id]) state.order.push(it.id);
     state.items[it.id] = (state.items[it.id] || 0) + q;
-    flyToTruck(it.emoji, fromEl, q);
+    popIntoTruck(it.emoji);
     var need = crewForWeight(it.lbs);
     if (need > PRICING.baseCrew) hudSay("💪 " + it.name + " is heavy: that's " + need + " movers to lift it safely.");
     else hudSay("✅ " + q + " × " + it.name + " loaded");
@@ -744,12 +563,7 @@
   /* -------------------------------------------------------------- render */
 
   function renderFloors() {
-    [["pick", state.fromFloor], ["drop", state.toFloor]].forEach(function (pair) {
-      var f = floorInfo(pair[1]), el = $(pair[0] + "-floor");
-      el.textContent = f.kind === "stairs" ? "🪜 " + ordinal(f.flights + 1) + " fl" : f.kind === "elevator" ? "🛗 Elevator" : "";
-      el.hidden = f.kind === "ground";
-      $("home-" + pair[0]).querySelector(".bld").textContent = f.kind === "ground" ? (pair[0] === "pick" ? "🏠" : "🏡") : "🏢";
-    });
+    drawStrip();
     $("floor-pick-edit").value = state.fromFloor;
     $("floor-drop-edit").value = state.toFloor;
   }
@@ -757,12 +571,10 @@
   function render() {
     var c = compute();
 
-    // Cargo meter on the truck.
-    cargoFill.style.width = Math.min(100, Math.round(c.fill * 100)) + "%";
-    cargoFill.classList.toggle("over", c.fill > 1);
+    // Truck fill and crew, in the stats and on the strip.
     $("cargo-text").textContent = Math.round(c.fill * 100) + "% full";
     $("mover-count").textContent = c.crew;
-    // Extra movers join the crew in the scene, each carrying something.
+    $("lane-fill").style.width = Math.min(100, Math.round(c.fill * 100)) + "%";
     var loads = ["🛋️", "📦", "🖼️", "🧺"], extra = "";
     for (var m = 0; m < c.crew - 2; m++) extra += '<span class="mv"><i>' + loads[m % loads.length] + "</i>🧍‍♂️</span>";
     $("mover-extra").innerHTML = extra;
@@ -936,7 +748,7 @@
     } else if (kind === "supply") {
       var s = PRICING.supplies.concat(PRICING.services).filter(function (x) { return x.id === id; })[0];
       state.supplies[id] = zone === "inc" ? Math.max(1, s.from || s.flag ? suggestFor(s) : 1) : 0;
-      if (zone === "inc") { flyToTruck(s.emoji, fromEl, 1); hudSay("📦 " + s.name + " added"); }
+      if (zone === "inc") { popIntoTruck(s.emoji); hudSay("📦 " + s.name + " added"); }
       render();
     } else if (kind === "pack") {
       var p = findIn(PRICING.packs, id);
@@ -953,7 +765,7 @@
       }
       var k = findIn(PRICING.kits, id);
       state.kit = zone === "inc" ? id : null;
-      if (zone === "inc") { flyToTruck("📦", fromEl, 2); hudSay("📦 " + k.name + " added"); }
+      if (zone === "inc") { popIntoTruck("📦"); hudSay("📦 " + k.name + " added"); }
       render();
     } else if (kind === "oncall") {
       state.onCall[id] = zone === "inc";
@@ -1048,136 +860,31 @@
     });
   }
 
-  /* ------------------------------------------------------------ the move */
+  /* ------------------------------------------------------------ results */
+
+  var GO_LABEL = "🧾 See my full estimate ➜";
 
   function resetTrip() {
     state.played = false;
     $("step-result").hidden = true;
     document.body.classList.remove("reading");
-    $("clock").hidden = true;
-    truck.hidden = false;
-    placeTruck(T_START, false);
-    movers.classList.add("here");
-    $("drop-pile").textContent = "";
-    $("go").textContent = "🚚 Start the move ➜";
+    setTruck(0);
+    $("go").textContent = GO_LABEL;
   }
 
-  function playMove() {
+  function showEstimate() {
     if (state.playing || !state.order.length) return;
     var c = compute();
     state.playing = true;
-    $("go").disabled = true;
-    document.getElementById("scene").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-    var asmItems = state.order.filter(function (id) { return byId[id].asm; });
-    var pf = floorInfo(state.fromFloor), df = floorInfo(state.toFloor);
-
-    var steps = Promise.resolve()
-      .then(function () { return sleep(500); })
-      .then(function () {
-        if (!c.packMin) return;
-        hudSay("🧑‍🔧 Packing up your home (~" + mins(c.packMin) + ")");
-        var house = $("home-pick");
-        return Promise.all([0, 1, 2].map(function (i) { return carry("📦", spotOf(house), truckSpot(), i * 450); }));
-      })
-      .then(function () {
-        if (!asmItems.length) return;
-        tool(true, 0);
-        hudSay("🔧 Taking apart " + asmItems.map(function (id) { return byId[id].name.toLowerCase(); }).slice(0, 3).join(", ") + " (~" + mins(c.asm * 0.4) + ")");
-        return sleep(1800).then(function () { tool(false); });
-      })
-      .then(function () {
-        if (pf.kind === "ground") return;
-        $("home-pick").classList.add("climb");
-        hudSay(pf.kind === "stairs" ? "🪜 Carrying everything down " + pf.flights + " flight" + (pf.flights > 1 ? "s" : "") + " (+" + mins(c.stairsPick) + ")" : "🛗 Riding the elevator down (+" + mins(c.stairsPick) + ")");
-        return sleep(1700).then(function () { $("home-pick").classList.remove("climb"); });
-      })
-      .then(function () {
-        hudSay("📦 Loading " + c.count + " items with pads & stretch wrap (~" + mins(c.load) + ")");
-        gulp();
-        return sleep(1400);
-      })
-      .then(function () {
-        movers.classList.remove("here");
-        var stops = route(), marks = [T_START].concat(state.stopFractions.map(function (f) {
-          return Math.min(T_END - 0.02, Math.max(T_START + 0.02, f));
-        })).concat([T_END]);
-        var ms = Math.max(2600, Math.min(6500, 2200 + c.drive * 45)) + stops.length * 600;
-        var legs = Promise.resolve(), done = 0;
-        $("scene").classList.add("moving");
-        hudSay("🛣️ Driving to " + (stops.length ? shortPlace(stops[0].text) : $("drop-name").textContent) + " (~" + mins(c.drive) + " total)");
-        marks.slice(1).forEach(function (to, i) {
-          var from = marks[i], share = (to - from) / (T_END - T_START);
-          legs = legs.then(function () {
-            var start = done;
-            done += share;
-            return drive(ms * share, c.drive * share, from, to, c.drive * start, state.miles * start, state.miles * share);
-          }).then(function () {
-            var s = stops[i];
-            if (!s) return;
-            movers.classList.add("here");
-            hudSay(s.kind === "pickup" ? "⬆ Picking up at " + shortPlace(s.text) : "⬇ Dropping off at " + shortPlace(s.text));
-            gulp();
-            return sleep(1300).then(function () {
-              movers.classList.remove("here");
-              var next = stops[i + 1];
-              hudSay("🛣️ Driving to " + (next ? shortPlace(next.text) : $("drop-name").textContent));
-            });
-          });
-        });
-        return legs.then(function () { $("scene").classList.remove("moving"); });
-      })
-      .then(function () {
-        var p = pathPoint(T_END);
-        dust(p.x, p.y + 6, 8);
-        movers.classList.add("here");
-        hudSay("📤 Unloading at " + $("drop-name").textContent + " (~" + mins(c.unload) + ")");
-        var pile = $("drop-pile"), emojis = [];
-        state.order.forEach(function (id) { emojis.push(byId[id].emoji); });
-        var shown = emojis.slice(0, 6);
-        return Promise.all(shown.map(function (em, i) {
-          return flyFromTruck(em, $("home-drop"), i * 380).then(function () { pile.textContent += em; });
-        }));
-      })
-      .then(function () {
-        if (df.kind === "ground") return;
-        $("home-drop").classList.add("climb");
-        hudSay(df.kind === "stairs" ? "🪜 Carrying everything up " + df.flights + " flight" + (df.flights > 1 ? "s" : "") + " (+" + mins(c.stairsDrop) + ")" : "🛗 Riding the elevator up (+" + mins(c.stairsDrop) + ")");
-        return sleep(1700).then(function () { $("home-drop").classList.remove("climb"); });
-      })
-      .then(function () {
-        if (!asmItems.length) return;
-        tool(true, 1);
-        hudSay("🔧 Putting it all back together (~" + mins(c.asm * 0.6) + ")");
-        return sleep(1800).then(function () { tool(false); });
-      })
-      .then(function () {
-        hudSay("🎉 Moved in! About " + c.hours + " hours with " + c.crew + " movers.");
-        confetti();
-        state.playing = false;
-        state.played = true;
-        $("go").disabled = false;
-        $("go").textContent = "🔁 Play it again";
-        render();
-        showResult(c);
-      });
-    return steps;
-  }
-
-  function confetti() {
-    var scene = $("scene"), bits = ["🎉", "✨", "🎊", "⭐"];
-    for (var i = 0; i < (reduceMotion ? 0 : 18); i++) {
-      var s = document.createElement("span");
-      s.className = "dust";
-      s.textContent = bits[i % bits.length];
-      s.style.left = Math.random() * 100 + "%";
-      s.style.top = "-10px";
-      scene.appendChild(s);
-      var a = s.animate([
-        { transform: "translateY(0) rotate(0)", opacity: 1 },
-        { transform: "translateY(" + (scene.clientHeight + 20) + "px) rotate(" + (Math.random() * 720 - 360) + "deg)", opacity: 0.6 }
-      ], { duration: 1600 + Math.random() * 1200, easing: "ease-in", delay: Math.random() * 400 });
-      a.onfinish = (function (el) { return function () { el.remove(); }; })(s);
-    }
+    render();
+    driveStrip().then(function () {
+      state.playing = false;
+      state.played = true;
+      hudSay("🎉 About " + c.hours + " hours with " + c.crew + " movers. Here's your estimate.");
+      $("go").textContent = "🔁 Update my estimate";
+      render();
+      showResult(c);
+    });
   }
 
   /* -------------------------------------------------------------- result */
@@ -1516,7 +1223,7 @@
       state.items[id] = (state.items[id] || 0) + p.items[id];
       if (emojis.length < 4) emojis.push(byId[id].emoji);
     });
-    emojis.forEach(function (em, i) { setTimeout(function () { flyToTruck(em, fromEl, 1); }, i * 200); });
+    emojis.forEach(function (em, i) { setTimeout(function () { popIntoTruck(em); }, i * 250); });
     hudSay("📋 Added a typical " + p.name.toLowerCase() + " home. Adjust anything below.");
     render();
   }
@@ -1554,13 +1261,6 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    road = $("road-path");
-    truck = $("truck");
-    truckBody = truck.querySelector(".body");
-    movers = $("movers");
-    hud = $("hud");
-    cargoFill = $("cargo-fill");
-
     attachSuggest($("pickup"));
     attachSuggest($("dropoff"));
     $("where-go").addEventListener("click", startWhere);
@@ -1572,6 +1272,7 @@
       showStep("step-where");
       $("board").hidden = true;
       $("live").hidden = true;
+      $("lane").hidden = true;
       $("step-result").hidden = true;
     });
 
@@ -1583,31 +1284,18 @@
     $("stop-input").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addStop(); } });
     function go() {
       if (state.played) resetTrip();
-      playMove();
-      render();
+      showEstimate();
     }
     $("go").addEventListener("click", go);
     $("go-live").addEventListener("click", go);
     $("send-form").addEventListener("submit", send);
     setupRooms();
-    // Computers: the button enlarges the route card. Phones: the card is a
-    // pop-up opened from the stats row, and the same button closes it.
-    var phone = window.matchMedia("(max-width: 860px)");
-    $("mm-toggle").addEventListener("click", function () {
-      var mm = $("minimap");
-      if (phone.matches) {
-        mm.classList.remove("open");
-        return;
-      }
-      mm.classList.toggle("big");
-      this.textContent = mm.classList.contains("big") ? "✕" : "⤢";
-      E.minimap.resize();
-    });
+    // Phones: the map is a pop-up opened from the strip.
     $("mm-open").addEventListener("click", function () {
-      $("minimap").classList.add("open");
-      $("mm-toggle").textContent = "✕";
+      document.body.classList.add("map-open");
       E.minimap.resize();
     });
+    $("mm-close").addEventListener("click", function () { document.body.classList.remove("map-open"); });
     $("send").addEventListener("click", function () { lastChoice = "deposit"; });
     $("send-plain").addEventListener("click", function () { lastChoice = "callback"; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-callme]"), function (b) { b.addEventListener("click", openCallback); });
@@ -1624,10 +1312,9 @@
     $("date").min = todayISO();
     $("date").addEventListener("focus", function () { $("date").min = todayISO(); });
 
-    window.addEventListener("resize", function () { drawMap(); placeEnds(); });
-    drawMap();
-    placeEnds();
-    truck.hidden = true;
-    hudSay("📍 Tell us where you're moving to call your truck");
+    window.addEventListener("resize", function () { E.minimap.resize(); });
+    E.minimap.init($("scene"));
+    drawStrip();
+    hudSay("📦 Add your items and watch your truck fill up");
   });
 })();

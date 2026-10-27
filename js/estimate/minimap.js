@@ -1,9 +1,9 @@
 window.HerculesEstimate = window.HerculesEstimate || {};
 
 /**
- * Small real map in the corner of the /estimate scene, showing both
- * addresses (and any extra stops) with the actual driving route, so the
- * customer can see we understood where they are.
+ * The real route map on /estimate: both addresses (and any extra stops)
+ * with the actual driving route, so the customer can see we understood
+ * where they are. Before addresses are entered it shows the service area.
  *
  * Free services, all swappable in SERVICES below:
  *   - map tiles: OpenStreetMap (attribution required, fair-use limits)
@@ -73,24 +73,40 @@ window.HerculesEstimate = window.HerculesEstimate || {};
     return window.L.divIcon({ className: "mm-pin " + (cls || ""), html: "<span>" + emoji + "</span>", iconSize: [26, 26], iconAnchor: [13, 24] });
   }
 
+  // Creates the map once. Page scrolling is never hijacked: no scroll-wheel
+  // zoom, and on phones one finger scrolls the page rather than the map.
+  function ensureMap(el) {
+    return loadLeaflet().then(function () {
+      var L = window.L;
+      if (!map) {
+        map = L.map(el.querySelector(".mm-map"), {
+          zoomControl: true, attributionControl: true, scrollWheelZoom: false,
+          dragging: !L.Browser.mobile, tap: false
+        });
+        map.zoomControl.setPosition("bottomright");
+        L.tileLayer(SERVICES.tiles, { maxZoom: 18, attribution: SERVICES.attribution }).addTo(map);
+        map.attributionControl.setPrefix("");
+        layer = L.layerGroup().addTo(map);
+      }
+      return L;
+    });
+  }
+
+  // Before any addresses: Miami-Dade, Broward and Palm Beach.
+  function init(el) {
+    if (!el) return;
+    ensureMap(el).then(function () {
+      if (!lastBounds) map.fitBounds([[25.45, -80.5], [26.95, -80.03]]);
+    }).catch(function () { /* the map simply stays blank */ });
+  }
+
   /**
    * points: [{ ll: [lat, lon], text, kind: "pick" | "stop" | "drop" }]
    */
   function show(el, points) {
     if (!el || !points || points.length < 2 || !points[0].ll || !points[points.length - 1].ll) return;
     var id = ++drawId;
-    el.hidden = false;
-    loadLeaflet().then(function () {
-      var L = window.L;
-      if (!map) {
-        map = L.map(el.querySelector(".mm-map"), {
-          zoomControl: false, attributionControl: true, scrollWheelZoom: false,
-          dragging: !L.Browser.mobile, tap: false, doubleClickZoom: false
-        });
-        L.tileLayer(SERVICES.tiles, { maxZoom: 18, attribution: SERVICES.attribution }).addTo(map);
-        map.attributionControl.setPrefix("");
-        layer = L.layerGroup().addTo(map);
-      }
+    ensureMap(el).then(function (L) {
       return Promise.all(points.map(pinFor)).then(function (lls) {
         if (id !== drawId) return;
         layer.clearLayers();
@@ -114,10 +130,10 @@ window.HerculesEstimate = window.HerculesEstimate || {};
           map.fitBounds(lastBounds, { padding: [22, 22], maxZoom: 14 });
         }).catch(function () { /* keep the dashed line */ });
       });
-    }).catch(function () { el.hidden = true; });
+    }).catch(function () { /* the map simply stays blank */ });
   }
 
-  // After the map box changes size (the enlarge button), refit the route.
+  // After the map box changes size, refit the route.
   function resize() {
     if (!map) return;
     setTimeout(function () {
@@ -126,5 +142,5 @@ window.HerculesEstimate = window.HerculesEstimate || {};
     }, 280);
   }
 
-  window.HerculesEstimate.minimap = { show: show, resize: resize };
+  window.HerculesEstimate.minimap = { init: init, show: show, resize: resize };
 })();
