@@ -262,10 +262,71 @@
     return parts.length >= 3 ? parts[parts.length - 2] : parts[0];
   }
 
+  // The first step's contact details. Required for both buttons.
+  function contact() {
+    return { name: $("st-name").value.trim(), phone: $("st-ph").value.trim(), email: $("st-em").value.trim() };
+  }
+
+  function contactOk(err) {
+    var c = contact();
+    if (!c.name) { err.textContent = "Please enter your name."; return null; }
+    if (!phoneOk(c.phone)) { err.textContent = "Please enter a valid phone number."; return null; }
+    if (c.email && !/^\S+@\S+\.\S+$/.test(c.email)) { err.textContent = "Please check your email address."; return null; }
+    return c;
+  }
+
+  // Carries the first step's details into the final form.
+  function prefill(c) {
+    var parts = c.name.split(/\s+/);
+    if (!$("fn").value) $("fn").value = parts.shift() || "";
+    if (!$("ln").value) $("ln").value = parts.join(" ");
+    if (!$("ph").value) $("ph").value = c.phone;
+    if (!$("em").value && c.email) $("em").value = c.email;
+  }
+
+  // "Reach out to me": send what we have and stop here.
+  function sendReach() {
+    var err = $("where-err"), c = contactOk(err);
+    if (!c || $("st-hp").value) return;
+    if (!$("pickup").value.trim()) { err.textContent = "Please enter your pickup address."; return; }
+    err.textContent = "";
+    var lead = shortLead("reach out", c.name, c.phone, { "Email": c.email || "N/A", "Note": "Asked us to reach out instead of building an estimate." });
+    if (c.email) lead.payload._replyto = c.email;
+    var btn = $("reach-go");
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+    deliver(lead.payload).then(function () {
+      // They already reached us, so building later sends no extra "started" lead.
+      startedSent = true;
+      $("reach-ref").textContent = lead.ref;
+      $("reach-sent").hidden = false;
+      document.querySelector("#step-where .two-btn").hidden = true;
+      if (typeof fbq === "function") fbq("track", "Lead", { content_name: "Website estimate (reach out)" }, { eventID: lead.ref });
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = "📞 Reach out to me";
+      textFallback(err, ["Hi Hercules, please reach out about my move (" + lead.ref + ").", "Name: " + c.name,
+        "From: " + lead.payload["Moving from"], "To: " + lead.payload["Moving to"]], "Text Us Instead");
+    });
+  }
+
+  // "Build my estimate" also saves the lead once, quietly, so we can help
+  // if they stop part way.
+  var startedSent = false;
+  function sendStarted(c) {
+    if (startedSent) return;
+    startedSent = true;
+    var lead = shortLead("started", c.name, c.phone, { "Email": c.email || "N/A", "Note": "Started building an estimate online." });
+    if (c.email) lead.payload._replyto = c.email;
+    deliver(lead.payload).catch(function () { startedSent = false; });
+  }
+
   function startWhere() {
-    var err = $("where-err");
+    var err = $("where-err"), c = contactOk(err);
+    if (!c || $("st-hp").value) return;
     var fromText = $("pickup").value.trim(), toText = $("dropoff").value.trim();
-    if (!fromText || !toText) { err.textContent = "Please enter both addresses."; return; }
+    if (!fromText) { err.textContent = "Please enter your pickup address."; return; }
+    if (!toText) { err.textContent = "Add a drop-off address to build your estimate, or tap Reach out to me."; return; }
     var a = HB.places && HB.places.locate(fromText);
     var b = HB.places && HB.places.locate(toText);
     if (!a || !b) {
@@ -282,6 +343,8 @@
     $("board").hidden = false;
     $("live").hidden = false;
     $("lane").hidden = false;
+    prefill(c);
+    sendStarted(c);
     render();
   }
 
@@ -1017,75 +1080,6 @@
     return { payload: payload, ref: ref };
   }
 
-  function openCallback() {
-    showStep("step-callback");
-    $("board").hidden = true;
-    $("live").hidden = true;
-    $("step-result").hidden = true;
-    $("cb-date").min = todayISO();
-    $("step-callback").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-    setTimeout(function () { $("cb-fn").focus({ preventScroll: true }); }, 300);
-  }
-
-  function backFromCallback() {
-    if (state.from && state.to) {
-      showStep("step-items");
-      $("board").hidden = false;
-      $("live").hidden = false;
-    } else showStep("step-where");
-  }
-
-  function sendCallback() {
-    var err = $("cb-err"), fn = $("cb-fn").value.trim(), ph = $("cb-ph").value.trim(), date = $("cb-date").value;
-    if (!fn) { err.textContent = "Please enter your first name."; return; }
-    if (!phoneOk(ph)) { err.textContent = "Please enter a valid phone number."; return; }
-    if (date && date < todayISO()) { err.textContent = "Please pick today or a later date."; return; }
-    err.textContent = "";
-    var lead = shortLead("call me", fn, ph, {
-      "Move date": date || "Not given",
-      "Best time to call": $("cb-when").value,
-      "Notes": $("cb-notes").value.trim() || "N/A"
-    });
-    var btn = $("cb-send");
-    btn.disabled = true;
-    btn.textContent = "Sending…";
-    deliver(lead.payload).then(function () {
-      $("cb-ref").textContent = lead.ref;
-      $("cb-sent").hidden = false;
-      btn.hidden = true;
-      if (typeof fbq === "function") fbq("track", "Lead", { content_name: "Website estimate (call me)" }, { eventID: lead.ref });
-    }).catch(function () {
-      btn.disabled = false;
-      btn.textContent = "📞 Call me";
-      textFallback(err, ["Hi Hercules, please call me about a move (" + lead.ref + ").", "Name: " + fn,
-        "From: " + lead.payload["Moving from"], "To: " + lead.payload["Moving to"], "Date: " + (date || "not sure yet")], "Text Us Instead");
-    });
-  }
-
-  // "Text me": saves the lead early, while the customer is still building.
-  var assisted = false;
-  function sendAssist() {
-    var err = $("assist-err"), ph = $("assist-ph").value.trim();
-    if (!phoneOk(ph)) { err.textContent = "Please enter a valid mobile number."; return; }
-    err.textContent = "";
-    if (assisted) return;
-    var lead = shortLead("started", "", ph, { "Note": "Customer asked us to text them to help finish their estimate." });
-    var btn = $("assist-go");
-    btn.disabled = true;
-    btn.textContent = "Sending…";
-    deliver(lead.payload).then(function () {
-      assisted = true;
-      $("assist").innerHTML = "<p>✅ <b>Got it!</b> We'll text you shortly. Keep adding items if you like.</p>";
-      if (!$("ph").value) $("ph").value = ph;
-      hudSay("📲 Thanks! We'll text you to help finish up.");
-    }).catch(function () {
-      btn.disabled = false;
-      btn.textContent = "Text me";
-      textFallback(err, ["Hi Hercules, can you help me finish my moving estimate? (" + lead.ref + ")",
-        "From: " + lead.payload["Moving from"], "To: " + lead.payload["Moving to"]], "Text Us Instead");
-    });
-  }
-
   // Older Safari has no e.submitter, so remember which button was pressed.
   var lastChoice = "callback";
 
@@ -1298,11 +1292,12 @@
     $("mm-close").addEventListener("click", function () { document.body.classList.remove("map-open"); });
     $("send").addEventListener("click", function () { lastChoice = "deposit"; });
     $("send-plain").addEventListener("click", function () { lastChoice = "callback"; });
-    Array.prototype.forEach.call(document.querySelectorAll("[data-callme]"), function (b) { b.addEventListener("click", openCallback); });
-    $("cb-send").addEventListener("click", sendCallback);
-    $("cb-back").addEventListener("click", backFromCallback);
-    $("assist-go").addEventListener("click", sendAssist);
-    $("assist-ph").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); sendAssist(); } });
+    $("reach-go").addEventListener("click", sendReach);
+    $("reach-build").addEventListener("click", function () {
+      $("reach-sent").hidden = true;
+      document.querySelector("#step-where .two-btn").hidden = false;
+      $("dropoff").focus();
+    });
     // Arrival windows come from the shared booking config, like the homepage.
     ((HB.config && HB.config.arrivalWindows) || []).forEach(function (w) {
       var o = document.createElement("option");

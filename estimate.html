@@ -119,6 +119,7 @@ body:not(.has-scene) .scene-col{position:static}
 .stats span{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px 10px;font-size:.88rem;text-align:center;white-space:nowrap}
 .stats b{color:var(--navy)}
 @media(max-width:860px){.stats{margin-top:6px}.stats span{padding:5px 6px;font-size:.8rem}}
+body:not(.has-scene) .stats{display:none}
 
 /* ------------------------------------------------------------- the cards */
 .card{background:#fff;border-radius:16px;box-shadow:0 8px 28px rgba(10,25,50,.08);padding:18px;margin-bottom:14px;border-top:4px solid var(--orange)}
@@ -182,7 +183,6 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 .floor-edit{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
 .floor-edit select{padding:7px 8px;font-size:14px}
 .empty{color:var(--muted);font-size:.9rem;padding:4px 2px 8px}
-.callme{display:block;margin:12px auto 0;text-align:center}
 .rooms{margin-top:12px}
 .rooms p{margin:6px 0;font-size:.92rem}
 .presets .chip{margin:2px 2px}
@@ -196,12 +196,13 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 .room-panel .ri .step{display:flex;align-items:center;gap:4px}
 .room-panel .ri .step button{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:1rem;line-height:1}
 .room-panel .ri .step b{min-width:16px;text-align:center}
-.assist{margin-top:12px;border:1px dashed var(--line);border-radius:12px;padding:8px 10px;background:#F7FAFF}
-.assist p{margin:0 0 6px;font-size:.9rem}
-.assist-row{display:flex;gap:6px}
-.assist-row .in{padding:9px 10px}
-.assist-row .btn{white-space:nowrap}
 .btn.wide{width:100%;margin-top:8px;padding:12px}
+.addr{display:grid;grid-template-columns:1fr 210px;gap:10px}
+@media(max-width:560px){.addr{grid-template-columns:1fr}}
+.two-btn{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:4px}
+.two-btn .btn{width:100%}
+.two-btn .btn.ghost{padding:14px 12px;font-size:1rem}
+@media(max-width:420px){.two-btn{grid-template-columns:1fr}}
 .bldg{border:1px solid var(--line);border-radius:10px;margin:12px 0 0;padding:6px 10px 8px}
 .bldg legend{font-weight:700;font-size:.9rem;padding:0 4px;color:var(--navy)}
 .stops{margin-top:12px;border:1px dashed var(--line);border-radius:12px;padding:8px 10px;background:#FCFCFD}
@@ -327,57 +328,48 @@ body:not(.has-scene) .bar{display:none}
   <div class="steps-col">
     <!-- Step 1: where -->
     <section class="card est-step" id="step-where">
-      <h2>📍 Where are you moving?</h2>
-      <p class="hint">City, ZIP or street address. Pick from the list for the best match.</p>
-      <label class="f" for="pickup">🏠 Pickup address</label>
-      <input class="in" id="pickup" placeholder="e.g. 465 Brickell Ave, Miami">
-      <label class="f" for="pickup-floor">Pickup floor</label>
-      <select class="in" id="pickup-floor">
-        <option value="ground">🏠 House or ground floor</option>
-        <option value="elevator">🛗 Building with elevator</option>
-        <option value="stairs-2">🪜 Stairs: 2nd floor</option>
-        <option value="stairs-3">🪜 Stairs: 3rd floor</option>
-        <option value="stairs-4">🪜 Stairs: 4th floor</option>
-        <option value="stairs-5">🪜 Stairs: 5th floor+</option>
-      </select>
-      <label class="f" for="dropoff">🏁 Delivery address</label>
-      <input class="in" id="dropoff" placeholder="e.g. Fort Lauderdale or 33301">
-      <label class="f" for="dropoff-floor">Delivery floor</label>
-      <select class="in" id="dropoff-floor">
-        <option value="ground">🏠 House or ground floor</option>
-        <option value="elevator">🛗 Building with elevator</option>
-        <option value="stairs-2">🪜 Stairs: 2nd floor</option>
-        <option value="stairs-3">🪜 Stairs: 3rd floor</option>
-        <option value="stairs-4">🪜 Stairs: 4th floor</option>
-        <option value="stairs-5">🪜 Stairs: 5th floor+</option>
-      </select>
+      <h2>👋 Let's get your move priced</h2>
+      <p class="hint">Tell us who you are and where you're moving. Build your estimate now, or we'll reach out to you.</p>
+      <div class="row2">
+        <div><label class="f" for="st-name">👤 Your name</label><input class="in" id="st-name" autocomplete="name"></div>
+        <div><label class="f" for="st-ph">📱 Mobile phone</label><input class="in" id="st-ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555"></div>
+      </div>
+      <label class="f" for="st-em">✉️ Email <small>(optional)</small></label>
+      <input class="in" id="st-em" type="email" autocomplete="email">
+      <div class="addr">
+        <div><label class="f" for="pickup">🏠 Pickup address</label><input class="in" id="pickup" placeholder="e.g. 465 Brickell Ave, Miami"></div>
+        <div><label class="f" for="pickup-floor">Floor</label><select class="in" id="pickup-floor">
+          <option value="ground">🏠 House or ground floor</option>
+          <option value="elevator">🛗 Building with elevator</option>
+          <option value="stairs-2">🪜 Stairs: 2nd floor</option>
+          <option value="stairs-3">🪜 Stairs: 3rd floor</option>
+          <option value="stairs-4">🪜 Stairs: 4th floor</option>
+          <option value="stairs-5">🪜 Stairs: 5th floor+</option>
+        </select></div>
+      </div>
+      <div class="addr">
+        <div><label class="f" for="dropoff">🏁 Drop-off address <small>(optional)</small></label><input class="in" id="dropoff" placeholder="e.g. Fort Lauderdale or 33301"></div>
+        <div><label class="f" for="dropoff-floor">Floor</label><select class="in" id="dropoff-floor">
+          <option value="ground">🏠 House or ground floor</option>
+          <option value="elevator">🛗 Building with elevator</option>
+          <option value="stairs-2">🪜 Stairs: 2nd floor</option>
+          <option value="stairs-3">🪜 Stairs: 3rd floor</option>
+          <option value="stairs-4">🪜 Stairs: 4th floor</option>
+          <option value="stairs-5">🪜 Stairs: 5th floor+</option>
+        </select></div>
+      </div>
+      <p class="fine">By continuing, you agree Hercules Local Movers may call or text you about your move. Msg &amp; data rates may apply. Reply STOP to opt out.</p>
+      <input class="hp" id="st-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="err" id="where-err"></div>
-      <button type="button" class="btn go" id="where-go">🚚 Call my truck ➜</button>
-      <button type="button" class="linkish callme" data-callme>📞 Rather talk it through? Skip the list and we'll call you</button>
-    </section>
-
-    <!-- Skip the item list: just ask us to call -->
-    <section class="card est-step" id="step-callback" hidden>
-      <h2>📞 We'll call you</h2>
-      <p class="hint">Tell us how to reach you. We'll go through your items on the phone and send your price, usually within the hour.</p>
-      <div class="row2">
-        <div><label class="f" for="cb-fn">👤 First name</label><input class="in" id="cb-fn" autocomplete="given-name"></div>
-        <div><label class="f" for="cb-ph">📱 Mobile phone</label><input class="in" id="cb-ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555"></div>
+      <div class="two-btn">
+        <button type="button" class="btn ghost" id="reach-go">📞 Reach out to me</button>
+        <button type="button" class="btn go" id="where-go">🧮 Build my estimate ➜</button>
       </div>
-      <div class="row2">
-        <div><label class="f" for="cb-date">📅 Move date <small>(rough is fine)</small></label><input class="in" id="cb-date" type="date"></div>
-        <div><label class="f" for="cb-when">⏰ Best time to call</label><select class="in" id="cb-when"><option>As soon as possible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></div>
-      </div>
-      <label class="f" for="cb-notes">📝 Anything we should know? <small>(optional)</small></label>
-      <input class="in" id="cb-notes" placeholder="Rough size of the move, stairs, special items…">
-      <p class="fine">By sending, you agree Hercules Local Movers may call or text you about your move. Msg &amp; data rates may apply. Reply STOP to opt out.</p>
-      <div class="err" id="cb-err"></div>
-      <button type="button" class="btn go" id="cb-send">📞 Call me</button>
-      <button type="button" class="linkish" id="cb-back" style="margin-top:10px">⬅ Back to building my estimate</button>
-      <div class="sent" id="cb-sent" hidden>
+      <div class="sent" id="reach-sent" hidden>
         <div class="big">📞</div>
-        <h3>Thanks! We'll call you shortly.</h3>
-        <p>Reference <b id="cb-ref"></b>. Need us now? <a href="tel:+17543542008">(754) 354-2008</a></p>
+        <h3>Thanks! We'll reach out shortly.</h3>
+        <p>Reference <b id="reach-ref"></b>. Need us now? <a href="tel:+17543542008">(754) 354-2008</a></p>
+        <button type="button" class="linkish" id="reach-build">🧮 Want a price now? Build your estimate</button>
       </div>
     </section>
 
@@ -415,12 +407,6 @@ body:not(.has-scene) .bar{display:none}
         <div class="room-chips" id="room-chips"></div>
         <div class="room-panel" id="room-panel" hidden></div>
       </div>
-      <div class="assist" id="assist">
-        <p>📲 <b>Busy or stuck?</b> Leave your number and we'll text you to finish it together.</p>
-        <div class="assist-row"><input class="in" id="assist-ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="Mobile number" aria-label="Mobile number"><button type="button" class="btn ghost" id="assist-go">Text me</button></div>
-        <div class="err" id="assist-err"></div>
-      </div>
-      <button type="button" class="linkish callme" data-callme>📞 Skip the list, just call me</button>
 
     </section>
 
