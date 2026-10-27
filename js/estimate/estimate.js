@@ -284,13 +284,38 @@
     if (!$("em").value && c.email) $("em").value = c.email;
   }
 
+  // Stops typed on the first step, in order: [{ text, kind }]
+  function addStopRow(text, kind) {
+    var row = document.createElement("div");
+    row.className = "addr-stop";
+    row.dataset.kind = kind || "stop";
+    row.innerHTML = '<div><label class="f">📍 ' + stopLabel({ kind: row.dataset.kind }) + '</label><input class="in" placeholder="Address, city or ZIP" aria-label="Stop on the way"></div>' +
+      '<button type="button" class="mv-btn" aria-label="Remove this stop">✕</button>';
+    var input = row.querySelector("input");
+    input.value = text || "";
+    row.querySelector("button").addEventListener("click", function () { row.remove(); });
+    $("st-stops").appendChild(row);
+    attachSuggest(input);
+    if (!text) input.focus();
+  }
+
+  function typedStops() {
+    return Array.prototype.map.call(document.querySelectorAll("#st-stops .addr-stop"), function (row) {
+      return { text: row.querySelector("input").value.trim(), kind: row.dataset.kind };
+    }).filter(function (s) { return s.text; });
+  }
+
   // "Reach out to me": send what we have and stop here.
   function sendReach() {
     var err = $("where-err"), c = contactOk(err);
     if (!c || $("st-hp").value) return;
     if (!$("pickup").value.trim()) { err.textContent = "Please enter your pickup address."; return; }
     err.textContent = "";
-    var lead = shortLead("reach out", c.name, c.phone, { "Email": c.email || "N/A", "Note": "Asked us to reach out instead of building an estimate." });
+    var lead = shortLead("reach out", c.name, c.phone, {
+      "Email": c.email || "N/A",
+      "Stops on the way": typedStops().map(function (s) { return s.text; }).join("\n") || "None",
+      "Note": "Asked us to reach out instead of building an estimate."
+    });
     if (c.email) lead.payload._replyto = c.email;
     var btn = $("reach-go");
     btn.disabled = true;
@@ -327,6 +352,12 @@
     var fromText = $("pickup").value.trim(), toText = $("dropoff").value.trim();
     if (!fromText) { err.textContent = "Please enter your pickup address."; return; }
     if (!toText) { err.textContent = "Add a drop-off address to build your estimate, or tap Reach out to me."; return; }
+    var stops = [], typed = typedStops();
+    for (var i = 0; i < typed.length; i++) {
+      var addr = HB.places && HB.places.locate(typed[i].text);
+      if (!addr) { err.textContent = "We couldn't place stop " + (i + 1) + ". Try adding the city or ZIP."; return; }
+      stops.push({ text: typed[i].text, addr: addr, kind: typed[i].kind });
+    }
     var a = HB.places && HB.places.locate(fromText);
     var b = HB.places && HB.places.locate(toText);
     if (!a || !b) {
@@ -335,6 +366,7 @@
     }
     err.textContent = "";
     state.from = a; state.to = b; state.fromText = fromText; state.toText = toText;
+    state.stops = stops;
     state.fromFloor = $("pickup-floor").value; state.toFloor = $("dropoff-floor").value;
     updateRoute();
     renderFloors();
@@ -354,11 +386,14 @@
   // top is the friendly part: a straight road from pickup to delivery with
   // the truck and two movers, and a pin for each extra stop.
 
-  // Pickup, extra pickups, extra drop-offs, delivery.
+  // Pickup, extra pickups, stops on the way, extra drop-offs, delivery.
   function route() {
-    var pick = state.stops.filter(function (s) { return s.kind === "pickup"; });
-    var drop = state.stops.filter(function (s) { return s.kind === "dropoff"; });
-    return pick.concat(drop);
+    function of(kind) { return state.stops.filter(function (s) { return (s.kind || "stop") === kind; }); }
+    return of("pickup").concat(of("stop")).concat(of("dropoff"));
+  }
+
+  function stopLabel(s) {
+    return s.kind === "pickup" ? "Extra pickup" : s.kind === "dropoff" ? "Extra drop-off" : "Stop on the way";
   }
 
   // Miles of each leg: pickup, extra stops, delivery.
@@ -433,7 +468,7 @@
     list.innerHTML = "";
     state.stops.forEach(function (s, i) {
       var li = document.createElement("li");
-      li.innerHTML = '<span class="e">📍</span><span class="nm">' + (s.kind === "pickup" ? "Extra pickup: " : "Extra drop-off: ") + esc(HB.places ? HB.places.tidy(s.text) : s.text) +
+      li.innerHTML = '<span class="e">📍</span><span class="nm">' + stopLabel(s) + ": " + esc(HB.places ? HB.places.tidy(s.text) : s.text) +
         ' <small>' + money(PRICING.stopPrice) + '</small></span><button type="button" class="mv-btn">Remove ✕</button>';
       li.querySelector("button").addEventListener("click", function () { removeStop(i); });
       list.appendChild(li);
@@ -451,7 +486,7 @@
     var kind = $("stop-kind").value;
     state.stops.push({ text: text, addr: addr, kind: kind });
     $("stop-input").value = "";
-    hudSay("📍 " + (kind === "pickup" ? "Extra pickup" : "Extra drop-off") + " at " + shortPlace(text) + " added (+" + money(PRICING.stopPrice) + ")");
+    hudSay("📍 " + stopLabel({ kind: kind }) + " at " + shortPlace(text) + " added (+" + money(PRICING.stopPrice) + ")");
     updateRoute();
   }
 
@@ -499,7 +534,7 @@
         if (i >= marks.length) { resolve(); return; }
         var to = marks[i++], st = route()[i - 1];
         setTruck(to);
-        hudSay(st ? (st.kind === "pickup" ? "⬆ Picking up in " : "⬇ Dropping off in ") + shortPlace(st.text) : "🛣️ On the way to " + $("lane-to").textContent);
+        hudSay(st ? (st.kind === "pickup" ? "⬆ Picking up in " : st.kind === "dropoff" ? "⬇ Dropping off in " : "📍 Stopping in ") + shortPlace(st.text) : "🛣️ On the way to " + $("lane-to").textContent);
         setTimeout(next, st ? 1300 : 1100);
       }
       next();
@@ -683,7 +718,7 @@
     svc.appendChild(stopRow);
     state.stops.forEach(function (s, i) {
       var li = document.createElement("li");
-      li.innerHTML = '<span class="e">📍</span><span class="nm">' + (s.kind === "pickup" ? "Extra pickup: " : "Extra drop-off: ") + esc(shortPlace(s.text)) + " <small>" + money(PRICING.stopPrice) + '</small></span><button type="button" class="mv-btn">Remove ✕</button>';
+      li.innerHTML = '<span class="e">📍</span><span class="nm">' + stopLabel(s) + ": " + esc(shortPlace(s.text)) + " <small>" + money(PRICING.stopPrice) + '</small></span><button type="button" class="mv-btn">Remove ✕</button>';
       li.querySelector("button").addEventListener("click", function () { removeStop(i); });
       incX.appendChild(li);
     });
@@ -1131,7 +1166,7 @@
       "Base price": money(c.base),
       "Extra movers": c.extraMovers ? money(c.extraMovers) : "None",
       "Packing supplies": c.supplyLines.length ? c.supplyLines.join("\n") : "None",
-      "Extra stops": state.stops.length ? route().map(function (s) { return (s.kind === "pickup" ? "Extra pickup: " : "Extra drop-off: ") + (HB.places ? HB.places.tidy(s.text) : s.text); }).join("\n") : "None",
+      "Extra stops": state.stops.length ? route().map(function (s) { return stopLabel(s) + ": " + (HB.places ? HB.places.tidy(s.text) : s.text); }).join("\n") : "None",
       "Extra services": c.serviceLines.length ? c.serviceLines.join("\n") : "None",
       "Packing": c.packLines.length ? c.packLines.join("\n") : "None",
       "Customer moving themselves": Object.keys(state.excluded).map(function (id) { return state.excluded[id] + " × " + byId[id].name; }).join("\n") || "None",
@@ -1261,7 +1296,10 @@
     ["pickup", "dropoff"].forEach(function (id) {
       $(id).addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); startWhere(); } });
     });
+    $("st-add-stop").addEventListener("click", function () { addStopRow("", "stop"); });
     $("edit-where").addEventListener("click", function () {
+      $("st-stops").innerHTML = "";
+      state.stops.forEach(function (s) { addStopRow(s.text, s.kind); });
       document.body.classList.remove("has-scene");
       showStep("step-where");
       $("board").hidden = true;

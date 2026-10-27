@@ -199,6 +199,9 @@ label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
 .btn.wide{width:100%;margin-top:8px;padding:12px}
 .addr{display:grid;grid-template-columns:1fr 210px;gap:10px}
 @media(max-width:560px){.addr{grid-template-columns:1fr}}
+.add-stop{display:inline-block;margin:10px 0 2px}
+.addr-stop{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-top:8px}
+.addr-stop .mv-btn{height:46px}
 .two-btn{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:4px}
 .two-btn .btn{width:100%}
 .two-btn .btn.ghost{padding:14px 12px;font-size:1rem}
@@ -347,6 +350,8 @@ body:not(.has-scene) .bar{display:none}
           <option value="stairs-5">🪜 Stairs: 5th floor+</option>
         </select></div>
       </div>
+      <div id="st-stops"></div>
+      <button type="button" class="linkish add-stop" id="st-add-stop">➕ Add a stop on the way</button>
       <div class="addr">
         <div><label class="f" for="dropoff">🏁 Drop-off address <small>(optional)</small></label><input class="in" id="dropoff" placeholder="e.g. Fort Lauderdale or 33301"></div>
         <div><label class="f" for="dropoff-floor">Floor</label><select class="in" id="dropoff-floor">
@@ -382,7 +387,7 @@ body:not(.has-scene) .bar{display:none}
         <ul class="lines inc" id="stop-list"></ul>
         <div class="stop-add">
           <input class="in" id="stop-input" placeholder="Stop address, city or ZIP" aria-label="Extra stop address">
-          <select class="in" id="stop-kind" aria-label="Stop type"><option value="pickup">Extra pickup</option><option value="dropoff">Extra drop-off</option></select>
+          <select class="in" id="stop-kind" aria-label="Stop type"><option value="stop">Stop on the way</option><option value="pickup">Extra pickup</option><option value="dropoff">Extra drop-off</option></select>
           <button type="button" class="btn ghost" id="stop-add">➕ Add stop</button>
         </div>
         <div class="err" id="stop-err"></div>
