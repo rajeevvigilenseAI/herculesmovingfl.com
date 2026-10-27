@@ -158,7 +158,17 @@
       showStep(stepSchedule);
     });
 
+    // Two ways to finish: book now and pay the deposit on Square, or just send
+    // the estimate and ask for a call. Both send the same lead email; the
+    // choice is written into it so the office knows which one to expect.
     onClick("hq-confirm", function (btn) {
+      submitBooking(btn, "deposit");
+    });
+    onClick("hq-callback", function (btn) {
+      submitBooking(btn, "callback");
+    });
+
+    function submitBooking(btn, choice) {
       clearError("hq-error-contact");
       if (val("hqWebsite")) return; // honeypot: silently drop
 
@@ -179,7 +189,10 @@
         fail("hq-error-contact", "Please enter a valid US mobile phone number.");
         return;
       }
-      setBusy(btn, true, "Reserving...");
+      var idle = btn.innerHTML;
+      var other = document.getElementById(choice === "deposit" ? "hq-callback" : "hq-confirm");
+      if (other) other.disabled = true;
+      setBusy(btn, true, choice === "deposit" ? "Saving your booking..." : "Sending...");
 
       api
         .book({
@@ -201,22 +214,57 @@
           specialtyItems: [],
           notes: "",
           acceptedTerms: true,
+          bookingChoice: choice,
           website: val("hqWebsite")
         })
         .then(function (result) {
-          renderConfirmation(result);
-          showStep(stepDone);
           if (window.HerculesBooking.trackConversion) {
             window.HerculesBooking.trackConversion(result);
           }
+          if (typeof gtag === "function") {
+            gtag("event", "booking_choice", { choice: choice });
+          }
+          if (choice === "deposit" && cfg.depositUrl) {
+            goToDeposit(result);
+            return;
+          }
+          renderConfirmation(result, choice);
+          showStep(stepDone);
         })
         .catch(function (err) {
           fail("hq-error-contact", err.message, err.smsHref);
         })
         .then(function () {
-          setBusy(btn, false, '<i class="fas fa-check"></i> Confirm Appointment');
+          setBusy(btn, false, idle);
+          if (other) other.disabled = false;
         });
-    });
+    }
+
+    /**
+     * The booking is already in the office's inbox at this point. Keep a copy
+     * for booking-confirmed.html (Square sends the customer there after
+     * payment), show where they are going, then hand off to Square checkout.
+     */
+    function goToDeposit(result) {
+      try {
+        localStorage.setItem("hercules_last_booking", JSON.stringify({
+          reference: result.reference,
+          moveDate: result.moveDate,
+          arrivalWindow: result.arrivalWindow,
+          estimatedHours: result.estimatedHours,
+          estimatedPrice: result.estimatedPrice,
+          route: (document.getElementById("hq-result-route") || {}).textContent || "",
+          savedAt: Date.now()
+        }));
+      } catch (e) {
+        /* Private browsing: the confirmation page falls back to a generic message. */
+      }
+      renderConfirmation(result, "deposit");
+      showStep(stepDone);
+      setTimeout(function () {
+        window.location.href = cfg.depositUrl;
+      }, 1800);
+    }
 
     function renderEstimate(quote) {
       var route = locLabel(quote.origin) + " \u2192 " + locLabel(quote.destination);
@@ -235,7 +283,31 @@
       if (capNote) capNote.hidden = !(Number(quote.estimatedHours) >= 8);
     }
 
-    function renderConfirmation(result) {
+    function renderConfirmation(result, choice) {
+      setText(
+        "hq-done-title",
+        choice === "deposit"
+          ? "Booking saved! Opening secure checkout..."
+          : choice === "callback"
+            ? "Thanks! We'll call you shortly"
+            : "Your Move Is Reserved!"
+      );
+      var depositNote = document.getElementById("hq-confirm-deposit");
+      if (choice === "deposit" && cfg.depositUrl) {
+        if (!depositNote) {
+          depositNote = document.createElement("p");
+          depositNote.id = "hq-confirm-deposit";
+          depositNote.className = "hq-confirm-note hq-deposit-note";
+          var anchor = document.getElementById("hq-confirm-ref");
+          if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(depositNote, anchor.nextSibling);
+        }
+        depositNote.innerHTML =
+          "Taking you to Square to pay your $" + (cfg.depositAmount || 50) + " deposit. " +
+          '<a href="' + escapeHtml(cfg.depositUrl) + '">Continue to secure checkout</a> if it doesn’t open.';
+        depositNote.hidden = false;
+      } else if (depositNote) {
+        depositNote.hidden = true;
+      }
       setText("hq-confirm-ref", "Reference: " + result.reference);
       setText("hq-confirm-date", niceDate(result.moveDate));
       setText("hq-confirm-window", result.arrivalWindow);
@@ -249,7 +321,7 @@
       var emailNote = document.getElementById("hq-confirm-email");
       var callbackNote = document.getElementById("hq-confirm-callback");
       if (emailNote) emailNote.hidden = !!result.viaFallback;
-      if (callbackNote) callbackNote.hidden = !result.viaFallback;
+      if (callbackNote) callbackNote.hidden = !result.viaFallback && choice !== "callback";
     }
 
     function fillHomeSizes() {

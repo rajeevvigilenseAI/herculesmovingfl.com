@@ -393,7 +393,12 @@
                             </div>
                             <input id="hqWebsite" class="reverse" tabindex="-1" autocomplete="off">
                             <p class="hq-error" id="hq-error-contact"></p>
-                            <button type="button" class="hq-submit" id="hq-confirm"><i class="fas fa-check"></i> Confirm Appointment</button>
+                            <div class="hq-choices">
+                                <button type="button" class="hq-submit hq-submit-main" id="hq-confirm" data-choice="deposit"><span aria-hidden="true">🔒</span> Book now with $50 deposit <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+                                <p class="hq-choice-note"><i class="fas fa-lock" aria-hidden="true"></i> Secure checkout with Square to lock in your date and arrival window.</p>
+                                <div class="hq-or"><span>or</span></div>
+                                <button type="button" class="hq-callback" id="hq-callback" data-choice="callback"><span aria-hidden="true">📞</span> Not ready to book? Send my estimate &amp; call me</button>
+                            </div>
                             <p class="hq-legal">By confirming, you agree to our <button type="button" class="terms-link" data-open-terms>Terms and Conditions</button> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. You also consent to calls, texts, and emails from Hercules Movers about your estimate and move. Message and data rates may apply. Reply STOP to opt out of texts.</p>
                             <button type="button" class="hq-link" id="hq-back-schedule">Back</button>
                         </div>
@@ -401,7 +406,7 @@
                         <!-- Step 4: confirmation -->
                         <div id="hq-step-done" class="hq-step">
                             <div class="hq-confirm">
-                                <h3><i class="fas fa-check-circle"></i> Your Move Is Reserved!</h3>
+                                <h3><i class="fas fa-check-circle"></i> <span id="hq-done-title">Your Move Is Reserved!</span></h3>
                                 <p class="hq-confirm-ref" id="hq-confirm-ref"></p>
                                 <div class="hq-result-stats">
                                     <div><span>Move Date</span><strong id="hq-confirm-date"></strong></div>

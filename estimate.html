@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moving Estimate Builder | Hercules Local Movers</title>
+<meta name="description" content="Build your South Florida moving estimate item by item: add your furniture and boxes, watch your truck load up, and see the time, crew and price.">
+<!-- Kept out of search until the add-on prices are confirmed by the office. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+<link rel="apple-touch-icon" href="images/favicon.png">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700|Oswald:500,600,700&display=swap" rel="stylesheet">
+
+<style>
+/* Shell matches /quote. */
+:root{--orange:#F07F22;--orange-d:#D96A10;--navy:#13294B;--navy-2:#1C3A66;--ink:#1B2433;--muted:#5B6678;--line:#E3E8EF;--bg:#F6F8FB;--green:#1F9D55}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Oswald,'Roboto Condensed',sans-serif;line-height:1.15;margin:0 0 .4rem;color:var(--navy)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);font-family:Oswald,sans-serif;font-weight:700;font-size:1.2rem;white-space:nowrap}
+.brand img{height:40px}
+.call{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;text-decoration:none;font-weight:700;padding:9px 15px;border-radius:999px;white-space:nowrap}
+@media(max-width:420px){.brand span{display:none}.call{padding:8px 12px}}
+
+.hero{background:linear-gradient(160deg,var(--navy),var(--navy-2) 60%,#24497F);color:#fff;text-align:center;padding:22px 0 18px}
+.hero h1{color:#fff;font-size:clamp(1.6rem,4.5vw,2.5rem);text-transform:uppercase;margin:0}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero p{color:#DCE6F5;margin:6px auto 0;max-width:38rem}
+
+/* Layout: scene left (sticky), steps right. Stacked on phones. */
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start;padding:18px 16px 120px}
+.scene-col{position:sticky;top:72px}
+@media(max-width:860px){
+  .grid{grid-template-columns:1fr;gap:12px;padding-top:12px}
+  .scene-col{position:static}
+  body.has-scene .scene-col{position:sticky;top:60px;z-index:20}
+}
+
+/* ------------------------------------------------------------- the scene */
+.scene{position:relative;height:320px;border-radius:18px;overflow:hidden;background:linear-gradient(#7CC8F8,#BFE6FF 55%,#E7F6FF);box-shadow:0 14px 40px rgba(10,25,50,.18);user-select:none}
+@media(max-width:860px){.scene{height:230px;border-radius:14px}}
+.scene.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translateY(3px)}40%{transform:translateY(-2px)}60%{transform:translateY(2px)}80%{transform:translateY(-1px)}}
+.sun{position:absolute;right:18px;top:12px;font-size:38px;animation:spin 30s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cloud{position:absolute;font-size:34px;opacity:.95;animation:drift 38s linear infinite}
+.cloud.c1{top:16px;left:-60px}
+.cloud.c2{top:52px;left:-60px;font-size:26px;animation-duration:55s;animation-delay:-20s}
+@keyframes drift{to{transform:translateX(900px)}}
+.ground{position:absolute;left:0;right:0;bottom:0;height:56%;background:linear-gradient(#A6E383,#6CC24A);border-top:4px solid #8FD46A}
+.palm{position:absolute;font-size:26px;bottom:6px}
+.road{position:absolute;inset:0;width:100%;height:100%}
+#road-bg{fill:none;stroke:#5B6678;stroke-width:16;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+#road-path{fill:none;stroke:#fff;stroke-width:2.5;stroke-dasharray:9 10;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+
+.home{position:absolute;transform:translate(-80%,-92%);text-align:center;z-index:3;pointer-events:none}
+#home-drop{transform:translate(-20%,-92%)}
+.home .bld{display:block;font-size:46px;line-height:1;filter:drop-shadow(0 4px 3px rgba(0,0,0,.18))}
+@media(max-width:860px){.home .bld{font-size:36px}}
+.home .tag{display:block;margin-top:2px;background:#fff;border-radius:999px;padding:2px 8px;font-size:.78rem;font-weight:700;color:var(--navy);box-shadow:0 2px 6px rgba(0,0,0,.12);white-space:nowrap}
+.home .tag i{font-style:normal;color:var(--orange-d);margin-left:4px}
+.home.climb .bld{animation:climb .5s ease-in-out infinite alternate}
+@keyframes climb{to{transform:translateY(-6px) scale(1.06)}}
+.pile{position:absolute;left:50%;top:-18px;transform:translateX(-50%);font-size:15px;white-space:nowrap;letter-spacing:-3px}
+
+.truck{position:absolute;z-index:5;transform:translate(-50%,-78%);pointer-events:none}
+.truck .body{display:inline-block;font-size:54px;line-height:1;filter:drop-shadow(0 6px 4px rgba(0,0,0,.25))}
+@media(max-width:860px){.truck .body{font-size:42px}}
+.cargo{position:absolute;left:8px;right:8px;bottom:-8px;height:6px;border-radius:9px;background:rgba(255,255,255,.75);overflow:hidden}
+.cargo i{display:block;height:100%;width:0;background:var(--orange);transition:width .5s}
+.cargo i.over{background:#E0453A}
+.movers{position:absolute;left:-46px;bottom:0;font-size:24px;white-space:nowrap;opacity:0;transform:translateY(10px) scale(.6);transition:opacity .3s,transform .3s}
+.movers.in{opacity:1;transform:none;animation:hop .9s ease-in-out infinite alternate}
+@keyframes hop{to{transform:translateY(-5px)}}
+@media(max-width:860px){.movers{font-size:19px;left:-36px}}
+.wrench{position:absolute;z-index:6;font-size:30px;transform:translate(-50%,-50%);animation:wrench .5s ease-in-out infinite alternate}
+@keyframes wrench{from{transform:translate(-50%,-50%) rotate(-35deg)}to{transform:translate(-50%,-50%) rotate(35deg)}}
+.hud{position:absolute;left:10px;right:10px;top:10px;z-index:8;background:rgba(19,41,75,.88);color:#fff;border-radius:12px;padding:7px 11px;font-size:.92rem;font-weight:700;max-width:calc(100% - 70px)}
+.hud.pop{animation:pop .3s}
+@keyframes pop{from{transform:scale(.94);opacity:.4}}
+.clock{position:absolute;right:10px;bottom:10px;z-index:8;background:#fff;color:var(--navy);border-radius:10px;padding:5px 10px;font-weight:700;font-size:.95rem;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.trip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:4;font-size:.8rem;font-weight:700;color:#fff;background:rgba(0,0,0,.25);border-radius:999px;padding:2px 9px}
+.dust{position:absolute;z-index:4;font-size:14px;color:rgba(160,130,90,.85);pointer-events:none}
+.fly{position:fixed;left:0;top:0;z-index:100;font-size:30px;pointer-events:none;margin:-15px 0 0 -15px}
+
+.stats{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.stats span{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px 10px;font-size:.88rem;text-align:center;white-space:nowrap}
+.stats b{color:var(--navy)}
+@media(max-width:860px){.stats{margin-top:6px}.stats span{padding:5px 6px;font-size:.8rem}}
+
+/* ------------------------------------------------------------- the cards */
+.card{background:#fff;border-radius:16px;box-shadow:0 8px 28px rgba(10,25,50,.08);padding:18px;margin-bottom:14px;border-top:4px solid var(--orange)}
+.card h2{font-size:1.35rem}
+.card .hint{color:var(--muted);font-size:.92rem;margin:0 0 10px}
+label.f{display:block;font-weight:700;font-size:.9rem;margin:10px 0 5px}
+.in,select.in{width:100%;font:inherit;font-size:16px;padding:12px 13px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.in:focus{border-color:var(--orange);outline:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.row2{grid-template-columns:1fr}}
+.err{color:#C0392B;font-size:.9rem;min-height:1.1em;margin-top:6px}
+.btn{border:0;border-radius:12px;padding:14px 16px;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer}
+.btn.go{background:var(--orange);color:#fff;width:100%}
+.btn.go:hover{background:var(--orange-d)}
+.btn.go[disabled]{opacity:.55;cursor:not-allowed}
+.btn.ghost{background:var(--bg);border:1px solid var(--line);color:var(--ink);padding:8px 12px;font-size:.9rem}
+.linkish{background:none;border:0;color:var(--navy);text-decoration:underline;font:inherit;font-size:.88rem;cursor:pointer;padding:0}
+
+.ac{position:relative}
+.ac-list{position:absolute;top:100%;left:0;right:0;z-index:30;margin:4px 0 0;padding:4px 0;list-style:none;max-height:260px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(10,25,50,.16)}
+.ac-list li{padding:9px 13px;cursor:pointer;font-size:16px;display:flex;align-items:center;gap:8px}
+.ac-list li .e{font-size:20px}
+.ac-list li small{margin-left:auto;color:var(--muted);font-size:.78rem}
+.ac-list li.on,.ac-list li:hover{background:#FFF4E8}
+.ac-list li.none{color:var(--muted);cursor:default;font-size:.9rem}
+
+.adder{display:flex;gap:8px;align-items:stretch}
+.adder .ac{flex:1}
+.qty{display:flex;align-items:center;border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.qty button{border:0;background:var(--bg);width:34px;height:100%;font-size:1.2rem;cursor:pointer}
+.qty input{width:38px;border:0;text-align:center;font:inherit;font-size:16px;font-weight:700;-moz-appearance:textfield}
+.qty input::-webkit-outer-spin-button,.qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.adder .add{width:auto;padding:0 16px;white-space:nowrap}
+@media(max-width:420px){.adder{flex-wrap:wrap}.adder .ac{flex-basis:100%}.adder .qty{flex:1;justify-content:space-between}.adder .qty input{flex:1}.adder .add{flex:1}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 10px;font:inherit;font-size:.88rem;cursor:pointer}
+.chip:hover{border-color:var(--orange);background:#FFF4E8}
+
+.sect{margin-top:16px}
+.sect h3{font-size:1.05rem;display:flex;align-items:center;gap:8px}
+.sect h3 small{font-family:'Roboto Condensed',sans-serif;font-weight:400;color:var(--muted);font-size:.85rem;margin-left:auto}
+.lines{list-style:none;margin:0;padding:0}
+.lines li{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:#fff}
+.lines li .e{font-size:20px;width:26px;text-align:center;flex:none}
+.lines li .nm{flex:1;min-width:0}
+.lines li small{color:var(--muted);font-size:.8rem}
+.lines li small.hv{color:#B4441A;font-weight:700}
+.lines.inc li{background:#F2FBF5;border-color:#CDEFD9}
+.lines.inc li.base .nm::after{content:"✓";color:var(--green);font-weight:700;margin-left:6px}
+.lines .mine{border-style:dashed}
+.lines li .step{display:flex;align-items:center;gap:6px;flex:none}
+.lines li .step button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:1.05rem;cursor:pointer;line-height:1}
+.lines li .step b{min-width:18px;text-align:center}
+.lines.ext li{background:#FCFCFD}
+.lines.ext li.auto{background:#FFF8EF;border-color:#F6DEC2}
+.lines.ext li.auto:not(.on){opacity:.7}
+.lines.ext li.on{border-color:var(--orange);background:#FFF4E8}
+.sug{border:0;background:var(--navy);color:#fff;border-radius:999px;font:inherit;font-size:.75rem;padding:2px 8px;cursor:pointer;margin-left:4px}
+.lines.ask li label{display:flex;align-items:center;gap:8px;width:100%;cursor:pointer}
+.lines.ask li label small{margin-left:auto}
+.floor-edit{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.floor-edit select{padding:7px 8px;font-size:14px}
+.empty{color:var(--muted);font-size:.9rem;padding:4px 2px 8px}
+
+/* Sticky running total */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:45;background:#fff;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(10,25,50,.1)}
+.bar .wrap{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.bar .nums{display:flex;gap:14px;font-size:.95rem;white-space:nowrap}
+.bar .nums b{font-family:Oswald,sans-serif;font-size:1.25rem;color:var(--navy)}
+.bar .nums .p b{color:var(--orange-d)}
+.bar .btn{margin-left:auto;width:auto;min-width:200px}
+@media(max-width:560px){.bar .wrap{flex-wrap:wrap;gap:6px;padding:8px 12px}.bar .nums{width:100%;justify-content:space-between}.bar .btn{width:100%;min-width:0;padding:12px}}
+
+/* Result */
+.timeline,.price{list-style:none;margin:0;padding:0}
+.timeline li,.price li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.timeline li.sum{border-bottom:0;font-weight:700}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--navy);color:#fff}
+.total b{font-family:Oswald,sans-serif;font-size:2rem;color:var(--orange)}
+.fine{font-size:.8rem;color:var(--muted);margin-top:10px}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:.88rem;color:var(--muted);margin-top:10px}
+.sent{text-align:center;padding:10px 0}
+.sent .big{font-size:52px}
+.foot{background:#0D1D36;color:#9FB1CB;font-size:.85rem;padding:22px 0 110px;text-align:center}
+.foot a{color:#C9D6EA}
+.hp{position:absolute;left:-9999px}
+
+@media (prefers-reduced-motion: reduce){
+  .sun,.cloud,.movers.in,.wrench,.home.climb .bld{animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="images/Hercules%20Moving%20(1).png" alt="Hercules Local Movers logo"><span>Hercules Local Movers</span></a>
+    <a class="call" href="tel:+17543542008"><i class="fas fa-phone"></i> (754) 354-2008</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Build your <em>moving estimate</em></h1>
+    <p>Add what you're moving, watch it load up, and see your time, crew and price. No phone call needed.</p>
+  </div>
+</section>
+
+<main class="wrap grid">
+  <!-- The animated scene -->
+  <div class="scene-col">
+    <div class="scene" id="scene" aria-hidden="true">
+      <span class="sun">☀️</span>
+      <span class="cloud c1">☁️</span><span class="cloud c2">☁️</span>
+      <div class="ground"></div>
+      <span class="palm" style="left:30%">🌴</span><span class="palm" style="left:63%">🌴</span>
+      <svg class="road" viewBox="0 0 600 260" preserveAspectRatio="none">
+        <path id="road-bg" d="M60 205 L150 150 L240 212 L340 146 L440 208 L540 160"/>
+        <path id="road-path" d="M60 205 L150 150 L240 212 L340 146 L440 208 L540 160"/>
+      </svg>
+      <div class="home" id="home-pick"><span class="bld">🏠</span><span class="tag"><b id="pick-name">Pickup</b><i id="pick-floor" hidden></i></span></div>
+      <div class="home" id="home-drop"><span class="pile" id="drop-pile"></span><span class="bld">🏡</span><span class="tag"><b id="drop-name">Delivery</b><i id="drop-floor" hidden></i></span></div>
+      <div class="truck" id="truck" hidden>
+        <span class="body">🚚</span>
+        <div class="movers" id="movers">🏋️‍♂️🏋️‍♂️<span id="mover-extra"></span></div>
+        <div class="cargo"><i id="cargo-fill"></i></div>
+      </div>
+      <div class="wrench" id="wrench" hidden>🔧</div>
+      <div class="hud" id="hud"></div>
+      <div class="clock" id="clock" hidden></div>
+      <div class="trip" id="trip-miles"></div>
+    </div>
+    <div class="stats" aria-live="polite">
+      <span>🚚 <b id="cargo-text">0% full</b></span>
+      <span>🏋️ <b id="mover-count">2</b> movers</span>
+      <span>📏 <b id="item-total-short">26 ft</b> truck</span>
+    </div>
+  </div>
+
+  <div class="steps-col">
+    <!-- Step 1: where -->
+    <section class="card est-step" id="step-where">
+      <h2>📍 Where are you moving?</h2>
+      <p class="hint">City, ZIP or street address. Pick from the list for the best match.</p>
+      <label class="f" for="pickup">🏠 Pickup address</label>
+      <input class="in" id="pickup" placeholder="e.g. 465 Brickell Ave, Miami">
+      <label class="f" for="pickup-floor">Pickup floor</label>
+      <select class="in" id="pickup-floor">
+        <option value="ground">🏠 House or ground floor</option>
+        <option value="elevator">🛗 Building with elevator</option>
+        <option value="stairs-2">🪜 Stairs: 2nd floor</option>
+        <option value="stairs-3">🪜 Stairs: 3rd floor</option>
+        <option value="stairs-4">🪜 Stairs: 4th floor</option>
+        <option value="stairs-5">🪜 Stairs: 5th floor+</option>
+      </select>
+      <label class="f" for="dropoff">🏁 Delivery address</label>
+      <input class="in" id="dropoff" placeholder="e.g. Fort Lauderdale or 33301">
+      <label class="f" for="dropoff-floor">Delivery floor</label>
+      <select class="in" id="dropoff-floor">
+        <option value="ground">🏠 House or ground floor</option>
+        <option value="elevator">🛗 Building with elevator</option>
+        <option value="stairs-2">🪜 Stairs: 2nd floor</option>
+        <option value="stairs-3">🪜 Stairs: 3rd floor</option>
+        <option value="stairs-4">🪜 Stairs: 4th floor</option>
+        <option value="stairs-5">🪜 Stairs: 5th floor+</option>
+      </select>
+      <div class="err" id="where-err"></div>
+      <button type="button" class="btn go" id="where-go">🚚 Call my truck ➜</button>
+    </section>
+
+    <!-- Step 2: items -->
+    <section class="card est-step" id="step-items" hidden>
+      <h2>📦 What's going in the truck?</h2>
+      <p class="hint">Search your items, set how many, and toss them in. <button type="button" class="linkish" id="edit-where">Change addresses</button></p>
+      <div class="adder">
+        <div class="ac">
+          <input class="in" id="item-search" placeholder="🔎 Sofa, queen bed, boxes…" autocomplete="off" aria-label="Search items">
+          <ul class="ac-list" id="item-list" hidden></ul>
+        </div>
+        <div class="qty">
+          <button type="button" id="qty-minus" aria-label="Fewer">−</button>
+          <input id="qty" type="number" min="1" max="99" value="1" inputmode="numeric" aria-label="How many">
+          <button type="button" id="qty-plus" aria-label="More">+</button>
+        </div>
+        <button type="button" class="btn go add" id="add-item">Add ➜</button>
+      </div>
+      <div class="err" id="item-err"></div>
+      <div class="chips" id="chips"></div>
+
+      <div class="sect">
+        <h3>✅ Included in your move <small id="item-total"></small></h3>
+        <ul class="lines inc">
+          <li class="base"><span class="e">🚚</span><span class="nm">1 moving truck (26 ft)</span></li>
+          <li class="base"><span class="e">🏋️</span><span class="nm">2 professional movers</span></li>
+          <li class="base"><span class="e">🧣</span><span class="nm">Moving pads &amp; blankets</span></li>
+          <li class="base"><span class="e">🌀</span><span class="nm">Stretch wrap</span></li>
+          <li class="base"><span class="e">🎞️</span><span class="nm">Tape</span></li>
+          <li class="base" id="asm-row" hidden><span class="e">🔧</span><span class="nm">Taking apart &amp; putting back together <small>~<span id="asm-time"></span>, counted in your hours</small></span></li>
+        </ul>
+        <ul class="lines inc" id="my-items"></ul>
+        <p class="empty" id="my-items-empty">Your items will show up here.</p>
+      </div>
+
+      <div class="sect">
+        <h3>➕ Not included <small>add only what you need</small></h3>
+        <ul class="lines ext">
+          <li class="auto" id="stairs-row"><span class="e">🪜</span><span class="nm">Stairs &amp; elevators <small id="stairs-detail"></small>
+            <span class="floor-edit">
+              <select class="in" id="floor-pick-edit" aria-label="Pickup floor"><option value="ground">Pickup: ground</option><option value="elevator">Pickup: elevator</option><option value="stairs-2">Pickup: 2nd fl stairs</option><option value="stairs-3">Pickup: 3rd fl stairs</option><option value="stairs-4">Pickup: 4th fl stairs</option><option value="stairs-5">Pickup: 5th fl+ stairs</option></select>
+              <select class="in" id="floor-drop-edit" aria-label="Delivery floor"><option value="ground">Delivery: ground</option><option value="elevator">Delivery: elevator</option><option value="stairs-2">Delivery: 2nd fl stairs</option><option value="stairs-3">Delivery: 3rd fl stairs</option><option value="stairs-4">Delivery: 4th fl stairs</option><option value="stairs-5">Delivery: 5th fl+ stairs</option></select>
+            </span></span></li>
+          <li class="auto" id="movers-row"><span class="e">🏋️</span><span class="nm">Extra movers for very heavy items <small id="movers-detail"></small></span></li>
+          <li class="auto on" id="truck-row" hidden><span class="e">🚛</span><span class="nm">Second truck or trip <small>Your items fill more than one truck. We'll confirm by phone.</small></span></li>
+        </ul>
+        <ul class="lines ext" id="supplies"></ul>
+        <ul class="lines ext ask" id="oncall"></ul>
+      </div>
+    </section>
+
+    <!-- Step 3: result -->
+    <section class="card est-step" id="step-result" hidden>
+      <h2>🎉 Your moving estimate</h2>
+      <h3 style="font-size:1rem;margin-top:10px">⏱️ How the time adds up</h3>
+      <ul class="timeline" id="timeline"></ul>
+      <h3 style="font-size:1rem;margin-top:14px">💵 Price</h3>
+      <ul class="price" id="price-lines"></ul>
+      <div class="total"><span>Estimated total</span><b id="price-total"></b></div>
+      <p class="fine" id="price-asks"></p>
+      <p class="fine" id="price-big" hidden>🚛 Your items look like more than one truckload, so we'll confirm the extra truck or trip by phone.</p>
+      <p class="fine">This is an estimate, not a final invoice: your crew bills the actual time. Hercules Local Movers is registered with the State of Florida as a Mover. Registration No. IM150012. See our <a href="terms.html" target="_blank" rel="noopener">terms</a> and <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>
+
+      <form id="send-form" novalidate>
+        <h3 style="font-size:1.1rem;margin-top:16px">📲 Lock it in: send us this estimate</h3>
+        <p class="hint">We'll text or call to confirm, usually within the hour.</p>
+        <input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="row2">
+          <div><label class="f" for="fn">👤 First name</label><input class="in" id="fn" autocomplete="given-name"></div>
+          <div><label class="f" for="ln">Last name</label><input class="in" id="ln" autocomplete="family-name"></div>
+        </div>
+        <div class="row2">
+          <div><label class="f" for="ph">📱 Mobile phone</label><input class="in" id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555"></div>
+          <div><label class="f" for="em">✉️ Email <small>(optional)</small></label><input class="in" id="em" type="email" autocomplete="email"></div>
+        </div>
+        <label class="f" for="date">📅 Move date</label>
+        <input class="in" id="date" type="date">
+        <label class="check"><input type="checkbox" id="flex"> 🤷 My date is flexible</label>
+        <label class="f" for="notes">📝 Anything else? <small>(optional)</small></label>
+        <input class="in" id="notes" placeholder="Gate code, parking, items not on the list…">
+        <label class="check"><input type="checkbox" checked disabled> By sending, I agree Hercules Local Movers may call or text me about my move. Msg &amp; data rates may apply. Reply STOP to opt out.</label>
+        <div class="err" id="send-err"></div>
+        <button type="submit" class="btn go" id="send">📲 Send my estimate</button>
+      </form>
+      <div class="sent" id="sent" hidden>
+        <div class="big">🎉</div>
+        <h3>Got it! Your estimate is with our team.</h3>
+        <p>Reference <b id="sent-ref"></b>. We'll text or call you shortly.</p>
+        <a class="btn go" style="display:inline-block;width:auto;text-decoration:none" href="tel:+17543542008">📞 Call (754) 354-2008</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="bar" id="bar">
+  <div class="wrap">
+    <div class="nums">
+      <span>⏱️ <b id="bar-time">-</b></span>
+      <span>🏋️ <b id="bar-crew">2</b> movers</span>
+      <span class="p">💵 <b id="bar-price">-</b></span>
+    </div>
+    <button type="button" class="btn go" id="go" disabled>🚚 Start the move ➜</button>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><strong>Hercules Local Movers</strong> · Miami-Dade, Broward &amp; Palm Beach · <a href="tel:+17543542008">(754) 354-2008</a></p>
+    <p>Registered with the State of Florida as a Mover. Registration No. IM150012. USDOT 8486147. Licensed &amp; Insured.</p>
+    <p><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms and Conditions</a></p>
+  </div>
+</footer>
+
+<script src="js/booking/quote-core.js"></script>
+<script src="js/booking/place-lookup.js"></script>
+<script src="js/booking/web3forms.js"></script>
+<script src="js/estimate/items.js"></script>
+<script src="js/estimate/estimate.js"></script>
+</body>
+</html>

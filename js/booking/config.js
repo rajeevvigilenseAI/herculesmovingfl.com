@@ -18,6 +18,12 @@ window.HerculesBooking.config = {
   // and fill in the account ID and the conversion label from Google Ads.
   googleAdsId: "",
   googleAdsConversionLabel: "",
+  // Square payment link for the optional booking deposit on the homepage form.
+  // In Square, set this link's redirect after payment to
+  // https://herculesmovingfl.com/booking-confirmed.html so customers land on
+  // their confirmation.
+  depositUrl: "https://square.link/u/SrxJaH93",
+  depositAmount: 50,
   phoneDisplay: "1 (754) 354-2008",
   phoneTel: "+17543542008",
   arrivalWindows: [

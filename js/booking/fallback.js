@@ -156,6 +156,15 @@ window.HerculesBooking = window.HerculesBooking || {};
       " shortly to confirm everything below and lock in your crew.";
 
     fields["Your Reference"] = reference;
+    // Which button the customer pressed on the homepage form.
+    if (payload.bookingChoice === "deposit") {
+      fields["Your Next Step"] =
+        "You chose to book now and secure your date with a $" + ((cfg && cfg.depositAmount) || 50) +
+        " deposit through Square. If checkout didn't open, call us at " + phone + " and we'll send you the link.";
+    } else if (payload.bookingChoice === "callback") {
+      fields["Your Next Step"] =
+        "You asked us to call you before booking. Nothing is booked yet; we'll call to go over your estimate and answer any questions.";
+    }
     // Read by the CRM to tell website bookings from Meta ad quotes, whichever
     // service (FormSubmit or the Web3Forms backup) delivers the email.
     fields["Lead type"] = "Website booking";
