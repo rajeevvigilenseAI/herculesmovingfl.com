@@ -7,14 +7,16 @@
  */
 
 :root {
-    --hl-brand: #ff7700;
-    --hl-brand-dark: #e56a00;
-    --hl-brand-soft: #fff3e8;
-    --hl-ink: #172033;
-    --hl-text: #3f4a5c;
-    --hl-muted: #667085;
-    --hl-line: #e7e9ee;
-    --hl-soft: #f7f6f3;
+    --hl-brand: #ff6f00;
+    --hl-brand-dark: #e85d00;
+    --hl-brand-soft: #fff1e4;
+    --hl-grad: linear-gradient(135deg, #ff6a00 0%, #ff8a00 55%, #ffa726 100%);
+    --hl-ink: #0b1324;
+    --hl-text: #1f2a3d;
+    --hl-muted: #526077;
+    --hl-line: #e5e8ef;
+    --hl-soft: #fff7ef;
+    --hl-sky: #eef7ff;
     --hl-radius: 14px;
     --hl-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 8px 24px rgba(16, 24, 40, .08);
     --hl-shadow-lg: 0 2px 4px rgba(16, 24, 40, .06), 0 18px 40px rgba(16, 24, 40, .14);
@@ -611,7 +613,80 @@ a.button:hover, .button:hover, .go2:hover, .go3:hover, .hq-submit:hover, .book-b
         font-size: 16.5px !important;
     }
 
+    /* Centered paragraphs and bullet lists read ragged on a phone. */
+    .hub-content, .hub-content p, .hub-content li, .hub-content dt, .hub-content dd,
+    .hub-content h2, .hub-content h3 {
+        text-align: left !important;
+    }
+
+    .hub-content ul, .hub-content ol {
+        padding-left: 22px;
+    }
+
     .navbar-default .navbar-nav > li > a {
         font-size: 16px !important;
     }
+}
+
+/* ------------------------------------------------- crisp + bright pass */
+
+/* Brighter brand surfaces: gradient top bar, buttons and accents. */
+.mast-wrap, .topmast {
+    background: var(--hl-grad) !important;
+}
+
+a.button, .button, .go2, .hq-submit, .book-btn,
+.article-cta a[href="/#estimate"] {
+    background: var(--hl-grad) !important;
+    color: #fff !important;
+}
+
+a.button:hover, .button:hover, .go2:hover, .hq-submit:hover, .book-btn:hover {
+    background: linear-gradient(135deg, #f25f00 0%, #ff7a00 55%, #ff9800 100%) !important;
+}
+
+.about h3::before,
+.intro2 h2::before,
+.overlay h2::before, .overlay2 h2::before {
+    width: 56px;
+    background: var(--hl-grad);
+}
+
+/* Section backgrounds: warm cream and fresh sky instead of flat gray. */
+.contrast {
+    background: linear-gradient(180deg, #fff7ef 0%, #ffffff 100%) !important;
+}
+
+.services {
+    background: linear-gradient(180deg, var(--hl-sky) 0%, #ffffff 100%) !important;
+}
+
+.move-day-section {
+    background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%);
+}
+
+/* Crisper text: full-strength ink for headings, near-black body copy, and
+   tighter heading tracking. */
+h1, h2, h3, h4 {
+    color: var(--hl-ink);
+}
+
+.intro p, .about p, .services p, .overlay p, .hub-content p, .hub-content li,
+.article-wrap p, .article-wrap li, .review-card p, .blog-card p {
+    color: var(--hl-text) !important;
+}
+
+.hub-content a, .article-wrap a:not(.button) {
+    color: var(--hl-brand-dark) !important;
+    font-weight: 600;
+}
+
+.hub-guides {
+    background: linear-gradient(135deg, #fff1e4 0%, #fff8ee 100%);
+    border: 1px solid #ffd9b8;
+}
+
+.footer {
+    border-top: 0 !important;
+    box-shadow: inset 0 4px 0 #ff7a00;
 }
