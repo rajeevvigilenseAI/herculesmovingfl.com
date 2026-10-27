@@ -268,7 +268,7 @@
                             <p class="hq-sub">A city, ZIP, or full address all work. Reserve your move in one visit, right here.</p>
                             <div class="hq-row">
                                 <div class="hq-pair">
-                                    <div class="hq-field"><label for="hqOriginCity">Moving From</label><input id="hqOriginCity" name="origin-address" value="Miami" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
+                                    <div class="hq-field"><label for="hqOriginCity">Moving From</label><input id="hqOriginCity" name="origin-address" autocomplete="address-line1" placeholder="City, ZIP, or address"></div>
                                     <div class="hq-field small"><label for="hqOriginState">State</label><input id="hqOriginState" name="origin-state" maxlength="2" value="FL" placeholder="FL" autocomplete="address-level1"></div>
                                 </div>
                                 <div class="hq-pair">
@@ -295,10 +295,7 @@
 
                         <!-- Step 2: estimate + date/window -->
                         <div id="hq-step-schedule" class="hq-step">
-                            <div class="hq-est-head">
-                                <h3><i class="fas fa-check-circle"></i> Your Estimate</h3>
-                                <span class="hq-crew"><span aria-hidden="true">🚚</span> 2 Movers + Truck</span>
-                            </div>
+                            <h3 class="hq-est-title"><i class="fas fa-check-circle"></i> Your Estimate <span class="hq-crew"><span class="hq-dot" aria-hidden="true">&middot;</span> <span class="hq-crew-item"><span class="hq-emo" aria-hidden="true">💪</span> 2 Movers</span> <span class="hq-plus">+</span> <span class="hq-crew-item"><span class="hq-emo" aria-hidden="true">🚚</span> Truck</span></span></h3>
                             <p class="hq-result-route" id="hq-result-route"></p>
                             <div class="hq-result-stats">
                                 <div><span>Estimated Time</span><strong id="hq-result-hours"></strong></div>
@@ -550,34 +547,45 @@
                 </div>
             </section>
 
-            <div class="row contrast intro">
-                <div class="col-wrap">
-                    <div class="col-sm-3">
-                        <img class="icon" src="images/icon-weight3.png" alt="weight"/>
-                        <h3>NO WEIGHT MINIMUMS</h3>
-                        <p>Some moving companies charge a minimum weight for each shipment, meaning small move customers pay for weight they don't have. We are 
-                        here to fill a niche serving small move customers, meaning you won’t be charged a minimum weight.</p>
+            <section class="perks" aria-labelledby="perks-title">
+                <div class="perks-wrap">
+                    <p class="perks-eyebrow">Built for small &amp; local moves</p>
+                    <h2 id="perks-title">Fair pricing, no fine print</h2>
+                    <div class="perks-grid">
+                        <article class="perk" style="--perk:#ff6a00;--d:0ms">
+                            <span class="perk-ico" aria-hidden="true"><span>⚖️</span></span>
+                            <h3>No weight minimums</h3>
+                            <p>Pay for what you move, never a minimum shipment weight.</p>
+                        </article>
+                        <article class="perk" style="--perk:#7c3aed;--d:110ms">
+                            <span class="perk-ico" aria-hidden="true"><span>📦</span></span>
+                            <h3>No size minimums</h3>
+                            <p>No charge for empty truck space you don’t use.</p>
+                        </article>
+                        <article class="perk" style="--perk:#0ea5e9;--d:220ms">
+                            <span class="perk-ico" aria-hidden="true"><span>🧾</span></span>
+                            <h3>No hidden fees</h3>
+                            <p>Everything included is spelled out in your written estimate.</p>
+                        </article>
+                        <article class="perk" style="--perk:#10b981;--d:330ms">
+                            <span class="perk-ico" aria-hidden="true"><span>⭐</span></span>
+                            <h3>Same 5-star service</h3>
+                            <p>One item or a full truckload, you get the same careful crew.</p>
+                        </article>
                     </div>
-                    <div class="col-sm-3 left-center">
-                        <img loading="lazy" decoding="async" class="icon" src="images/icon-size2.png" alt="size"/>
-                        <h3>NO SIZE MINIMUMS</h3>
-                        <p>Some moving companies charge for a minimum load size on all moves. This means that you are being charged for space in their truck 
-                        that you are not using. That is just not fair. Call on us for your next small move and avoid being charged for space you don't need.</p>
-                    </div>
-                    <div class="col-sm-3 right-center">
-                        <img loading="lazy" decoding="async" class="icon" src="images/icon-fees.png" alt="fees"/>
-                        <h3>NO HIDDEN FEES</h3>
-                        <p>Nothing will ruin your move more than being sold on one price and being charged another. When we quote your move, we quote it 
-                        accurately. All fees are included in your guaranteed quote so you will never suffer from sticker shock or hidden fees.</p>
-                    </div>
-                    <div class="col-sm-3">
-                        <img loading="lazy" decoding="async" class="icon" src="images/icon-service2.png" alt="great service"/>
-                        <h3>SAME GREAT SERVICE</h3>
-                        <p>Just because yours is not a big ticket move doesn't mean that you should expect less than stellar service. We treat all movers with 
-                        the goal of earning future business. Whether you are moving a truckload or a single item, you will receive extraordinary service.</p>
-                    </div>
+                    <p class="perks-cta"><a class="button" href="#estimate">See my price</a></p>
                 </div>
-            </div>
+            </section>
+            <script>
+            (function () {
+              var cards = document.querySelectorAll(".perk");
+              if (!("IntersectionObserver" in window)) { Array.prototype.forEach.call(cards, function (c) { c.classList.add("is-in"); }); return; }
+              var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } });
+              }, { threshold: 0.2 });
+              Array.prototype.forEach.call(cards, function (c) { io.observe(c); });
+            })();
+            </script>
             
                 <div class="move-day-section" data-move-day></div>
 
