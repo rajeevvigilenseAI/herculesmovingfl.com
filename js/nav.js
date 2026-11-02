@@ -83,6 +83,61 @@
 })();
 
 /*
+ * OpenAI Ads matching. Every visitor gets a stable random ID (kept in
+ * localStorage, with a cookie as backup) that the pixel sends as its external
+ * ID, so calls and form leads can be matched to ad clicks. When a form is
+ * sent, HerculesAds.identify() adds the email, phone and name the customer
+ * typed. The pixel hashes them (SHA-256) in the browser before sending.
+ */
+(function () {
+  "use strict";
+
+  var KEY = "hercules_vid";
+
+  function newId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
+  }
+
+  function visitorId() {
+    var id = "";
+    try { id = localStorage.getItem(KEY) || ""; } catch (err) {}
+    if (!id) {
+      var fromCookie = new RegExp("(?:^|;\\s*)" + KEY + "=([^;]+)").exec(document.cookie);
+      id = fromCookie ? decodeURIComponent(fromCookie[1]) : newId();
+    }
+    try { localStorage.setItem(KEY, id); } catch (err) {}
+    document.cookie = KEY + "=" + encodeURIComponent(id) + ";path=/;max-age=" + 60 * 60 * 24 * 400 + ";SameSite=Lax";
+    return id;
+  }
+
+  // US numbers in E.164 (+1 and 10 digits), the format the pixel expects.
+  function e164(phone) {
+    var d = String(phone || "").replace(/\D/g, "");
+    if (d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+    return d.length === 10 ? "+1" + d : "";
+  }
+
+  var vid = visitorId();
+
+  function identify(contact) {
+    if (typeof oaiq !== "function") return;
+    contact = contact || {};
+    var user = { external_id_sha256: vid };
+    var email = String(contact.email || "").trim().toLowerCase();
+    if (email.indexOf("@") > 0) user.email_sha256 = email;
+    var phone = e164(contact.phone);
+    if (phone) user.phone_number_sha256 = phone;
+    if (contact.firstName) user.first_name_sha256 = String(contact.firstName).trim();
+    if (contact.lastName) user.last_name_sha256 = String(contact.lastName).trim();
+    oaiq("init", { user: user });
+  }
+
+  window.HerculesAds = { identify: identify, visitorId: vid };
+  identify();
+})();
+
+/*
  * Phone taps count as leads. ChatGPT ad visitors often call instead of using
  * the form, so every tel: link reports to Google Analytics (phone_call_click)
  * and to the OpenAI Ads pixel (lead_created), which lets Ads Manager credit

@@ -225,7 +225,7 @@
         })
         .then(function (result) {
           if (window.HerculesBooking.trackConversion) {
-            window.HerculesBooking.trackConversion(result);
+            window.HerculesBooking.trackConversion(result, { email: email, phone: phone, firstName: firstName, lastName: lastName });
           }
           if (typeof gtag === "function") {
             gtag("event", "booking_choice", { choice: choice });

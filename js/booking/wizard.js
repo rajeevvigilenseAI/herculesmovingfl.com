@@ -415,7 +415,7 @@
       showConfirmation(result);
       goTo("confirm");
       if (window.HerculesBooking.trackConversion) {
-        window.HerculesBooking.trackConversion(result);
+        window.HerculesBooking.trackConversion(result, { email: state.email, phone: state.phone, firstName: state.firstName, lastName: state.lastName });
       }
     }).catch(function (err) {
       fail(err.message, err.smsHref);

@@ -859,6 +859,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
 
     function lead() {
       track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
+      if (window.HerculesAds) window.HerculesAds.identify({ email: em, phone: ph, firstName: fn, lastName: ln });
       if (typeof oaiq === "function") oaiq("measure", "lead_created", { type: "customer_action" }, { event_id: ref });
       if (typeof gtag === "function") gtag("event", "generate_lead", { form_name: "quote_page", currency: "USD", transaction_id: ref });
     }

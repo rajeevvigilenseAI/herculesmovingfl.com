@@ -87,7 +87,7 @@ window.HerculesBooking.leadSource = (function () {
 // lead_created event, the GA4 generate_lead event and, when configured, the
 // Google Ads "Request quote" conversion after a successful reservation. Each
 // one no-ops when its tag isn't on the page.
-window.HerculesBooking.trackConversion = function (result) {
+window.HerculesBooking.trackConversion = function (result, contact) {
   var cfg = window.HerculesBooking.config;
   var reference = result && result.reference ? String(result.reference) : undefined;
   var value = result && result.estimatedPrice != null ? Number(result.estimatedPrice) || 0 : undefined;
@@ -98,6 +98,8 @@ window.HerculesBooking.trackConversion = function (result) {
     fbq("track", "Lead", leadData, reference ? { eventID: reference } : undefined);
   }
   if (typeof oaiq === "function") {
+    // Email/phone/name help OpenAI match the lead to the ad click (js/nav.js).
+    if (contact && window.HerculesAds) window.HerculesAds.identify(contact);
     oaiq("measure", "lead_created", { type: "customer_action" }, reference ? { event_id: reference } : undefined);
   }
   if (typeof gtag !== "function") return;
