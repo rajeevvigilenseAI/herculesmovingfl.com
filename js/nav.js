@@ -171,6 +171,77 @@
       // A stable id per ad click lets OpenAI drop duplicates on its side too.
       var eventId = clickId ? "call-" + clickId.slice(0, 60) : "call-" + Date.now();
       oaiq("measure", "lead_created", { type: "customer_action" }, { event_id: eventId });
+      // The pixel batches events for about a second. A pagehide makes it send
+      // what's queued right away by sendBeacon, so the call is counted even if
+      // the phone backgrounds the tab for the dialer first. Nothing else on
+      // the site listens for pagehide, and later events still send normally.
+      try { window.dispatchEvent(new Event("pagehide")); } catch (err) {}
     }
   }, true);
+})();
+
+/*
+ * Call-tracking check for a real phone: open any page with ?calltest=1, tap a
+ * call button, cancel or end the call, and come back. A panel lists what was
+ * sent to the OpenAI pixel. Requests are sent normally, not blocked.
+ */
+(function () {
+  "use strict";
+  if (!/[?&]calltest=1/.test(location.search)) return;
+
+  var KEY = "hercules_calltest";
+  // Start each test fresh: forget earlier taps in this tab.
+  try {
+    Object.keys(sessionStorage).forEach(function (k) { if (k.indexOf("hercules_call_tracked:") === 0) sessionStorage.removeItem(k); });
+  } catch (err) {}
+
+  function log(line) {
+    var lines = [];
+    try { lines = JSON.parse(sessionStorage.getItem(KEY) || "[]"); } catch (err) {}
+    lines.push(new Date().toLocaleTimeString() + "  " + line);
+    try { sessionStorage.setItem(KEY, JSON.stringify(lines.slice(-12))); } catch (err) {}
+    render(lines);
+  }
+
+  var panel = document.createElement("pre");
+  panel.style.cssText = "position:fixed;left:8px;right:8px;bottom:72px;z-index:100000;margin:0;padding:10px;max-height:45vh;overflow:auto;" +
+    "background:#0b1324;color:#9ef0b0;font:12px/1.4 monospace;border-radius:10px;white-space:pre-wrap;opacity:.95";
+  function render(lines) {
+    panel.textContent = "CALL TEST (pixel " + (typeof oaiq === "function" ? "loaded" : "MISSING") + ")\n" + (lines.length ? lines.join("\n") : "Tap a call button.");
+    if (!panel.parentNode && document.body) document.body.appendChild(panel);
+  }
+
+  function events(body) {
+    try { return JSON.parse(String(body)).events.map(function (e) { return e.type + " " + (e.id || ""); }).join(", "); } catch (err) { return "?"; }
+  }
+
+  var ofetch = window.fetch;
+  if (ofetch) {
+    window.fetch = function (url, opts) {
+      var u = String(url && url.url || url);
+      var p = ofetch.apply(this, arguments);
+      if (u.indexOf("bzr.openai.com") >= 0) {
+        var what = events(opts && opts.body);
+        p.then(function (r) { log("fetch " + (r.type === "opaque" ? "sent" : r.status) + ": " + what); },
+               function (e) { log("fetch FAILED: " + what + " (" + e + ")"); });
+      }
+      return p;
+    };
+  }
+  if (navigator.sendBeacon) {
+    var obeacon = navigator.sendBeacon.bind(navigator);
+    navigator.sendBeacon = function (url, data) {
+      var ok = obeacon(url, data);
+      if (String(url).indexOf("bzr.openai.com") >= 0) log("beacon " + (ok ? "queued by browser" : "REFUSED") + ": " + events(data));
+      return ok;
+    };
+  }
+  document.addEventListener("click", function (e) {
+    if (e.target.closest && e.target.closest('a[href^="tel:"]')) log("call tapped");
+  }, true);
+
+  var saved = [];
+  try { saved = JSON.parse(sessionStorage.getItem(KEY) || "[]"); } catch (err) {}
+  if (document.body) render(saved);
+  else document.addEventListener("DOMContentLoaded", function () { render(saved); });
 })();
