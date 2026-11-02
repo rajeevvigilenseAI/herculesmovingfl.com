@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <!-- OpenAI Ads pixel -->
 <script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"YLUkK38NyaoC8sNnu2AXGe",debug:false});</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KN18M4EST2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KN18M4EST2');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>South Florida's Most Trusted Local Movers | Free Quote | Hercules Local Movers</title>
 <meta name="description" content="Licensed South Florida movers serving Miami-Dade, Broward and Palm Beach. No weight minimums, no hidden fees. Get your instant moving estimate.">
@@ -851,6 +860,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     function lead() {
       track("track", "Lead", { content_name: "Quote request", content_category: data.moveType || "" }, { eventID: ref });
       if (typeof oaiq === "function") oaiq("measure", "lead_created", { type: "customer_action" }, { event_id: ref });
+      if (typeof gtag === "function") gtag("event", "generate_lead", { form_name: "quote_page", currency: "USD", transaction_id: ref });
     }
 
     // Some phone browsers (in-app browsers, strict privacy modes) refuse the
@@ -945,5 +955,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
   });
 })();
 </script>
+<!-- Call taps: phone_call_click (GA4) and lead_created (OpenAI), same as the rest of the site -->
+<script src="js/nav.js" defer></script>
 </body>
 </html>
