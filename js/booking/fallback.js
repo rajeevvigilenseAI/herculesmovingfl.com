@@ -169,6 +169,10 @@ window.HerculesBooking = window.HerculesBooking || {};
     // service (FormSubmit or the Web3Forms backup) delivers the email.
     fields["Lead type"] = "Website booking";
     add(fields, "Source", leadSourceLabel());
+    // Set when the visitor arrived from a ChatGPT ad (OpenAI adds ?oppref=).
+    var hbSrc = window.HerculesBooking && typeof window.HerculesBooking.leadSource === "function"
+      ? window.HerculesBooking.leadSource() : {};
+    add(fields, "ChatGPT ad click", hbSrc.oppref ? "Yes" : "");
     add(fields, "Move Date", niceDate(payload.moveDate));
     add(fields, "Arrival Window", trim(payload.arrivalWindow));
     add(fields, "Moving From", formatAddress(payload.origin));
@@ -219,6 +223,7 @@ window.HerculesBooking = window.HerculesBooking || {};
     var parts = [src.utm_source, src.utm_campaign, src.utm_content].filter(Boolean);
     if (!parts.length && src.fbclid) parts.push("facebook (untagged)");
     if (!parts.length && src.gclid) parts.push("google ads");
+    if (!parts.length && src.oppref) parts.push("chatgpt ads");
     return parts.join(" · ");
   }
 

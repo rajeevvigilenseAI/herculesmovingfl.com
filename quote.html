@@ -445,7 +445,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
   var src = {};
   try {
     var p = new URLSearchParams(location.search);
-    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"].forEach(function (k) {
+    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid", "oppref"].forEach(function (k) {
       if (p.get(k)) src[k] = p.get(k);
     });
     if (Object.keys(src).length) sessionStorage.setItem("hq_src", JSON.stringify(src));
@@ -810,7 +810,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
     for (var r = 0; r < 3; r++) suffix += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     var ref = "FL-" + String(now.getFullYear()).slice(2) + pad2(now.getMonth() + 1) + pad2(now.getDate()) + "-" + suffix;
     var source = [src.utm_source, src.utm_campaign, src.utm_content].filter(Boolean).join(" / ") ||
-      (src.fbclid ? "facebook (untagged)" : src.gclid ? "google ads" : "Direct / unknown");
+      (src.fbclid ? "facebook (untagged)" : src.gclid ? "google ads" : src.oppref ? "chatgpt ads" : "Direct / unknown");
 
     var leadType = /chatgpt|openai/i.test(src.utm_source || "") ? "ChatGPT ads quote" : "Meta ads quote";
     var est = estimate(data.from, data.to, data.homeSize);
@@ -839,6 +839,7 @@ body.lp{margin:0;font-family:'Roboto Condensed','Open Sans',Arial,sans-serif;col
       "Page": location.origin + location.pathname,
       "Facebook click ID": src.fbclid || "N/A",
       "Google click ID": src.gclid || "N/A",
+      "ChatGPT ad click ID": src.oppref || "N/A",
       "Reference": ref
     };
     if (em) payload._replyto = em;

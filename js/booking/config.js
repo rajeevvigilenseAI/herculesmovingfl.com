@@ -62,7 +62,8 @@ window.HerculesBooking.config = {
 // URL) for the rest of the visit, so the office email can say which ad or
 // channel produced the lead.
 window.HerculesBooking.leadSource = (function () {
-  var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid"];
+  // oppref is the ChatGPT ads click id (the OpenAI pixel keeps it in a cookie too).
+  var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid", "oppref"];
   var src = {};
   try {
     var params = new URLSearchParams(window.location.search);
