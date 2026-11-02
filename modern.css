@@ -3186,3 +3186,10 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
     .hc-stats b { font-size: 20px; }
     .hc-stats span:not(.hc-star) { font-size: 12.5px; }
 }
+
+.hq-callback-note {
+    margin: 6px 0 0 !important;
+    text-align: center;
+    font-size: 12px !important;
+    color: var(--hl-muted) !important;
+}

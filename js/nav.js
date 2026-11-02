@@ -81,3 +81,28 @@
   }, { passive: true });
   onScroll();
 })();
+
+/*
+ * Phone taps count as leads. ChatGPT ad visitors often call instead of using
+ * the form, so every tel: link reports once per visit to Google Analytics
+ * (phone_call_click) and to the OpenAI Ads pixel (lead_created), which lets
+ * Ads Manager credit the ads that produce calls.
+ */
+(function () {
+  "use strict";
+  var KEY = "hercules_call_tracked";
+
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest('a[href^="tel:"]');
+    if (!link) return;
+    var where = link.className || (link.closest("header") ? "header" : link.closest(".footer") ? "footer" : "page");
+    if (typeof gtag === "function") {
+      gtag("event", "phone_call_click", { link_location: String(where).slice(0, 40), page_path: location.pathname });
+    }
+    var already = false;
+    try { already = sessionStorage.getItem(KEY) === "1"; sessionStorage.setItem(KEY, "1"); } catch (err) {}
+    if (!already && typeof oaiq === "function") {
+      oaiq("measure", "lead_created", { type: "customer_action" }, { event_id: "call-" + Date.now() });
+    }
+  }, true);
+})();

@@ -314,9 +314,17 @@
         choice === "deposit"
           ? "Booking saved! Opening secure checkout..."
           : choice === "callback"
-            ? "Thanks! We'll call you shortly"
+            ? (openNow() ? "Thanks! We'll reach out within 60 seconds" : "Thanks! We'll call you first thing in the morning")
             : "Your Move Is Reserved!"
       );
+      if (choice === "callback") {
+        setText(
+          "hq-confirm-callback",
+          openNow()
+            ? "Keep your phone handy: we'll call or text you within 60 seconds. We've emailed you a copy of your estimate."
+            : "We're open 7 days, 6:30 AM - 10 PM, and we'll reach out as soon as we open. We've emailed you a copy of your estimate."
+        );
+      }
       var depositNote = document.getElementById("hq-confirm-deposit");
       if (choice === "deposit" && cfg.depositUrl) {
         if (!depositNote) {
@@ -616,6 +624,13 @@
 
   function pad(n) {
     return n < 10 ? "0" + n : "" + n;
+  }
+
+  /** Office hours are 6:30 AM - 10 PM Eastern, 7 days. */
+  function openNow() {
+    var ny = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+    var mins = ny.getHours() * 60 + ny.getMinutes();
+    return mins >= 6 * 60 + 30 && mins < 22 * 60;
   }
 
   function todayYmd() {
