@@ -84,13 +84,22 @@
 
 /*
  * Phone taps count as leads. ChatGPT ad visitors often call instead of using
- * the form, so every tel: link reports once per visit to Google Analytics
- * (phone_call_click) and to the OpenAI Ads pixel (lead_created), which lets
- * Ads Manager credit the ads that produce calls.
+ * the form, so every tel: link reports to Google Analytics (phone_call_click)
+ * and to the OpenAI Ads pixel (lead_created), which lets Ads Manager credit
+ * the ads that produce calls. OpenAI credits the last ad clicked (its
+ * ?oppref= click id, kept in the __oppref cookie), so the pixel gets one call
+ * per ad click: repeat taps don't inflate it, and a tap after clicking a
+ * different ad still counts for that ad.
  */
 (function () {
   "use strict";
-  var KEY = "hercules_call_tracked";
+
+  function adClickId() {
+    var fromUrl = /[?&]oppref=([^&#]+)/.exec(location.search);
+    if (fromUrl) return decodeURIComponent(fromUrl[1]);
+    var fromCookie = /(?:^|;\s*)__oppref=([^;]+)/.exec(document.cookie);
+    return fromCookie ? decodeURIComponent(fromCookie[1]) : "";
+  }
 
   document.addEventListener("click", function (e) {
     var link = e.target.closest && e.target.closest('a[href^="tel:"]');
@@ -99,10 +108,14 @@
     if (typeof gtag === "function") {
       gtag("event", "phone_call_click", { link_location: String(where).slice(0, 40), page_path: location.pathname });
     }
+    var clickId = adClickId();
+    var key = "hercules_call_tracked:" + (clickId || "organic");
     var already = false;
-    try { already = sessionStorage.getItem(KEY) === "1"; sessionStorage.setItem(KEY, "1"); } catch (err) {}
+    try { already = sessionStorage.getItem(key) === "1"; sessionStorage.setItem(key, "1"); } catch (err) {}
     if (!already && typeof oaiq === "function") {
-      oaiq("measure", "lead_created", { type: "customer_action" }, { event_id: "call-" + Date.now() });
+      // A stable id per ad click lets OpenAI drop duplicates on its side too.
+      var eventId = clickId ? "call-" + clickId.slice(0, 60) : "call-" + Date.now();
+      oaiq("measure", "lead_created", { type: "customer_action" }, { event_id: eventId });
     }
   }, true);
 })();
