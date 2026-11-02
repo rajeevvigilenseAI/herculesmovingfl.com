@@ -3193,3 +3193,104 @@ header.site-header.sh-open .sh-burger span:nth-child(3) { top: 22px; transform: 
     font-size: 12px !important;
     color: var(--hl-muted) !important;
 }
+
+/* ==========================================================================
+   Call first: most customers phone rather than fill in the form, so the
+   call button leads on every phone screen and in the homepage hero.
+   ========================================================================== */
+.hc-call {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: #16a34a;
+    box-shadow: 0 10px 24px rgba(22, 163, 74, .35);
+    color: #fff !important;
+    text-decoration: none !important;
+    transition: transform .15s ease, background .15s ease;
+}
+
+.hc-call:hover { background: #15803d; transform: translateY(-1px); }
+
+.hc-call i {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .2);
+    font-size: 18px;
+}
+
+.hc-call b {
+    display: block;
+    font-family: var(--hl-display) !important;
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.hc-call small {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: .9;
+}
+
+@media (max-width: 1199px) {
+    .hc-call { justify-content: center; }
+    .hc-call b { font-size: 19px; }
+}
+
+@media (max-width: 767px) {
+    body { padding-bottom: 62px !important; }
+
+    .mobile-action-bar { height: 62px; }
+
+    .mobile-action-bar a,
+    .mobile-action-bar a .mc-num {
+        font-family: var(--hl-display) !important;
+        font-weight: 800;
+    }
+
+    .mobile-action-bar .mobile-call {
+        flex: 1.7;
+        background: #16a34a;
+        font-size: 17px;
+    }
+
+    .mobile-action-bar .mobile-call i {
+        animation: hl-ring 2.4s ease-in-out infinite;
+    }
+
+    .mobile-action-bar .mobile-estimate {
+        flex: 1;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 359px) {
+    .mobile-action-bar .mc-num { display: none; }
+}
+
+@keyframes hl-ring {
+    0%, 70%, 100% { transform: scaleX(-1) rotate(0); }
+    75% { transform: scaleX(-1) rotate(-14deg); }
+    80% { transform: scaleX(-1) rotate(12deg); }
+    85% { transform: scaleX(-1) rotate(-10deg); }
+    90% { transform: scaleX(-1) rotate(6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-action-bar .mobile-call i { animation: none; }
+}
+
+/* Header call button matches the green call buttons. */
+.sh-phone i {
+    background: #16a34a;
+    color: #fff;
+}
