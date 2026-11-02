@@ -163,7 +163,7 @@ window.HerculesBooking = window.HerculesBooking || {};
         " deposit through Square. Your deposit is credited toward your final balance. Rescheduling is free, and cancellation is free up to 24 hours before your move. If checkout didn't open, call us at " + phone + " and we'll send you the link.";
     } else if (payload.bookingChoice === "callback") {
       fields["Your Next Step"] =
-        "You asked us to call you before booking. Nothing is booked yet. We'll call or text you within 60 seconds during business hours (7 days, 6:30 AM - 10 PM) to go over your estimate and answer any questions.";
+        "You asked us to call you before booking. Nothing is booked yet. We'll text you right away to go over your estimate and answer any questions.";
     }
     // Read by the CRM to tell website bookings from Meta ad quotes, whichever
     // service (FormSubmit or the Web3Forms backup) delivers the email.
